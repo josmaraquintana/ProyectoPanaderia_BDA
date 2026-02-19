@@ -4,6 +4,11 @@
  */
 package Pruebas;
 
+import GUIs.VIniciarSesion;
+import GUIs.VPedido;
+import GUIs.VPedidoCliente;
+import javax.swing.JFrame;
+
 /**
  *
  * @author josma
@@ -15,6 +20,17 @@ public class Pruebas {
      */
     public static void main(String[] args) {
         // TODO code application logic here
+//        JFrame frame = new JFrame();
+//        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+//        
+//        VIniciarSesion iniciar_sesion = new VIniciarSesion(frame,true);
+//        iniciar_sesion.setVisible(true);
+
+//    new VPedidoCliente();
+    
+    new VPedido();
+        
+        
     }
     
 }
