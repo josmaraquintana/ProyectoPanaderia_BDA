@@ -11,7 +11,7 @@ import java.util.logging.Logger;
  *
  * @author josma
  */
-public class ProductoBO {
+public class ProductoBO implements IProductoBO {
     private final IProductoDAO productoDAO; //para conectarnos a la capa de datos
     private final Logger LOG = Logger.getLogger(CuponBO.class.getName());
 

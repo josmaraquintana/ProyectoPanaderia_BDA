@@ -40,4 +40,18 @@ public class FabricaBOs {
         //Regresamos el usuario listo
         return pedido_programado;
     }
+
+    public static ICuponBO obtenerCuponBO() {
+        //Creamos el cupon BO e inyectamos la dependencia
+        ICuponBO cupon = new CuponBO(FabricaDAO.obtenerCuponDAO());
+        //Regresamos el cupon listo
+        return cupon;
+    }
+
+    public static IProductoBO obtenerProductoBO() {
+        //Creamos el producto BO e inyectamos la dependencia
+        IProductoBO producto = new ProductoBO(FabricaDAO.obtenerProductoDAO());
+        //Regresamos el cupon listo
+        return producto;
+    }
 }
