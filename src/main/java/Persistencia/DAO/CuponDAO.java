@@ -4,10 +4,33 @@
  */
 package Persistencia.DAO;
 
+import Persistencia.conexion.IConexionBD;
+import java.util.logging.Logger;
+
 /**
  *
  * @author josma
  */
-public class CuponDAO {
-    
+public class CuponDAO implements ICuponDAO {
+    /**
+     * Componente encargado de crear conexiones con la base de datos. Se inyecta
+     * por constructor para reducir acoplamiento y facilitar pruebas.
+     */
+    private final IConexionBD conexionBD;
+
+    /**
+     * Logger para registrar información relevante durante operaciones de
+     * persistencia.
+     */
+    private static final Logger LOG = Logger.getLogger(CuponDAO.class.getName());
+
+    /**
+     * Constructor que inicializa la dependencia de conexión.
+     *
+     * @param conexionBD objeto que gestiona la creación de conexiones a la base
+     * de datos
+     */
+    public CuponDAO(IConexionBD conexionBD) {
+        this.conexionBD = conexionBD;
+    }
 }

@@ -4,10 +4,33 @@
  */
 package Persistencia.DAO;
 
+import Persistencia.conexion.IConexionBD;
+import java.util.logging.Logger;
+
 /**
  *
  * @author josma
  */
-public class UsuarioDAO {
-    
+public class UsuarioDAO implements IUsuarioDAO {
+    /**
+     * Componente encargado de crear conexiones con la base de datos. Se inyecta
+     * por constructor para reducir acoplamiento y facilitar pruebas.
+     */
+    private final IConexionBD conexionBD;
+
+    /**
+     * Logger para registrar información relevante durante operaciones de
+     * persistencia.
+     */
+    private static final Logger LOG = Logger.getLogger(UsuarioDAO.class.getName());
+
+    /**
+     * Constructor que inicializa la dependencia de conexión.
+     *
+     * @param conexionBD objeto que gestiona la creación de conexiones a la base
+     * de datos
+     */
+    public UsuarioDAO(IConexionBD conexionBD) {
+        this.conexionBD = conexionBD;
+    }
 }
