@@ -23,7 +23,7 @@ public class PersistenciaExcepcion extends Exception {
      *
      * @param msg the detail message.
      */
-    public PersistenciaExcepcion(String msg) {
-        super(msg);
+    public PersistenciaExcepcion(String message, Throwable cause) {
+        super(message, cause);
     }
 }

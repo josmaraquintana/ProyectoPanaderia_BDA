@@ -4,10 +4,13 @@
  */
 package Persistencia.DAO;
 
+import Negocio.DTOs.UsuarioDTO;
+import PersistenciaException.PersistenciaExcepcion;
+
 /**
  *
  * @author josma
  */
 public interface IUsuarioDAO {
-    
+    public UsuarioDTO buscarUsuarioLogin(String usuario_nombre, String contrasena) throws PersistenciaExcepcion;
 }

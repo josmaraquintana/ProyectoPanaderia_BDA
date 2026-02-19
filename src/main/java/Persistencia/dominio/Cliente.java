@@ -4,6 +4,7 @@
  */
 package Persistencia.dominio;
 
+import Negocio.DTOs.UsuarioDTO;
 import java.time.LocalDate;
 
 /**
@@ -45,6 +46,7 @@ public class Cliente extends Usuario{
         this.numero_casa = numero_casa;
         this.calle = calle;
     }
+
 
     public int getEdad() {
         return edad;

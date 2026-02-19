@@ -23,7 +23,7 @@ public class NegocioExcepcion extends Exception {
      *
      * @param msg the detail message.
      */
-    public NegocioExcepcion(String msg) {
-        super(msg);
+    public NegocioExcepcion(String message, Throwable cause) {
+        super(message, cause);
     }
 }

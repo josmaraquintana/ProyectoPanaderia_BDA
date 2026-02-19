@@ -4,7 +4,14 @@
  */
 package Persistencia.DAO;
 
+import Negocio.DTOs.*;
 import Persistencia.conexion.IConexionBD;
+import PersistenciaException.PersistenciaExcepcion;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -12,6 +19,7 @@ import java.util.logging.Logger;
  * @author josma
  */
 public class UsuarioDAO implements IUsuarioDAO {
+
     /**
      * Componente encargado de crear conexiones con la base de datos. Se inyecta
      * por constructor para reducir acoplamiento y facilitar pruebas.
@@ -32,5 +40,28 @@ public class UsuarioDAO implements IUsuarioDAO {
      */
     public UsuarioDAO(IConexionBD conexionBD) {
         this.conexionBD = conexionBD;
+    }
+
+    @Override
+
+    public UsuarioDTO buscarUsuarioLogin(String usuario_nombre, String contrasena) throws PersistenciaExcepcion {
+        UsuarioDTO usuario = null;
+        String comandoSQL = "SELECT id_usuario, usuario, contrasena, nombres, apellido_paterno, apellido_materno FROM Usuarios WHERE usuario  = ? and contrasena = ?";
+
+        try (Connection conn = this.conexionBD.crearConexion(); PreparedStatement ps = conn.prepareStatement(comandoSQL)) {
+            ps.setString(1, usuario_nombre);
+            ps.setString(2, contrasena);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    usuario = new UsuarioDTO();
+                    usuario.setId(rs.getInt("id_usuario"));
+                    usuario.setNombre_usuario(rs.getString("usuario"));
+                    usuario.setContrasena(rs.getString("contrasena"));
+                }
+            }
+        } catch (SQLException ex) {
+            throw new PersistenciaExcepcion("Error al buscar usuario", ex);
+        }
+        return usuario;
     }
 }

@@ -4,7 +4,11 @@
  */
 package Negocio.BOs;
 
+import Negocio.DTOs.*;
+import NegocioException.NegocioExcepcion;
 import Persistencia.DAO.*;
+import Persistencia.dominio.Cliente;
+import PersistenciaException.PersistenciaExcepcion;
 import java.util.logging.Logger;
 
 /**
@@ -15,7 +19,20 @@ public class UsuarioBO implements IUsuarioBO{
     private final IUsuarioDAO usuarioDAO; //para conectarnos a la capa de datos
     private final Logger LOG = Logger.getLogger(UsuarioBO.class.getName());
 
-    public UsuarioBO(IUsuarioDAO usuario) {
-        this.usuarioDAO = usuario; //inyeccion de dependencias
+    public UsuarioBO(IUsuarioDAO usuarioDAO) {
+        this.usuarioDAO = usuarioDAO; //inyeccion de dependenciasO;
+    }
+    
+    public UsuarioDTO login(String nombre_usuario, String contrasena) throws NegocioExcepcion{
+        try{
+        UsuarioDTO usuarioDTO = usuarioDAO.buscarUsuarioLogin(nombre_usuario, contrasena);
+            if (usuarioDTO == null) {
+                LOG.warning("El usuario o contraseña incorrectos, verifica");
+            }
+
+            return usuarioDTO;
+        }catch(PersistenciaExcepcion ex){
+            throw new NegocioExcepcion("No se encontro el usuario del login", ex);
+        }
     }
 }

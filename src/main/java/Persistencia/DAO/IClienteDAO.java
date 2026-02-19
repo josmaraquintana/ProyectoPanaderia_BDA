@@ -4,10 +4,13 @@
  */
 package Persistencia.DAO;
 
+import Negocio.DTOs.ClienteDTO;
+import PersistenciaException.PersistenciaExcepcion;
+
 /**
  *
  * @author josma
  */
 public interface IClienteDAO {
-    
+    public boolean clienteExiste(int id_usuario) throws PersistenciaExcepcion;
 }

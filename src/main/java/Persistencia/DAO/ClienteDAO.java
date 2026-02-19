@@ -4,7 +4,13 @@
  */
 package Persistencia.DAO;
 
+import Negocio.DTOs.*;
 import Persistencia.conexion.IConexionBD;
+import PersistenciaException.PersistenciaExcepcion;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.logging.Logger;
 
 /**
@@ -12,6 +18,7 @@ import java.util.logging.Logger;
  * @author josma
  */
 public class ClienteDAO implements IClienteDAO {
+
     /**
      * Componente encargado de crear conexiones con la base de datos. Se inyecta
      * por constructor para reducir acoplamiento y facilitar pruebas.
@@ -33,4 +40,21 @@ public class ClienteDAO implements IClienteDAO {
     public ClienteDAO(IConexionBD conexionBD) {
         this.conexionBD = conexionBD;
     }
+
+    public boolean clienteExiste(int id_usuario) throws PersistenciaExcepcion {
+        String comandoSQL = "SELECT id_usuario FROM Clientes WHERE id_usuario  =?";
+
+        try (Connection conn = this.conexionBD.crearConexion(); PreparedStatement ps = conn.prepareStatement(comandoSQL)) {
+
+            ps.setInt(1, id_usuario);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                return rs.next();
+            }
+
+        } catch (SQLException ex) {
+            throw new PersistenciaExcepcion("Error al verificar cliente", ex);
+        }
+    }
+
 }
