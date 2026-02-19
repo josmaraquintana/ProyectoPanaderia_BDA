@@ -4,6 +4,9 @@
  */
 package GUIs;
 
+import Negocio.BOs.IUsuarioBO;
+import Negocio.DTOs.UsuarioDTO;
+import Persistencia.DAO.IClienteDAO;
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
 import javax.swing.*;
@@ -13,12 +16,21 @@ import javax.swing.*;
  * @author DANIEL
  */
 public class VPedidoCliente extends JFrame {
+    
+    private UsuarioDTO usuario;
+    
     private JButton btnHacerPedido;
     private JButton btnHistorial;
     private JButton btnEditarDatos;
     private JButton btnAgregarTelefono;
     
-    public VPedidoCliente(){
+
+    
+    public VPedidoCliente(UsuarioDTO usuario){
+        
+        
+         this.usuario = usuario;
+        
         //creamos la ventana
         setTitle("Opciones");
         setSize(500, 400);

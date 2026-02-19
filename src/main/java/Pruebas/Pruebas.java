@@ -7,7 +7,11 @@ package Pruebas;
 import GUIs.VIniciarSesion;
 import GUIs.VPedido;
 import GUIs.VPedidoCliente;
+import Negocio.BOs.*;
+import Persistencia.DAO.*;
+import Persistencia.conexion.ConexionBD;
 import javax.swing.JFrame;
+import javax.swing.SwingUtilities;
 
 /**
  *
@@ -28,7 +32,35 @@ public class Pruebas {
 
 //    new VPedidoCliente();
     
-    new VPedido();
+    SwingUtilities.invokeLater(() -> {
+
+            try {
+
+                // Crear conexión
+                ConexionBD conexionBD = new ConexionBD();
+
+                // Crear DAOs
+                IUsuarioDAO usuarioDAO = new UsuarioDAO(conexionBD);
+                IClienteDAO clienteDAO = new ClienteDAO(conexionBD);
+
+                // Crear BO
+                IUsuarioBO usuarioBO = new UsuarioBO(usuarioDAO);
+
+                // Crear ventana login
+                VIniciarSesion login = new VIniciarSesion(
+                        null,
+                        true,
+                        usuarioBO,
+                        clienteDAO
+                );
+
+                login.setVisible(true);
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+    
         
         
     }
