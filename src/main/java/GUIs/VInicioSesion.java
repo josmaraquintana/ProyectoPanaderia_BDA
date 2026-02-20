@@ -4,6 +4,8 @@
  */
 package GUIs;
 
+import Componentes.PlaceholderTextField;
+import Componentes.RoundedButton;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;

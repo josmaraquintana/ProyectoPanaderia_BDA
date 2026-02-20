@@ -4,7 +4,7 @@
  */
 package Pruebas;
 
-import GUIs.VIniciarSesion;
+import GUIs.VInicioSesion;
 import GUIs.VPedido;
 import GUIs.VPedidoCliente;
 import Negocio.BOs.*;
@@ -47,11 +47,8 @@ public class Pruebas {
                 IUsuarioBO usuarioBO = new UsuarioBO(usuarioDAO);
 
                 // Crear ventana login
-                VIniciarSesion login = new VIniciarSesion(
-                        null,
-                        true,
-                        usuarioBO,
-                        clienteDAO
+                VInicioSesion login = new VInicioSesion(
+                        null
                 );
 
                 login.setVisible(true);
