@@ -33,6 +33,7 @@ public class VOpcionesCliente extends JFrame {
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         getContentPane().setBackground(Color.decode("#c4a484"));
 
+        
         setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
 
