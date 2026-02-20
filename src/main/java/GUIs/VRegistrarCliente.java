@@ -15,11 +15,11 @@ import java.net.URL;
  *
  * @author RAMSES
  */
-public class RegistrarCliente extends JFrame {
+public class VRegistrarCliente extends JFrame {
 
-    public RegistrarCliente() {
+    public VRegistrarCliente() {
         setTitle("Registro");
-        setSize(900, 520);
+        setSize(700, 520);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLayout(new BorderLayout());

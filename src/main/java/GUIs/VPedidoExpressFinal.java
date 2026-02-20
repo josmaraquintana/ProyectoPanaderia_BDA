@@ -15,9 +15,9 @@ import java.net.URL;
  *
  * @author RAMSES
  */
-public class PedidoExpressFinal extends JFrame {
+public class VPedidoExpressFinal extends JFrame {
 
-    public PedidoExpressFinal(String folio, String pin, double total) {
+    public VPedidoExpressFinal(String folio, String pin, double total) {
         setTitle("Pedido Express");
         setSize(700, 450);
         setLocationRelativeTo(null);
@@ -28,17 +28,14 @@ public class PedidoExpressFinal extends JFrame {
         Color blanco = Color.WHITE;
         Color naranja = new Color(201, 104, 0);
 
-        // ================= Panel principal =================
         JPanel mainPanel = new JPanel(new BorderLayout());
         mainPanel.setBackground(fondo);
         mainPanel.setBorder(new EmptyBorder(30, 30, 30, 30));
 
-        // ================= Título =================
         LabelPersonalizado titulo =
                 new LabelPersonalizado("Pedido Express", 28, blanco);
         titulo.setHorizontalAlignment(SwingConstants.LEFT);
 
-        // ================= Logo =================
         JLabel lblLogo = new JLabel();
         lblLogo.setPreferredSize(new Dimension(140, 140));
         lblLogo.setHorizontalAlignment(SwingConstants.RIGHT);
@@ -56,7 +53,6 @@ public class PedidoExpressFinal extends JFrame {
         topPanel.add(lblLogo, BorderLayout.EAST);
         topPanel.setBorder(new EmptyBorder(0, 0, 20, 0));
 
-        // ================= Texto informativo =================
         LabelPersonalizado info = new LabelPersonalizado(
                 "<html>Guarde estos datos para la recolección de su pedido express.<br>" +
                 "RECUERDE QUE SOLO TIENE 20 MIN PARA RECOGER SU PEDIDO EXPRESS →</html>",
@@ -65,7 +61,6 @@ public class PedidoExpressFinal extends JFrame {
         );
         info.setHorizontalAlignment(SwingConstants.LEFT);
 
-        // ================= Datos =================
         JPanel datosPanel = new JPanel(new GridLayout(2, 2, 20, 10));
         datosPanel.setBackground(fondo);
 
@@ -86,7 +81,6 @@ public class PedidoExpressFinal extends JFrame {
         datosPanel.add(lblPin);
         datosPanel.add(new JLabel()); // espacio visual
 
-        // ================= Botón =================
         JPanel botonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 20));
         botonPanel.setBackground(fondo);
 
@@ -95,7 +89,6 @@ public class PedidoExpressFinal extends JFrame {
 
         botonPanel.add(btnOk);
 
-        // ================= Centro =================
         JPanel centerPanel = new JPanel();
         centerPanel.setLayout(new BoxLayout(centerPanel, BoxLayout.Y_AXIS));
         centerPanel.setBackground(fondo);
@@ -107,7 +100,6 @@ public class PedidoExpressFinal extends JFrame {
         centerPanel.add(Box.createVerticalStrut(20));
         centerPanel.add(datosPanel);
 
-        // ================= Ensamblado =================
         mainPanel.add(topPanel, BorderLayout.NORTH);
         mainPanel.add(centerPanel, BorderLayout.CENTER);
         mainPanel.add(botonPanel, BorderLayout.SOUTH);
@@ -115,10 +107,5 @@ public class PedidoExpressFinal extends JFrame {
         add(mainPanel, BorderLayout.CENTER);
 
         setVisible(true);
-    }
-
-    // ================= Main de prueba =================
-    public static void main(String[] args) {
-        new PedidoExpressFinal("1234", "12345678", 20.00);
     }
 }
