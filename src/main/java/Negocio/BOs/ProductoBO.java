@@ -4,7 +4,12 @@
  */
 package Negocio.BOs;
 
+import Negocio.DTOs.PanelProductoDTO;
+import NegocioException.NegocioExcepcion;
 import Persistencia.DAO.*;
+import Persistencia.dominio.Producto;
+import PersistenciaException.PersistenciaExcepcion;
+import java.util.List;
 import java.util.logging.Logger;
 
 /**
@@ -17,5 +22,15 @@ public class ProductoBO implements IProductoBO {
 
     public ProductoBO(IProductoDAO producto) {
         this.productoDAO = producto; //inyeccion de dependencias
+    }
+    
+    
+    @Override 
+    public List<PanelProductoDTO> obtenerListaProductos() throws NegocioExcepcion{
+        try{
+            List<Producto> lista_producto = null
+        }catch(PersistenciaExcepcion ex){
+            
+        }
     }
 }

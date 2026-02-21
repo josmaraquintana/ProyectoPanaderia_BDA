@@ -5,6 +5,7 @@
 package GUIs;
 
 import Componentes.*;
+import Negocio.BOs.PedidoProgramadoBO;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.DocumentEvent;
@@ -22,8 +23,12 @@ public class VTomarPedido extends JFrame {
 
     private JPanel panelLista;
     private List<PanelProducto> listaTodosLosProductos;
-
+    private PedidoProgramadoBO pedidoProgra;
+    
+    
     public VTomarPedido() {
+        
+        listaTodosLosProductos = null;
         setTitle("Catálogo de Productos");
         // 1. Reducimos el tamaño de la ventana (antes 875x650)
         setSize(805, 590);
@@ -160,6 +165,18 @@ public class VTomarPedido extends JFrame {
         // =================================================================
         add(scrollPane, BorderLayout.CENTER);   
         add(panelDerecho, BorderLayout.EAST);   
+        
+        btnAgregar.addActionListener(e -> {
+            
+            try{
+                
+                
+                
+            }catch(Exception ex){
+                
+            }
+            
+        });
     }
 
     private void actualizarListaProductos(String textoBusqueda) {

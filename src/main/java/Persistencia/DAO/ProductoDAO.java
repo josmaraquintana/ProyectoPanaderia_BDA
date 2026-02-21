@@ -5,6 +5,13 @@
 package Persistencia.DAO;
 
 import Persistencia.conexion.IConexionBD;
+import Persistencia.dominio.Producto;
+import PersistenciaException.PersistenciaExcepcion;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.List;
 import java.util.logging.Logger;
 
 /**
@@ -33,4 +40,30 @@ public class ProductoDAO implements IProductoDAO{
     public ProductoDAO(IConexionBD conexionBD) {
         this.conexionBD = conexionBD;
     }
+
+    @Override
+    public List<Producto> obtenerListaProductos() throws PersistenciaExcepcion{
+        
+        String comandoSQL = """
+                            SELECT nombre_producto, descripcion, estado, precio FROM productos;
+                            """;
+        
+        try(Connection conn = this.conexionBD.crearConexion(); PreparedStatement ps = conn.prepareStatement(comandoSQL)){
+            
+            try(ResultSet resul = ps.executeQuery()){
+                while(resul.next()){
+                    
+                }
+            }
+            
+        }catch(SQLException ex){
+            
+        }
+        
+        return null;
+    }
+    
+    
+    
+    
 }

@@ -4,10 +4,16 @@
  */
 package Negocio.BOs;
 
+import Negocio.DTOs.PanelProductoDTO;
+import NegocioException.NegocioExcepcion;
+import java.util.List;
+
 /**
  *
  * @author josma
  */
 public interface IProductoBO {
+    
+    public List<PanelProductoDTO> obtenerListaProductos() throws NegocioExcepcion;
     
 }

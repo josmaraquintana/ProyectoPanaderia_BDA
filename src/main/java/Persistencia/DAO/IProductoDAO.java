@@ -4,10 +4,16 @@
  */
 package Persistencia.DAO;
 
+import Persistencia.dominio.Producto;
+import PersistenciaException.PersistenciaExcepcion;
+import java.util.List;
+
 /**
  *
  * @author josma
  */
 public interface IProductoDAO {
+    
+    public List<Producto> obtenerListaProductos() throws PersistenciaExcepcion;
     
 }
