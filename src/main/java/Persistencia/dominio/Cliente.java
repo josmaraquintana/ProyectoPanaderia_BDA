@@ -5,7 +5,6 @@
 package Persistencia.dominio;
 
 import Negocio.DTOs.UsuarioDTO;
-import java.sql.Date;
 import java.time.LocalDate;
 
 /**
@@ -15,7 +14,7 @@ import java.time.LocalDate;
 public class Cliente extends Usuario{
     
     private int edad;
-    private Date fecha_nacimiento;
+    private LocalDate fecha_nacimiento;
     private int codigo_postal;
     private String colonia;
     private int numero_casa;
