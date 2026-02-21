@@ -23,7 +23,7 @@ public class Cliente extends Usuario{
     public Cliente() {
     }
 
-    public Cliente(int edad, Date fecha_nacimiento, int codigo_postal, String colonia, int numero_casa, 
+    public Cliente(int edad, LocalDate fecha_nacimiento, int codigo_postal, String colonia, int numero_casa, 
             String calle, int id_usuario, String nombre_usuario, String contrasena, String nombres, 
             String apellidoPaterno, String apellidoMaterno) {
         super(id_usuario, nombre_usuario, contrasena, nombres, apellidoPaterno, apellidoMaterno);
@@ -35,7 +35,7 @@ public class Cliente extends Usuario{
         this.calle = calle;
     }
 
-    public Cliente(int edad, Date fecha_nacimiento, int codigo_postal, String colonia, 
+    public Cliente(int edad, LocalDate fecha_nacimiento, int codigo_postal, String colonia, 
             int numero_casa, String calle, String nombre_usuario, String contrasena, String nombres, 
             String apellidoPaterno, String apellidoMaterno) {
         super(nombre_usuario, contrasena, nombres, apellidoPaterno, apellidoMaterno);
@@ -56,11 +56,11 @@ public class Cliente extends Usuario{
         this.edad = edad;
     }
 
-    public Date getFecha_nacimiento() {
+    public LocalDate getFecha_nacimiento() {
         return fecha_nacimiento;
     }
 
-    public void setFecha_nacimiento(Date fecha_nacimiento) {
+    public void setFecha_nacimiento(LocalDate fecha_nacimiento) {
         this.fecha_nacimiento = fecha_nacimiento;
     }
 
