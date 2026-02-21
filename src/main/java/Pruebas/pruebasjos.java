@@ -4,7 +4,13 @@
  */
 package Pruebas;
 
+import GUIs.VInicioSesion;
 import GUIs.VOpcionesCliente;
+import Negocio.BOs.UsuarioBO;
+import Persistencia.DAO.IUsuarioDAO;
+import Persistencia.DAO.UsuarioDAO;
+import Persistencia.conexion.ConexionBD;
+import Persistencia.conexion.IConexionBD;
 
 /**
  *
@@ -17,10 +23,13 @@ public class pruebasjos {
      */
     public static void main(String[] args) {
         // TODO code application logic here
-        
-        VOpcionesCliente ventana_opciones = new VOpcionesCliente();
-        
-        ventana_opciones.setVisible(true);
+        IConexionBD conexion = new ConexionBD();
+
+        IUsuarioDAO usuarioDAO = new UsuarioDAO(conexion);
+        UsuarioBO usuarioBO = new UsuarioBO(usuarioDAO);
+
+        new VInicioSesion(usuarioBO).setVisible(true);
+
     }
-    
+
 }

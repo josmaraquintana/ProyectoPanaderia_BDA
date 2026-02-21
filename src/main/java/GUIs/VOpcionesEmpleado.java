@@ -6,6 +6,7 @@ package GUIs;
 
 import Componentes.LabelPersonalizado;
 import Componentes.RoundedButton;
+import Negocio.DTOs.EmpleadoDTO;
 import java.awt.*;
 import java.net.URL;
 import javax.swing.ImageIcon;
@@ -17,7 +18,8 @@ import javax.swing.JLabel;
  * @author RAMSES
  */
 public class VOpcionesEmpleado extends JFrame {
-    
+    //Declaracion del DTO
+    private EmpleadoDTO empleado;
     // Declaración de los nuevos botones
     private RoundedButton btn_agregar_producto;
     private RoundedButton btn_agregar_cupon;
@@ -27,7 +29,9 @@ public class VOpcionesEmpleado extends JFrame {
     private LabelPersonalizado lbl_usuario;
     private LabelPersonalizado lbl_nombre_usuario; 
 
-    public VOpcionesEmpleado() {
+    public VOpcionesEmpleado(EmpleadoDTO empleado) {
+        this.empleado = empleado; 
+        
         setTitle("Opciones de Usuario");
         setSize(700, 450); // Ajusté el tamaño para que tenga esa forma rectangular y horizontal
         setLocationRelativeTo(null);

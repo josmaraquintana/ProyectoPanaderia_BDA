@@ -5,6 +5,7 @@
 package Persistencia.dominio;
 
 import Negocio.DTOs.UsuarioDTO;
+import java.sql.Date;
 import java.time.LocalDate;
 
 /**
@@ -14,7 +15,7 @@ import java.time.LocalDate;
 public class Cliente extends Usuario{
     
     private int edad;
-    private LocalDate fecha_nacimiento;
+    private Date fecha_nacimiento;
     private int codigo_postal;
     private String colonia;
     private int numero_casa;
@@ -23,7 +24,7 @@ public class Cliente extends Usuario{
     public Cliente() {
     }
 
-    public Cliente(int edad, LocalDate fecha_nacimiento, int codigo_postal, String colonia, int numero_casa, 
+    public Cliente(int edad, Date fecha_nacimiento, int codigo_postal, String colonia, int numero_casa, 
             String calle, int id_usuario, String nombre_usuario, String contrasena, String nombres, 
             String apellidoPaterno, String apellidoMaterno) {
         super(id_usuario, nombre_usuario, contrasena, nombres, apellidoPaterno, apellidoMaterno);
@@ -35,7 +36,7 @@ public class Cliente extends Usuario{
         this.calle = calle;
     }
 
-    public Cliente(int edad, LocalDate fecha_nacimiento, int codigo_postal, String colonia, 
+    public Cliente(int edad, Date fecha_nacimiento, int codigo_postal, String colonia, 
             int numero_casa, String calle, String nombre_usuario, String contrasena, String nombres, 
             String apellidoPaterno, String apellidoMaterno) {
         super(nombre_usuario, contrasena, nombres, apellidoPaterno, apellidoMaterno);
@@ -56,11 +57,11 @@ public class Cliente extends Usuario{
         this.edad = edad;
     }
 
-    public LocalDate getFecha_nacimiento() {
+    public Date getFecha_nacimiento() {
         return fecha_nacimiento;
     }
 
-    public void setFecha_nacimiento(LocalDate fecha_nacimiento) {
+    public void setFecha_nacimiento(Date fecha_nacimiento) {
         this.fecha_nacimiento = fecha_nacimiento;
     }
 

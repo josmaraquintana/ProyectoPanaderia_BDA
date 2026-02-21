@@ -4,13 +4,15 @@
  */
 package Negocio.BOs;
 
+import Negocio.DTOs.LoginDTO;
 import Negocio.DTOs.UsuarioDTO;
 import NegocioException.NegocioExcepcion;
+import Persistencia.dominio.Usuario;
 
 /**
  *
  * @author josma
  */
 public interface IUsuarioBO {
-    public UsuarioDTO login(String nombre_usuario, String contrasena) throws NegocioExcepcion;
+    public UsuarioDTO login(LoginDTO loginDTO) throws NegocioExcepcion;
 }

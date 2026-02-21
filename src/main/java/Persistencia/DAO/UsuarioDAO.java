@@ -6,6 +6,9 @@ package Persistencia.DAO;
 
 import Negocio.DTOs.*;
 import Persistencia.conexion.IConexionBD;
+import Persistencia.dominio.Cliente;
+import Persistencia.dominio.Empleado;
+import Persistencia.dominio.Usuario;
 import PersistenciaException.PersistenciaExcepcion;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -44,20 +47,40 @@ public class UsuarioDAO implements IUsuarioDAO {
 
     @Override
 
-    public UsuarioDTO buscarUsuarioLogin(String usuario_nombre, String contrasena) throws PersistenciaExcepcion {
-        UsuarioDTO usuario = null;
-        String comandoSQL = "SELECT id_usuario, usuario, contrasena, nombres, apellido_paterno, apellido_materno FROM Usuarios WHERE usuario  = ? and contrasena = ?";
+    public Usuario buscarUsuarioLogin(String usuario_nombre, String contrasena) throws PersistenciaExcepcion {
+        Usuario usuario = null;
+        String comandoSQL = "SELECT u.id_usuario, u.usuario, u.contrasena, u.nombres, u.apellido_paterno, u.apellido_materno, c.id_usuario AS cliente_checar, c.edad, c.fecha_nac, e.id_usuario AS empleado_checar FROM Usuarios u LEFT JOIN Clientes c ON u.id_usuario = c.id_usuario LEFT JOIN Empleados e ON u.id_usuario = e.id_usuario WHERE u.usuario = ? AND u.contrasena = ?";
 
         try (Connection conn = this.conexionBD.crearConexion(); PreparedStatement ps = conn.prepareStatement(comandoSQL)) {
             ps.setString(1, usuario_nombre);
             ps.setString(2, contrasena);
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
-                    usuario = new UsuarioDTO();
-                    usuario.setId(rs.getInt("id_usuario"));
-                    usuario.setNombre_usuario(rs.getString("usuario"));
-                    usuario.setContrasena(rs.getString("contrasena"));
+                    //En caso de que sea un cliente
+                    if (rs.getObject("cliente_checar") != null) {
+
+                        Cliente cliente = new Cliente();
+                        cliente.setId_usuario(rs.getInt("id_usuario"));
+                        cliente.setNombre_usuario(rs.getString("usuario"));
+                        cliente.setEdad(rs.getInt("edad"));
+                        cliente.setFecha_nacimiento(rs.getDate("fecha_nac"));
+
+                        usuario = cliente;
+                    } //En caso de que sea empleado
+                    else if (rs.getObject("empleado_checar") != null) {
+
+                        Empleado empleado = new Empleado();
+                        empleado.setId_usuario(rs.getInt("id_usuario"));
+                        empleado.setNombre_usuario(rs.getString("usuario"));
+                        empleado.setNombres(rs.getString("nombres"));
+                        empleado.setApellidoPaterno(rs.getString("apellido_paterno"));
+                        empleado.setApellidoMaterno(rs.getString("apellido_materno"));
+
+                        usuario = empleado;
+                    }
+
                 }
+
             }
         } catch (SQLException ex) {
             throw new PersistenciaExcepcion("Error al buscar usuario", ex);

@@ -6,6 +6,7 @@ package GUIs;
 
 import Componentes.LabelPersonalizado;
 import Componentes.RoundedButton;
+import Negocio.DTOs.ClienteDTO;
 import java.awt.*;
 import java.awt.Color;
 import java.net.URL;
@@ -19,14 +20,21 @@ import javax.swing.SwingConstants;
  * @author josma
  */
 public class VOpcionesCliente extends JFrame {
+    private ClienteDTO cliente; 
     private RoundedButton btn_pedido;
     private RoundedButton btn_historial;
     private RoundedButton btn_editar_datos;
     private RoundedButton btn_agregar_telefono;
+    private RoundedButton btn_volver;
     private LabelPersonalizado lbl_usuario;
     private LabelPersonalizado lbl_nombre_usuario; 
-    public VOpcionesCliente() {
-        setTitle("GridBagLayout ejemplo");
+    public VOpcionesCliente(ClienteDTO cliente) {
+        
+        //Valor para el cliente
+        this.cliente = cliente; 
+        
+        
+        setTitle("Opciones de Cliente");
         setSize(600, 500);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -51,7 +59,8 @@ public class VOpcionesCliente extends JFrame {
         gbc.gridx = 0; 
         gbc.gridy = 0; 
         add(lbl_usuario, gbc);
-        lbl_nombre_usuario = new LabelPersonalizado("NOMBRE USUARIO", Color.white);
+        lbl_nombre_usuario = new LabelPersonalizado(cliente.getNombre_usuario(), Color.white);
+        lbl_nombre_usuario.setFont(new Font("Monotype Corsiva", Font.ITALIC, 40));
         gbc.gridx = 1;
         gbc.gridy = 0;
         add(lbl_nombre_usuario,gbc);
@@ -79,6 +88,12 @@ public class VOpcionesCliente extends JFrame {
         gbc.gridy = 4;
         btn_agregar_telefono.setPreferredSize(tamano);
         add(btn_agregar_telefono,gbc);
+        btn_volver = new RoundedButton("Volver");
+        gbc.gridx  = 1;
+        gbc.gridy = 5;
+        btn_volver.setPreferredSize(tamano);
+        add(btn_volver,gbc);
+        
         
         //AGREGAR EL LOGO
         JLabel lbl_logo = new JLabel();
@@ -86,8 +101,6 @@ public class VOpcionesCliente extends JFrame {
         gbc.gridy = 0;
         add(lbl_logo, gbc);
         lbl_logo.setPreferredSize(new Dimension(130, 130));
-        lbl_logo.setHorizontalAlignment(SwingConstants.RIGHT);
-
         // Si luego quieres cargar la imagen:
         URL url = getClass().getResource("/img/icon.png");
 
@@ -99,6 +112,10 @@ public class VOpcionesCliente extends JFrame {
             lbl_logo.setIcon(new ImageIcon(img));
         }
         
+        btn_volver.addActionListener(e -> {
+            new VInicioSesion(null).setVisible(true);
+            this.dispose();
+        });
         
 
     }

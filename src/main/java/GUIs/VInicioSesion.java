@@ -6,21 +6,30 @@ package GUIs;
 
 import Componentes.PlaceholderTextField;
 import Componentes.RoundedButton;
+import Negocio.BOs.UsuarioBO;
+import Negocio.DTOs.ClienteDTO;
+import Negocio.DTOs.EmpleadoDTO;
+import Negocio.DTOs.LoginDTO;
+import Negocio.DTOs.UsuarioDTO;
+import Persistencia.DAO.UsuarioDAO;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.net.URL;
 
-
 /**
  *
  * @author RAMSES
  */
-public class VInicioSesion extends JFrame{
-    
-    public VInicioSesion(JFrame frame) {
+public class VInicioSesion extends JFrame {
+    private UsuarioBO usuarioBO; 
+    public VInicioSesion(UsuarioBO usuarioBO) {
+        
+        this.usuarioBO = usuarioBO;
+        
+        
         setTitle("Inicio de sesión");
-        setSize(800, 450);
+        setSize(600, 450);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
@@ -75,13 +84,13 @@ public class VInicioSesion extends JFrame{
         JPanel botonesPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 10));
         botonesPanel.setBackground(fondo);
 
-        RoundedButton btnEntrar = new RoundedButton("Entrar");
-        RoundedButton btnRegistrar = new RoundedButton("Registrarse");
-        RoundedButton btnExpress = new RoundedButton("Pedido Express");
+        RoundedButton btn_entrar = new RoundedButton("Entrar");
+        RoundedButton btn_registrar = new RoundedButton("Registrarse");
+        RoundedButton btn_express = new RoundedButton("Pedido Express");
 
-        botonesPanel.add(btnEntrar);
-        botonesPanel.add(btnRegistrar);
-        botonesPanel.add(btnExpress);
+        botonesPanel.add(btn_entrar);
+        botonesPanel.add(btn_registrar);
+        botonesPanel.add(btn_express);
 
         mainPanel.add(topPanel, BorderLayout.NORTH);
         mainPanel.add(formPanel, BorderLayout.CENTER);
@@ -91,10 +100,46 @@ public class VInicioSesion extends JFrame{
         add(botonesPanel, BorderLayout.SOUTH);
 
         setVisible(true);
+
+        /**
+         * Evento para el boton de inicio de sesión, solo se esta trabaja con LoginDTO que maneja usuario
+         * y contraseña.
+         * Con instanceof revisamos si existe el usuario en alguna de las entidades hijas para poder hacer el
+         * redireccionamiento
+         */
+        btn_entrar.addActionListener(e -> {
+            
+            try {
+               LoginDTO loginDTO = new LoginDTO(txtUsuario.getText().trim(), txtContrasena.getText());
+               
+               //Llamamos al BO
+               UsuarioDTO usuario = usuarioBO.login(loginDTO);
+               
+               /**
+                * Aqui ocurrre el direccionamiento, que dependiendo de lo que se reciba en los txt
+                * puede ser cliente o empleado
+                */
+               
+               if(usuario instanceof ClienteDTO){
+                   //Hacemos casting o conversion
+                   VOpcionesCliente ventana_op_cliente = new VOpcionesCliente((ClienteDTO) usuario);
+                   ventana_op_cliente.setVisible(true);
+                   this.dispose();
+               }else if(usuario instanceof EmpleadoDTO){
+                   VOpcionesEmpleado ventana_op_empleado = new VOpcionesEmpleado((EmpleadoDTO) usuario);
+                   ventana_op_empleado.setVisible(true);
+                   this.dispose();
+               }else{
+                   JOptionPane.showMessageDialog(null,"Usuario o contraseña incorrectos");
+                   txtUsuario.setText("");
+                   txtContrasena.setText("");
+                   txtUsuario.requestFocus();
+               }
+               
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(null, "Usuario inválido");
+            }
+        });
     }
 
-    
 }
-
-    
-
