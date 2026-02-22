@@ -10,4 +10,11 @@ package Validadores;
  */
 public class Validaciones {
     
+    public static boolean validarNombres(String texto){
+        return texto.matches("[a-zA-Z]+");
+    }
+    
+    public static boolean validarEnteros(String texto){
+        return texto.matches("\\d+");
+    }
 }
