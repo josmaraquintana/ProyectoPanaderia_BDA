@@ -119,7 +119,7 @@ public class VRegistrarCliente extends JFrame {
 
         btnRegistrar.addActionListener(e -> {
             try {
-                
+
                 if (!Validaciones.validarNombres(nombreField.getText())) {
                     JOptionPane.showMessageDialog(this, "Nombre inválido");
                     return;
@@ -134,24 +134,23 @@ public class VRegistrarCliente extends JFrame {
                     JOptionPane.showMessageDialog(this, "Apellido paterno inválido");
                     return;
                 }
-                
-                if(!Validaciones.validarEnteros(telefonoField.getText())){
+
+                if (!Validaciones.validarEnteros(telefonoField.getText())) {
                     JOptionPane.showMessageDialog(this, "Telefono inválido");
                     return;
                 }
-                    
-                if(!Validaciones.validarEnteros(cpField.getText())){
+
+                if (!Validaciones.validarEnteros(cpField.getText())) {
                     JOptionPane.showMessageDialog(this, "Codigo postal inválido");
                     return;
                 }
-                
-                if(!Validaciones.validaFecha(fechaField.getText())){
+
+                if (!Validaciones.validaFecha(fechaField.getText())) {
                     JOptionPane.showMessageDialog(this, "Fecha de nacimiento inválida");
                     return;
                 }
-                
-                
-                if(!Validaciones.validarEnteros(numeroCasaField.getText())){
+
+                if (!Validaciones.validarEnteros(numeroCasaField.getText())) {
                     JOptionPane.showMessageDialog(this, "Numero de casa inválido");
                     return;
                 }
@@ -163,6 +162,11 @@ public class VRegistrarCliente extends JFrame {
 
                 if (!cpField.getText().matches("\\d{5}")) {
                     JOptionPane.showMessageDialog(this, "Código postal inválido");
+                    return;
+                }
+
+                if (!Validaciones.validaContrasena(contrasenaField.getText())) {
+                    JOptionPane.showMessageDialog(this, "La contraseña debe tener al menos 6 caracteres, una letra y un numero");
                     return;
                 }
 

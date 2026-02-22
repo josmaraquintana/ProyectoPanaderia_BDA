@@ -21,4 +21,9 @@ public class Validaciones {
     public static boolean validaFecha(String texto){
         return texto.matches("\\d{2}-\\d{2}-\\d{4}");
     }
+    
+    public static boolean validaContrasena(String texto){
+       return texto.matches("^(?=.*[A-Za-z])(?=.*\\d).{6,}$");
 }
+    }
+
