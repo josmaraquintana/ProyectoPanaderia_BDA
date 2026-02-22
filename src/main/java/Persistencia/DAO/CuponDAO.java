@@ -4,7 +4,15 @@
  */
 package Persistencia.DAO;
 
+import Negocio.DTOs.CuponDTO;
 import Persistencia.conexion.IConexionBD;
+import Persistencia.dominio.Cupon;
+import PersistenciaException.PersistenciaExcepcion;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.logging.Logger;
 
 /**
@@ -32,5 +40,48 @@ public class CuponDAO implements ICuponDAO {
      */
     public CuponDAO(IConexionBD conexionBD) {
         this.conexionBD = conexionBD;
+    }
+
+    @Override
+    public CuponDTO obtenerCupon(int codigo) throws PersistenciaExcepcion {
+        String comando = """
+                         SELECT id_cupon, id_pedido, nombre, descuento, vigencia, max_uso FROM cupones WHERE id_cupon = ? AND max_uso > 0;
+                         """;
+        //Comando para actualizar el cupon
+        String actualizar = """
+                            UPDATE Cupones 
+                            SET max_uso = max_uso - 1 
+                            WHERE id_cupon = ?;
+                            """;
+        
+        try(Connection conn = this.conexionBD.crearConexion(); PreparedStatement ps = conn.prepareStatement(comando);
+                PreparedStatement ps_actualizar = conn.prepareStatement(actualizar)){
+            ps.setInt(1, codigo);
+            try(ResultSet resul = ps.executeQuery()){
+                if (resul.next()) {
+                    CuponDTO cupon_obtenido = new CuponDTO();
+                    
+                    cupon_obtenido.setNombre(resul.getString("nombre"));
+                    cupon_obtenido.setDesc(resul.getDouble("descuento"));
+                    cupon_obtenido.setVigencia(resul.getObject("vigencia", LocalDate.class));
+                    cupon_obtenido.setMax_usos(resul.getInt("max_uso"));
+                    
+                    // 2. Configuramos el ID para el UPDATE y lo ejecutamos
+                    ps_actualizar.setInt(1, codigo); // Le pasamos el mismo código
+                    ps_actualizar.executeUpdate();   // <--- ESTA ES LA LÍNEA QUE HACE LA MAGIA
+                    
+                    // 3. Retornamos el cupón real en lugar de null
+                    return cupon_obtenido;
+                    
+                }
+            }
+            return null;
+            
+            
+        }catch(SQLException ex){
+            LOG.warning("No se encontro ningun cupon");
+            throw new PersistenciaExcepcion("Hubo un error al querer consultar los cupones.", ex);
+        }
+        
     }
 }

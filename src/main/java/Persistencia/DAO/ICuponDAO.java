@@ -4,10 +4,15 @@
  */
 package Persistencia.DAO;
 
+import Negocio.DTOs.CuponDTO;
+import PersistenciaException.PersistenciaExcepcion;
+
 /**
  *
  * @author josma
  */
 public interface ICuponDAO {
+    
+    public CuponDTO obtenerCupon(int codigo) throws PersistenciaExcepcion;
     
 }

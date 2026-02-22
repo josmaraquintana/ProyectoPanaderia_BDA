@@ -39,6 +39,15 @@ public class Cupon {
         this.max_uso = max_uso;
     }
 
+    public Cupon(String nombre_cupon, double descuento, LocalDate vigencia, int max_uso) {
+        this.nombre_cupon = nombre_cupon;
+        this.descuento = descuento;
+        this.vigencia = vigencia;
+        this.max_uso = max_uso;
+    }
+    
+    
+
     public int getId_cupon() {
         return id_cupon;
     }

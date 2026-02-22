@@ -48,7 +48,7 @@ public class ProductoDAO implements IProductoDAO{
         List<ProductoDTO> lista_productos = new ArrayList<>();
         //comando para sql
         String comandoSQL = """
-                            SELECT nombre_producto, descripcion, estado, precio FROM productos;
+                            SELECT nombre_producto, descripcion, estado, precio FROM productos WHERE estado = 'Disponible';
                             """;
         
         try(Connection conn = this.conexionBD.crearConexion(); PreparedStatement ps = conn.prepareStatement(comandoSQL)){
@@ -69,6 +69,7 @@ public class ProductoDAO implements IProductoDAO{
             }
             
         }catch(SQLException ex){
+            LOG.warning("No se encontraron productos.");
             throw new PersistenciaExcepcion("Hubo un error al lista los productos", ex);
         }
         return lista_productos;
