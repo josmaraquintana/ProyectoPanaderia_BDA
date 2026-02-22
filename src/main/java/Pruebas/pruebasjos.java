@@ -4,8 +4,7 @@
  */
 package Pruebas;
 
-import GUIs.VInicioSesion;
-import GUIs.VOpcionesCliente;
+import GUIs.*;
 import Negocio.BOs.UsuarioBO;
 import Persistencia.DAO.IUsuarioDAO;
 import Persistencia.DAO.UsuarioDAO;

@@ -68,7 +68,7 @@ public class VOpcionesCliente extends JFrame {
         //--> para el tamaño de los botones 
         Dimension tamano = new Dimension(200, 40);
         //CONFIGURAR BOTONES
-        btn_pedido = new RoundedButton("Hacer pedido");
+        btn_pedido = new RoundedButton("Agregar pedido");
         gbc.gridx = 1;  // columna del centro
         gbc.gridy = 1;  // segunda fila
         btn_pedido.setPreferredSize(tamano);
@@ -119,6 +119,15 @@ public class VOpcionesCliente extends JFrame {
         btn_historial.addActionListener(e->{
             new VHistorial(cliente).setVisible(true);
             this.dispose();
+        });
+        
+        btn_editar_datos.addActionListener(e->{
+            new VEditarDatos(cliente).setVisible(true);
+            this.dispose();
+        });
+        
+        btn_agregar_telefono.addActionListener(e->{
+            new VAgregarTelefonos(cliente).setVisible(true);
         });
         
         btn_volver.addActionListener(e -> {

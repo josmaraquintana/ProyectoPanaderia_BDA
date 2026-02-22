@@ -5,6 +5,7 @@
 package GUIs;
 
 import Componentes.*;
+import Negocio.DTOs.ClienteDTO;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
@@ -15,8 +16,9 @@ import java.net.URL;
  * @author RAMSES
  */
 public class VAgregarTelefonos extends JFrame{
-    
-    public VAgregarTelefonos() {
+    private ClienteDTO cliente;
+    public VAgregarTelefonos(ClienteDTO cliente) {
+        this.cliente  = cliente; 
         setTitle("Agregar teléfonos");
         setSize(700, 520);
         setLocationRelativeTo(null);

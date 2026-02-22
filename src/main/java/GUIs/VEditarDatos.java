@@ -7,6 +7,7 @@ package GUIs;
 import Componentes.LabelPersonalizado;
 import Componentes.PlaceholderTextField;
 import Componentes.RoundedButton;
+import Negocio.DTOs.ClienteDTO;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
@@ -17,7 +18,9 @@ import java.net.URL;
  * @author RAMSES
  */
 public class VEditarDatos extends JFrame{
-    public VEditarDatos() {
+    private ClienteDTO cliente; 
+    public VEditarDatos(ClienteDTO cliente) {
+        this.cliente = cliente; 
         setTitle("Editar datos");
         setSize(700, 520);
         setLocationRelativeTo(null);
