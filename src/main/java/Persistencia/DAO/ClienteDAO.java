@@ -60,7 +60,7 @@ public class ClienteDAO implements IClienteDAO {
 
     @Override
     public void registrarUsuario(ClienteDTO cliente) throws PersistenciaExcepcion {
-        String comandoSQL = "{CALL registrar_cliente(?, ?, ?, ?, ?, ?, ?)}";
+        String comandoSQL = "{CALL registrar_cliente(?,?,?,?,?,?,?,?,?,?,?)}";
 
         try (Connection conn = this.conexionBD.crearConexion(); CallableStatement cs = conn.prepareCall(comandoSQL)) {
             cs.setString(1, cliente.getNombre_usuario());
@@ -69,11 +69,17 @@ public class ClienteDAO implements IClienteDAO {
             cs.setString(4, cliente.getApellido_paterno());
             cs.setString(5, cliente.getApellido_materno());
             cs.setInt(6, cliente.getEdad());
-            cs.setDate(7, new java.sql.Date(cliente.getFecha_nacimiento().getTime()));
-
+            cs.setDate(7, cliente.getFecha_nacimiento());
+            cs.setString(8, cliente.getCalle());
+            cs.setInt(9, cliente.getNumero_casa());
+            cs.setString(10, cliente.getColonia());
+            cs.setInt(11, cliente.getCodigo_postal());
+           
             cs.execute();
+            
         } catch (SQLException ex) {
-            throw new PersistenciaExcepcion("Error al verificar cliente", ex);
+            ex.printStackTrace();
+                throw new PersistenciaExcepcion("Error al registrar cliente: " + ex.getMessage(), ex);
         }
 
     }

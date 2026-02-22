@@ -10,6 +10,8 @@ import Negocio.BOs.ClienteBO;
 import Negocio.DTOs.ClienteDTO;
 import Persistencia.DAO.ClienteDAO;
 import Persistencia.DAO.IClienteDAO;
+import Persistencia.conexion.ConexionBD;
+import Persistencia.conexion.IConexionBD;
 import Validadores.Validaciones;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -36,7 +38,7 @@ public class VRegistrarCliente extends JFrame {
     private JTextField calleField;
     private JTextField cpField;
     private JTextField edadField;
-    private JTextField telefonoField;
+    private JTextField nombre_usuarioField;
     private JTextField contrasenaField;
     private ClienteBO clienteBO;
     
@@ -89,6 +91,7 @@ public class VRegistrarCliente extends JFrame {
         cpField = crearCampo("Código postal");
         edadField = crearCampo("Edad");
         contrasenaField = crearCampo("Contrasena");
+        nombre_usuarioField = crearCampo("Nombre de Usuario");
 
         // Fila 1
         formPanel.add(nombreField);
@@ -96,19 +99,19 @@ public class VRegistrarCliente extends JFrame {
         formPanel.add(new JLabel());
 
         // Fila 2
-        formPanel.add(apellidoMaternoField);
+        formPanel.add(apellidoPaternoField);
         formPanel.add(numeroCasaField);
         formPanel.add(coloniaField);
 
         // Fila 3
-        formPanel.add(apellidoPaternoField);
+        formPanel.add(apellidoMaternoField);
         formPanel.add(calleField);
         formPanel.add(cpField);
 
         // Fila 4
         formPanel.add(edadField);
         formPanel.add(contrasenaField);
-        formPanel.add(new JLabel());
+        formPanel.add(nombre_usuarioField);
         JPanel botonesPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 30, 20));
         botonesPanel.setBackground(fondo);
 
@@ -134,26 +137,21 @@ public class VRegistrarCliente extends JFrame {
                     return;
                 }
 
-                if (!Validaciones.validarNombres(apellidoMaternoField.getText())) {
-                    JOptionPane.showMessageDialog(this, "Apellido materno inválido");
-                    return;
-                }
-
                 if (!Validaciones.validarNombres(apellidoPaternoField.getText())) {
                     JOptionPane.showMessageDialog(this, "Apellido paterno inválido");
                     return;
                 }
-
-                if (!Validaciones.validarEnteros(cpField.getText())) {
-                    JOptionPane.showMessageDialog(this, "Codigo postal inválido");
+                                
+                if (!Validaciones.validarNombres(apellidoMaternoField.getText())) {
+                    JOptionPane.showMessageDialog(this, "Apellido materno inválido");
                     return;
                 }
-
+                
                 if (!Validaciones.validaFecha(fechaField.getText())) {
                     JOptionPane.showMessageDialog(this, "Fecha de nacimiento inválida");
                     return;
                 }
-
+                                
                 if (!Validaciones.validarEnteros(numeroCasaField.getText())) {
                     JOptionPane.showMessageDialog(this, "Numero de casa inválido");
                     return;
@@ -181,13 +179,19 @@ public class VRegistrarCliente extends JFrame {
             cliente.setApellido_paterno(apellidoPaternoField.getText());
             cliente.setApellido_materno(apellidoMaternoField.getText());
             cliente.setContrasena(contrasenaField.getText());
+            cliente.setCalle(calleField.getText());
+            cliente.setNumero_casa(Integer.parseInt(numeroCasaField.getText()));
+            cliente.setColonia(coloniaField.getText());
+            cliente.setCodigo_postal(Integer.parseInt(cpField.getText()));
+            cliente.setNombre_usuario(nombre_usuarioField.getText());
 
             clienteBO.registrarCliente(cliente);
 
                 JOptionPane.showMessageDialog(this, "Registro exitoso");
 
             } catch (Exception ex) {
-                JOptionPane.showMessageDialog(this, "Error en el registro");
+                ex.printStackTrace();
+                JOptionPane.showMessageDialog(this, ex.getMessage());
             }
         });
     }
@@ -201,7 +205,12 @@ public class VRegistrarCliente extends JFrame {
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
-            new VInicioSesion(null).setVisible(true);
+           
+        IConexionBD conexion = new ConexionBD();
+        IClienteDAO clienteDAO = new ClienteDAO(conexion);
+        ClienteBO clienteBO = new ClienteBO(clienteDAO);
+
+        new VRegistrarCliente(clienteBO).setVisible(true);
         });
     }
 
