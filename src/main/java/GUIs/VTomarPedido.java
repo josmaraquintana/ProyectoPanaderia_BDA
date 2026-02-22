@@ -6,6 +6,7 @@ package GUIs;
 
 import Componentes.*;
 import Negocio.BOs.PedidoProgramadoBO;
+import Negocio.DTOs.ClienteDTO;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.DocumentEvent;
@@ -24,10 +25,10 @@ public class VTomarPedido extends JFrame {
     private JPanel panelLista;
     private List<PanelProducto> listaTodosLosProductos;
     private PedidoProgramadoBO pedidoProgra;
+    private ClienteDTO cliente;
     
-    
-    public VTomarPedido() {
-        
+    public VTomarPedido(ClienteDTO cliente) {
+        this.cliente = cliente; 
         listaTodosLosProductos = null;
         setTitle("Catálogo de Productos");
         // 1. Reducimos el tamaño de la ventana (antes 875x650)
@@ -193,10 +194,11 @@ public class VTomarPedido extends JFrame {
         panelLista.revalidate();
         panelLista.repaint();
     }
-
+/**
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
-            new VTomarPedido().setVisible(true);
+            new VTomarPedido(cliente).setVisible(true);
         });
     }
+    * */
 }

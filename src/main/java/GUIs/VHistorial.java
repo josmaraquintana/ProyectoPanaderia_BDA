@@ -8,6 +8,7 @@ import Componentes.LabelPersonalizado;
 import Componentes.PlaceholderTextField;
 import Componentes.RoundedButton;
 import Componentes.TablaSimplePanel;
+import Negocio.DTOs.ClienteDTO;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
@@ -18,7 +19,9 @@ import java.net.URL;
  * @author RAMSES
  */
 public class VHistorial extends JFrame{
-    public VHistorial() {
+    private ClienteDTO cliente;
+    public VHistorial(ClienteDTO cliente) {
+        this.cliente = cliente; 
         setTitle("Historial");
         setSize(700, 560);
         setLocationRelativeTo(null);

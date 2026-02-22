@@ -27,10 +27,6 @@ public class ProductoBO implements IProductoBO {
     
     @Override 
     public List<PanelProductoDTO> obtenerListaProductos() throws NegocioExcepcion{
-        try{
-            List<Producto> lista_producto = null
-        }catch(PersistenciaExcepcion ex){
-            
+        return null; 
         }
-    }
 }

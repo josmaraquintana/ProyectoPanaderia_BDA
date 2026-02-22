@@ -111,6 +111,15 @@ public class VOpcionesCliente extends JFrame {
             Image img = icono.getImage().getScaledInstance(130, 130, Image.SCALE_SMOOTH);
             lbl_logo.setIcon(new ImageIcon(img));
         }
+        btn_pedido.addActionListener(e->{
+            new VTomarPedido(cliente).setVisible(true);
+            this.dispose();
+        });
+        
+        btn_historial.addActionListener(e->{
+            new VHistorial(cliente).setVisible(true);
+            this.dispose();
+        });
         
         btn_volver.addActionListener(e -> {
             new VInicioSesion(null).setVisible(true);
