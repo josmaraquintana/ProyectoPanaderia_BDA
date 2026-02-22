@@ -7,6 +7,7 @@ package Persistencia.DAO;
 import Negocio.DTOs.*;
 import Persistencia.conexion.IConexionBD;
 import PersistenciaException.PersistenciaExcepcion;
+import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -55,6 +56,26 @@ public class ClienteDAO implements IClienteDAO {
         } catch (SQLException ex) {
             throw new PersistenciaExcepcion("Error al verificar cliente", ex);
         }
+    }
+
+    @Override
+    public void registrarUsuario(ClienteDTO cliente) throws PersistenciaExcepcion {
+        String comandoSQL = "{CALL registrar_cliente(?, ?, ?, ?, ?, ?, ?)}";
+
+        try (Connection conn = this.conexionBD.crearConexion(); CallableStatement cs = conn.prepareCall(comandoSQL)) {
+            cs.setString(1, cliente.getNombre_usuario());
+            cs.setString(2, cliente.getContrasena());
+            cs.setString(3, cliente.getNombres());
+            cs.setString(4, cliente.getApellido_paterno());
+            cs.setString(5, cliente.getApellido_materno());
+            cs.setInt(6, cliente.getEdad());
+            cs.setDate(7, new java.sql.Date(cliente.getFecha_nacimiento().getTime()));
+
+            cs.execute();
+        } catch (SQLException ex) {
+            throw new PersistenciaExcepcion("Error al verificar cliente", ex);
+        }
+
     }
 
 }

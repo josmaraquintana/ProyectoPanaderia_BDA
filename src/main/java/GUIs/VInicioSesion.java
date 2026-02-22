@@ -140,6 +140,21 @@ public class VInicioSesion extends JFrame {
                 JOptionPane.showMessageDialog(null, "Usuario inválido");
             }
         });
+        
+        /*
+        /Boton para hacer el registro de usuario, 
+        /
+        */
+        btn_registrar.addActionListener(e ->{
+            
+            try(
+                 
+                    )
+                
+                
+                }
+        
+        });
     }
 
 }

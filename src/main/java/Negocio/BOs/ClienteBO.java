@@ -16,7 +16,9 @@ public class ClienteBO implements IClienteBO{
     private final IClienteDAO clienteDAO; //para conectarnos a la capa de datos
     private final Logger LOG = Logger.getLogger(ClienteBO.class.getName());
 
-    public ClienteBO(IClienteDAO cliente) {
-        this.clienteDAO = cliente; //inyeccion de dependencias
+    public ClienteBO(IClienteDAO clienteDAO) {
+        this.clienteDAO = clienteDAO; //inyeccion de dependencias
     }
+    
+    public clienteDTO registro()
 }

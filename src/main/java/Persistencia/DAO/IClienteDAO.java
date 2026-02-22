@@ -13,4 +13,7 @@ import PersistenciaException.PersistenciaExcepcion;
  */
 public interface IClienteDAO {
     public boolean clienteExiste(int id_usuario) throws PersistenciaExcepcion;
+    
+    public void registrarUsuario(ClienteDTO cliente) throws PersistenciaExcepcion;
 }
+
