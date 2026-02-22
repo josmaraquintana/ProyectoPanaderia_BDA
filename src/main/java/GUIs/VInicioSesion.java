@@ -145,16 +145,16 @@ public class VInicioSesion extends JFrame {
         /Boton para hacer el registro de usuario, 
         /
         */
-        btn_registrar.addActionListener(e ->{
-            
-            try(
-                 
-                    )
-                
-                
-                }
+//        btn_registrar.addActionListener(e ->{
+//            
+//            try(
+//                 
+//                    )
+//                
+//                
+//                }
         
-        });
+//        });
     }
 
 }

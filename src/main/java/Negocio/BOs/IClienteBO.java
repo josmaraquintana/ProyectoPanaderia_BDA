@@ -4,10 +4,14 @@
  */
 package Negocio.BOs;
 
+import Negocio.DTOs.ClienteDTO;
+import NegocioException.NegocioExcepcion;
+
 /**
  *
  * @author josma
  */
 public interface IClienteBO {
     
+    public void registrarCliente(ClienteDTO cliente) throws NegocioExcepcion;
 }
