@@ -83,8 +83,8 @@ public class VHistorial extends JFrame {
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.weightx = 1.0;
 
-        txtFechaInicio = new PlaceholderTextField("Fecha inicio");
-        txtFechaFin = new PlaceholderTextField("Fecha fin");
+        txtFechaInicio = new PlaceholderTextField("Inicio YYYY-MM-DD");
+        txtFechaFin = new PlaceholderTextField("Fin YYYY-MM-DD");
         txtEstado = new PlaceholderTextField("Estado");
 
         txtFechaInicio.setPreferredSize(new Dimension(180, 40));
@@ -168,7 +168,7 @@ public class VHistorial extends JFrame {
         setVisible(true);
 
         btnSalir.addActionListener(e -> {
-            new VOpcionesEmpleado(null).setVisible(true);
+            new VOpcionesCliente(pedidoBO,cliente).setVisible(true);
             this.dispose();
         });
 
