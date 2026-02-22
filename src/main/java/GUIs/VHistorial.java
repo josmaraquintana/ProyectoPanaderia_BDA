@@ -196,19 +196,28 @@ public class VHistorial extends JFrame {
 
                 List<PedidoDTO> lista = pedidoBO.consultarHistorial(fecha_inicio, fecha_fin, tipo_pedido, estado_pedido);
 
+                if (lista.isEmpty()) {
+                    JOptionPane.showMessageDialog(this,
+                            "No se encontraron pedidos con esos filtros",
+                            "Aviso",
+                            JOptionPane.INFORMATION_MESSAGE);
+                    tablaPedidos.limpiar();
+                    return;
+                }
+
                 actualizarTabla(lista);
             } catch (NegocioExcepcion ex) {
 
-                JOptionPane.showMessageDialog(this,ex.getMessage(),"Error",JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             } catch (IllegalArgumentException ex) {
-                JOptionPane.showMessageDialog(this,"Estado inválido","Error",JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Estado inválido", "Error", JOptionPane.ERROR_MESSAGE);
             }
         });
     }
 
     private void actualizarTabla(List<PedidoDTO> lista) {
 
-        tablaPedidos.limpiar(); // si tienes este método
+        tablaPedidos.limpiar();
 
         for (PedidoDTO pedido : lista) {
 
