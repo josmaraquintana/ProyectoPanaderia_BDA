@@ -5,6 +5,7 @@
 package Negocio.BOs;
 
 import Negocio.DTOs.PanelProductoDTO;
+import Negocio.DTOs.ProductoDTO;
 import NegocioException.NegocioExcepcion;
 import Persistencia.DAO.*;
 import Persistencia.dominio.Producto;
@@ -26,7 +27,18 @@ public class ProductoBO implements IProductoBO {
     
     
     @Override 
-    public List<PanelProductoDTO> obtenerListaProductos() throws NegocioExcepcion{
-        return null; 
+    public List<ProductoDTO> obtenerListaProductos() throws NegocioExcepcion{
+            try{
+                List<ProductoDTO> lista_producto = productoDAO.obtenerListaProductos();
+                if (lista_producto == null) {
+                    LOG.warning("La lista de los productos regreso vacia");
+                    throw new NegocioExcepcion("La lista de los productos esta vacia");
+                }
+                
+                return lista_producto;
+            }catch(PersistenciaExcepcion ex){
+                LOG.warning("Paso un error al querer regresar la lista de productos");
+                throw new NegocioExcepcion("Hubo un error al querer obtener la lista.");
+            }
         }
 }

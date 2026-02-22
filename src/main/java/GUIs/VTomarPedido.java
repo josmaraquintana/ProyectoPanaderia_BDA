@@ -5,8 +5,11 @@
 package GUIs;
 
 import Componentes.*;
-import Negocio.BOs.PedidoProgramadoBO;
+import Negocio.BOs.IProductoBO;
 import Negocio.DTOs.ClienteDTO;
+import Negocio.DTOs.ProductoDTO;
+import Negocio.fabrica.FabricaBOs;
+import NegocioException.NegocioExcepcion;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.DocumentEvent;
@@ -23,13 +26,25 @@ import java.util.List;
 public class VTomarPedido extends JFrame {
 
     private JPanel panelLista;
-    private List<PanelProducto> listaTodosLosProductos;
-    private PedidoProgramadoBO pedidoProgra;
-    private ClienteDTO cliente;
+    private List<ProductoDTO> listaTodosLosProductos;
+    private static ClienteDTO cliente;
+    private IProductoBO productoBO;
+    private FabricaBOs fabricaBO;
     
     public VTomarPedido(ClienteDTO cliente) {
         this.cliente = cliente; 
-        listaTodosLosProductos = null;
+        fabricaBO = new FabricaBOs();
+        productoBO = fabricaBO.obtenerProductoBO();
+        listaTodosLosProductos = new ArrayList<>();
+        
+        try{
+            listaTodosLosProductos = productoBO.obtenerListaProductos();
+        }catch(NegocioExcepcion ex){
+            System.out.println("Error al cargar los productos en la lista.");
+        }
+        
+        
+        
         setTitle("Catálogo de Productos");
         // 1. Reducimos el tamaño de la ventana (antes 875x650)
         setSize(805, 590);
@@ -54,17 +69,7 @@ public class VTomarPedido extends JFrame {
         scrollPane.getViewport().setOpaque(false);
         scrollPane.setBorder(BorderFactory.createEmptyBorder());
         scrollPane.getVerticalScrollBar().setUnitIncrement(16);
-
-        ButtonGroup grupoSeleccion = new ButtonGroup();
-
-        listaTodosLosProductos = new ArrayList<>();
-        // Reduje un poco el espacio vertical entre productos (antes 15, ahora 10) SON EJEMPLOS
-        listaTodosLosProductos.add(new PanelProducto("Sapito", "Disponible", "Pan suave y esponjoso, relleno de crema dulce...", "$15.00", grupoSeleccion));
-        listaTodosLosProductos.add(new PanelProducto("Pan integral", "Disponible", "Pan elaborado con harina integral...", "$10.00", grupoSeleccion));
-        listaTodosLosProductos.add(new PanelProducto("Dona de chocolate", "Disponible", "Dona esponjosa y fresca, bañada con chocolate...", "$17.00", grupoSeleccion));
-        listaTodosLosProductos.add(new PanelProducto("Cochito", "Disponible", "Pan dulce de forma enrollada...", "$17.00", grupoSeleccion));
-        listaTodosLosProductos.add(new PanelProducto("Concha de vainilla", "Disponible", "Clásica concha mexicana...", "$12.00", grupoSeleccion));
-        
+       
         //ESTE METODO SE USA PARA ACTUALIZAR LA LISTA QUE APARECE EN LA INTERFAZ
         actualizarListaProductos("");
 
@@ -183,10 +188,13 @@ public class VTomarPedido extends JFrame {
     private void actualizarListaProductos(String textoBusqueda) {
         panelLista.removeAll();
         String busqueda = textoBusqueda.toLowerCase();
-
-        for (PanelProducto p : listaTodosLosProductos) {
+        ButtonGroup grupoSeleccion = new ButtonGroup();
+        for (ProductoDTO p : listaTodosLosProductos) {
             if (p.getNombre().toLowerCase().contains(busqueda)) {
-                panelLista.add(p);
+                
+                PanelProducto panel_producto = new PanelProducto(p.getNombre(), p.getEstado(), p.getDescripcion(), ""+p.getPrecio(), grupoSeleccion);
+
+                panelLista.add(panel_producto);
                 // Reduje la separación entre los cuadros café a 10px
                 panelLista.add(Box.createVerticalStrut(10)); 
             }
@@ -194,11 +202,11 @@ public class VTomarPedido extends JFrame {
         panelLista.revalidate();
         panelLista.repaint();
     }
-/**
+
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
             new VTomarPedido(cliente).setVisible(true);
         });
     }
-    * */
+    
 }

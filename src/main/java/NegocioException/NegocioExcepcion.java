@@ -17,6 +17,10 @@ public class NegocioExcepcion extends Exception {
     public NegocioExcepcion() {
     }
 
+    public NegocioExcepcion(String message) {
+        super(message);
+    }
+
     /**
      * Constructs an instance of <code>NegocioExcepcion</code> with the
      * specified detail message.
@@ -26,4 +30,6 @@ public class NegocioExcepcion extends Exception {
     public NegocioExcepcion(String message, Throwable cause) {
         super(message, cause);
     }
+    
+    
 }

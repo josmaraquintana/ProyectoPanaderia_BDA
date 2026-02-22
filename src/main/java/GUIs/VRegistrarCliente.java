@@ -105,5 +105,11 @@ public class VRegistrarCliente extends JFrame {
         return campo;
     }
     
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> {
+            new VRegistrarCliente().setVisible(true);
+        });
+    }
+    
     
 }
