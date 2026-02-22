@@ -80,7 +80,7 @@ public class VOpcionesEmpleado extends JFrame {
         
         
         btn_volver.addActionListener(e ->{
-            new VInicioSesion(null).setVisible(true);
+            new VInicioSesion(null,null).setVisible(true);
             this.dispose();
         });
         

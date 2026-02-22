@@ -6,6 +6,7 @@ package GUIs;
 
 import Componentes.PlaceholderTextField;
 import Componentes.RoundedButton;
+import Negocio.BOs.PedidoBO;
 import Negocio.BOs.UsuarioBO;
 import Negocio.DTOs.ClienteDTO;
 import Negocio.DTOs.EmpleadoDTO;
@@ -23,9 +24,11 @@ import java.net.URL;
  */
 public class VInicioSesion extends JFrame {
     private UsuarioBO usuarioBO; 
-    public VInicioSesion(UsuarioBO usuarioBO) {
+    private PedidoBO pedido;
+    public VInicioSesion(PedidoBO pedido,UsuarioBO usuarioBO) {
         
         this.usuarioBO = usuarioBO;
+        this.pedido = pedido; 
         
         
         setTitle("Inicio de sesión");
@@ -122,7 +125,7 @@ public class VInicioSesion extends JFrame {
                
                if(usuario instanceof ClienteDTO){
                    //Hacemos casting o conversion
-                   VOpcionesCliente ventana_op_cliente = new VOpcionesCliente((ClienteDTO) usuario);
+                   VOpcionesCliente ventana_op_cliente = new VOpcionesCliente(pedido,(ClienteDTO) usuario);
                    ventana_op_cliente.setVisible(true);
                    this.dispose();
                }else if(usuario instanceof EmpleadoDTO){

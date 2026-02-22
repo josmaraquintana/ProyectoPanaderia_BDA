@@ -48,6 +48,10 @@ public class TablaSimplePanel extends JPanel {
         modelo.addRow(datos);
     }
 
+    public void limpiar() {
+        modelo.setRowCount(0);
+    }
+
     public JTable getTabla() {
         return tabla;
     }
