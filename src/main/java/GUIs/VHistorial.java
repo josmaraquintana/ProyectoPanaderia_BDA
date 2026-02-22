@@ -56,14 +56,14 @@ public class VHistorial extends JFrame{
         // ================= FILTROS =================
         JPanel panelFiltros = new JPanel(new GridBagLayout());
         panelFiltros.setOpaque(false);
-        // Reduje un poco los bordes laterales (de 90 a 50) para darles más espacio para estirarse
+        // Reduje un poco los bordes laterales (de 90 a 50) para darles mas espacio para estirarse
         panelFiltros.setBorder(new EmptyBorder(10, 50, 10, 50));
 
         GridBagConstraints gbc = new GridBagConstraints();
-        // Balanceamos los márgenes: 5px arriba/abajo, 15px izquierda/derecha
+        // Balanceamos los margenes: 5px arriba/abajo, 15px izquierda/derecha
         gbc.insets = new Insets(5, 15, 5, 15); 
         gbc.fill = GridBagConstraints.HORIZONTAL;
-        gbc.weightx = 1.0; // <--- ESTA ES LA CLAVE PARA QUE SE ESTIREN
+        gbc.weightx = 1.0;
 
         PlaceholderTextField txtFechaInicio =
                 new PlaceholderTextField("Fecha inicio");
@@ -72,7 +72,6 @@ public class VHistorial extends JFrame{
         PlaceholderTextField txtEstado =
                 new PlaceholderTextField("Estado");
 
-        // Aumentamos un poco la dimensión preferida
         txtFechaInicio.setPreferredSize(new Dimension(180, 40));
         txtFechaFin.setPreferredSize(new Dimension(180, 40));
         txtEstado.setPreferredSize(new Dimension(180, 40));
@@ -136,10 +135,10 @@ public class VHistorial extends JFrame{
         panelBotones.setOpaque(false);
 
         RoundedButton btnSalir = new RoundedButton("Salir");
-        RoundedButton btnAgregar = new RoundedButton("Agregar");
+        RoundedButton btnConsultar = new RoundedButton("Consultar");
 
         panelBotones.add(btnSalir);
-        panelBotones.add(btnAgregar);
+        panelBotones.add(btnConsultar);
 
         // ================= ENSAMBLADO =================
         add(panelSuperior, BorderLayout.NORTH);
@@ -153,6 +152,17 @@ public class VHistorial extends JFrame{
         add(panelCentro, BorderLayout.SOUTH);
 
         setVisible(true);
+        
+        
+        btnSalir.addActionListener(e->{
+            new VOpcionesEmpleado(null).setVisible(true);
+            this.dispose();
+        });
+        
+        
+        btnConsultar.addActionListener(e->{
+            
+        });
     }
 
     
