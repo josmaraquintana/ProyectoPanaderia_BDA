@@ -40,7 +40,7 @@ public class PanelProducto extends JPanel {
 
         // --- SECCIÓN IZQUIERDA: Nombre ---
         JLabel lblNombre = new JLabel("<html><center>" + nombre.replace(" ", "<br>") + "</center></html>");
-        lblNombre.setFont(new Font("Serif", Font.BOLD, 14));
+        lblNombre.setFont(new Font("Serif", Font.BOLD, 11));
         lblNombre.setForeground(colorTexto);
         lblNombre.setPreferredSize(new Dimension(140, 0)); // Ancho fijo para alinear
         lblNombre.setHorizontalAlignment(SwingConstants.CENTER);

@@ -4,7 +4,7 @@
  */
 package Persistencia.DAO;
 
-import Persistencia.dominio.Producto;
+import Negocio.DTOs.ProductoDTO;
 import PersistenciaException.PersistenciaExcepcion;
 import java.util.List;
 
@@ -14,6 +14,6 @@ import java.util.List;
  */
 public interface IProductoDAO {
     
-    public List<Producto> obtenerListaProductos() throws PersistenciaExcepcion;
+    public List<ProductoDTO> obtenerListaProductos() throws PersistenciaExcepcion;
     
 }

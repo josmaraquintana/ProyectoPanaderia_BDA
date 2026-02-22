@@ -4,13 +4,14 @@
  */
 package Persistencia.DAO;
 
+import Negocio.DTOs.ProductoDTO;
 import Persistencia.conexion.IConexionBD;
-import Persistencia.dominio.Producto;
 import PersistenciaException.PersistenciaExcepcion;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -42,25 +43,36 @@ public class ProductoDAO implements IProductoDAO{
     }
 
     @Override
-    public List<Producto> obtenerListaProductos() throws PersistenciaExcepcion{
-        
+    public List<ProductoDTO> obtenerListaProductos() throws PersistenciaExcepcion{
+        //Lista para guardar los productos 
+        List<ProductoDTO> lista_productos = new ArrayList<>();
+        //comando para sql
         String comandoSQL = """
                             SELECT nombre_producto, descripcion, estado, precio FROM productos;
                             """;
         
         try(Connection conn = this.conexionBD.crearConexion(); PreparedStatement ps = conn.prepareStatement(comandoSQL)){
-            
+            //Creamos la conexion y ejecutamos el comando
             try(ResultSet resul = ps.executeQuery()){
                 while(resul.next()){
+                    //creamos el dto producto para que podamos guardarlos en la lista 
+                    ProductoDTO producto = new ProductoDTO();
+                    //guardamos en el objeto los atributos que necesitamos 
+                    producto.setNombre(resul.getString("nombre_producto"));
+                    producto.setDescripcion(resul.getString("descripcion"));
+                    producto.setEstado(resul.getString("estado"));
+                    producto.setPrecio(resul.getDouble("precio"));
+                    //agregamos en la lista el objeto
+                    lista_productos.add(producto);
                     
                 }
             }
             
         }catch(SQLException ex){
-            
+            throw new PersistenciaExcepcion("Hubo un error al lista los productos", ex);
         }
+        return lista_productos;
         
-        return null;
     }
     
     
