@@ -6,6 +6,7 @@ package GUIs;
 
 import Componentes.LabelPersonalizado;
 import Componentes.RoundedButton;
+import Negocio.BOs.PedidoBO;
 import Negocio.DTOs.ClienteDTO;
 import java.awt.*;
 import java.awt.Color;
@@ -21,6 +22,7 @@ import javax.swing.SwingConstants;
  */
 public class VOpcionesCliente extends JFrame {
     private ClienteDTO cliente; 
+    private PedidoBO pedido; 
     private RoundedButton btn_pedido;
     private RoundedButton btn_historial;
     private RoundedButton btn_editar_datos;
@@ -28,10 +30,11 @@ public class VOpcionesCliente extends JFrame {
     private RoundedButton btn_volver;
     private LabelPersonalizado lbl_usuario;
     private LabelPersonalizado lbl_nombre_usuario; 
-    public VOpcionesCliente(ClienteDTO cliente) {
+    public VOpcionesCliente(PedidoBO pedido,ClienteDTO cliente) {
         
         //Valor para el cliente
         this.cliente = cliente; 
+        this.pedido = pedido; 
         
         
         setTitle("Opciones de Cliente");
@@ -117,7 +120,7 @@ public class VOpcionesCliente extends JFrame {
         });
         
         btn_historial.addActionListener(e->{
-            new VHistorial(cliente).setVisible(true);
+            new VHistorial(pedido,cliente).setVisible(true);
             this.dispose();
         });
         
@@ -131,7 +134,7 @@ public class VOpcionesCliente extends JFrame {
         });
         
         btn_volver.addActionListener(e -> {
-            new VInicioSesion(null).setVisible(true);
+            new VInicioSesion(null,null).setVisible(true);
             this.dispose();
         });
         
