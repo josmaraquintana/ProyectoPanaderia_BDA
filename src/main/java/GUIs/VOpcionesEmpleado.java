@@ -35,7 +35,7 @@ public class VOpcionesEmpleado extends JFrame {
         setLocationRelativeTo(null);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         getContentPane().setBackground(Color.decode("#c4a484"));
-
+        setVisible(true);
         setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
         
@@ -77,6 +77,12 @@ public class VOpcionesEmpleado extends JFrame {
         gbc.gridy = 4;
         btn_volver.setPreferredSize(tamano);
         add(btn_volver,gbc);
+        
+        
+        btn_volver.addActionListener(e ->{
+            new VInicioSesion(null).setVisible(true);
+            this.dispose();
+        });
         
     }
 

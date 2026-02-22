@@ -25,7 +25,7 @@ public class VTomarPedidoExpress extends JFrame {
     private JPanel panelLista;
     private List<PanelProducto> listaTodosLosProductos;
 
-    public VTomarPedidoExpress(ClienteDTO cliente) {
+    public VTomarPedidoExpress() {
         
         this.cliente = cliente;
         setTitle("Catálogo de Productos");

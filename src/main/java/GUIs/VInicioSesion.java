@@ -138,23 +138,22 @@ public class VInicioSesion extends JFrame {
                
             } catch (Exception ex) {
                 JOptionPane.showMessageDialog(null, "Usuario inválido");
+                txtUsuario.setText("");
+                txtContrasena.setText("");
+                txtUsuario.requestFocus();
             }
         });
         
-        /*
-        /Boton para hacer el registro de usuario, 
-        /
-        */
-//        btn_registrar.addActionListener(e ->{
-//            
-//            try(
-//                 
-//                    )
-//                
-//                
-//                }
+        btn_registrar.addActionListener(e ->{
+            new VRegistrarCliente(null).setVisible(true);
+            this.dispose();
+        });
         
-//        });
+        btn_express.addActionListener(e ->{
+            new VTomarPedidoExpress().setVisible(true);
+            this.dispose();
+        });
+        
     }
 
 }

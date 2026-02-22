@@ -175,7 +175,7 @@ public class VRegistrarCliente extends JFrame {
             } catch (Exception ex) {
                 JOptionPane.showMessageDialog(this, "Error en el registro");
             }
-        });
+        });       
     }
 
     private PlaceholderTextField crearCampo(String placeholder) {

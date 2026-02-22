@@ -54,7 +54,7 @@ public class VRegistrarEmpleado extends JFrame {
         setLocationRelativeTo(null);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         getContentPane().setBackground(Color.decode("#c4a484"));
-        
+        setVisible(true);
         setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
         
