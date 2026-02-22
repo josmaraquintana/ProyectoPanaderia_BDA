@@ -6,11 +6,20 @@ package GUIs;
 
 import Componentes.PlaceholderTextField;
 import Componentes.RoundedButton;
+import Negocio.BOs.ClienteBO;
+import Negocio.DTOs.ClienteDTO;
+import Persistencia.DAO.ClienteDAO;
+import Persistencia.DAO.IClienteDAO;
 import Validadores.Validaciones;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.net.URL;
+import java.sql.Date;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import static java.time.temporal.TemporalQueries.localDate;
+import static javax.swing.WindowConstants.EXIT_ON_CLOSE;
 
 /**
  *
@@ -29,8 +38,10 @@ public class VRegistrarCliente extends JFrame {
     private JTextField edadField;
     private JTextField telefonoField;
     private JTextField contrasenaField;
-
-    public VRegistrarCliente() {
+    private ClienteBO clienteBO;
+    
+    public VRegistrarCliente(ClienteBO clienteBO) {
+        this.clienteBO = clienteBO;
         setTitle("Registro");
         setSize(700, 520);
         setLocationRelativeTo(null);
@@ -77,7 +88,6 @@ public class VRegistrarCliente extends JFrame {
         calleField = crearCampo("Calle");
         cpField = crearCampo("Código postal");
         edadField = crearCampo("Edad");
-        telefonoField = crearCampo("Teléfono");
         contrasenaField = crearCampo("Contrasena");
 
         // Fila 1
@@ -97,9 +107,8 @@ public class VRegistrarCliente extends JFrame {
 
         // Fila 4
         formPanel.add(edadField);
-        formPanel.add(telefonoField);
         formPanel.add(contrasenaField);
-
+        formPanel.add(new JLabel());
         JPanel botonesPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 30, 20));
         botonesPanel.setBackground(fondo);
 
@@ -135,11 +144,6 @@ public class VRegistrarCliente extends JFrame {
                     return;
                 }
 
-                if (!Validaciones.validarEnteros(telefonoField.getText())) {
-                    JOptionPane.showMessageDialog(this, "Telefono inválido");
-                    return;
-                }
-
                 if (!Validaciones.validarEnteros(cpField.getText())) {
                     JOptionPane.showMessageDialog(this, "Codigo postal inválido");
                     return;
@@ -155,11 +159,6 @@ public class VRegistrarCliente extends JFrame {
                     return;
                 }
 
-                if (!telefonoField.getText().matches("\\d{10}")) {
-                    JOptionPane.showMessageDialog(this, "Teléfono inválido (10 dígitos)");
-                    return;
-                }
-
                 if (!cpField.getText().matches("\\d{5}")) {
                     JOptionPane.showMessageDialog(this, "Código postal inválido");
                     return;
@@ -169,14 +168,30 @@ public class VRegistrarCliente extends JFrame {
                     JOptionPane.showMessageDialog(this, "La contraseña debe tener al menos 6 caracteres, una letra y un numero");
                     return;
                 }
+                
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+            LocalDate localDate = LocalDate.parse(fechaField.getText(), formatter);
+            Date fechaSQL = Date.valueOf(localDate);
+
+            ClienteDTO cliente = new ClienteDTO();
+            cliente.setEdad(Integer.parseInt(edadField.getText()));
+            cliente.setFecha_nacimiento(fechaSQL);
+
+            cliente.setNombres(nombreField.getText());
+            cliente.setApellido_paterno(apellidoPaternoField.getText());
+            cliente.setApellido_materno(apellidoMaternoField.getText());
+            cliente.setContrasena(contrasenaField.getText());
+
+            clienteBO.registrarCliente(cliente);
 
                 JOptionPane.showMessageDialog(this, "Registro exitoso");
 
             } catch (Exception ex) {
                 JOptionPane.showMessageDialog(this, "Error en el registro");
             }
-        });       
+        });
     }
+    
 
     private PlaceholderTextField crearCampo(String placeholder) {
         PlaceholderTextField campo = new PlaceholderTextField(placeholder);
@@ -186,7 +201,7 @@ public class VRegistrarCliente extends JFrame {
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
-            new VRegistrarCliente().setVisible(true);
+            new VInicioSesion(null).setVisible(true);
         });
     }
 
