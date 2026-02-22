@@ -4,12 +4,20 @@
  */
 package GUIs;
 
+import Componentes.ItemCarrito;
 import Componentes.LabelPersonalizado;
 import Componentes.PlaceholderTextField;
 import Componentes.RoundedButton;
+import Negocio.BOs.ICuponBO;
+import Negocio.DTOs.ClienteDTO;
+import Negocio.DTOs.CuponDTO;
+import Negocio.fabrica.FabricaBOs;
+import NegocioException.NegocioExcepcion;
 import javax.swing.*;
 import java.awt.*;
 import java.net.URL;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javax.swing.border.EmptyBorder;
 
 /**
@@ -18,7 +26,17 @@ import javax.swing.border.EmptyBorder;
  */
 public class VResumenPedido extends JFrame {
 
-    public VResumenPedido() {
+    private ClienteDTO cliente;
+    private double cupon = 0.0;
+    private ICuponBO cuponBO;
+    private FabricaBOs fabricaBO;
+    private double subtotal;
+    private double total;
+    
+    public VResumenPedido(ClienteDTO cliente, java.util.List<ItemCarrito> carrito) {
+        this.cliente = cliente; 
+        subtotal = 0.0;
+        total = 0.0;
         setTitle("Resumen del pedido");
         setSize(950, 520);
         setLocationRelativeTo(null);
@@ -32,96 +50,147 @@ public class VResumenPedido extends JFrame {
         getContentPane().setBackground(fondo);
 
         // ================= PANEL SUPERIOR (TITULO + LOGO) =================
-        JPanel panelSuperior = new JPanel(new BorderLayout());
-        panelSuperior.setOpaque(false);
-        panelSuperior.setBorder(new EmptyBorder(15, 25, 10, 25));
+        JPanel panel_superior = new JPanel(new BorderLayout());
+        panel_superior.setOpaque(false);
+        panel_superior.setBorder(new EmptyBorder(15, 25, 10, 25));
 
-        LabelPersonalizado lblTitulo =
+        LabelPersonalizado lbl_titulo =
                 new LabelPersonalizado("Resumen del pedido", 26, Color.WHITE);
-        lblTitulo.setHorizontalAlignment(SwingConstants.LEFT);
+        lbl_titulo.setHorizontalAlignment(SwingConstants.LEFT);
 
-        JLabel lblLogo = new JLabel();
-        lblLogo.setHorizontalAlignment(SwingConstants.RIGHT);
+        JLabel lbl_logo = new JLabel();
+        lbl_logo.setHorizontalAlignment(SwingConstants.RIGHT);
 
-        URL logoURL = getClass().getResource("/img/icon.png");
-        if (logoURL != null) {
-            ImageIcon icon = new ImageIcon(logoURL);
+        URL logo_URL = getClass().getResource("/img/icon.png");
+        if (logo_URL != null) {
+            ImageIcon icon = new ImageIcon(logo_URL);
             Image img = icon.getImage().getScaledInstance(110, 110, Image.SCALE_SMOOTH);
-            lblLogo.setIcon(new ImageIcon(img));
+            lbl_logo.setIcon(new ImageIcon(img));
         } else {
             System.err.println("No se encontró el logo");
         }
 
-        panelSuperior.add(lblTitulo, BorderLayout.WEST);
-        panelSuperior.add(lblLogo, BorderLayout.EAST);
+        panel_superior.add(lbl_titulo, BorderLayout.WEST);
+        panel_superior.add(lbl_logo, BorderLayout.EAST);
 
         // ================= AREA DE RESUMEN =================
-        JTextArea areaResumen = new JTextArea();
-        areaResumen.setEditable(true);
-        areaResumen.setLineWrap(true);
-        areaResumen.setWrapStyleWord(true);
-        areaResumen.setFont(new Font("Arial", Font.PLAIN, 14));
-        areaResumen.setForeground(Color.WHITE);
-        areaResumen.setBackground(cafe);
-        areaResumen.setBorder(new EmptyBorder(15, 15, 15, 15));
-        areaResumen.setText(
-                "Panes que se escogieron ->\n\n" +
-                "Pan integral - $10.00 - cant: 1\n\n" +
-                "Notas para los productos:\n" +
-                "Quiero que mi pan tenga miel de abeja y arándanos"
-        );
+        JTextArea area_resumen = new JTextArea();
+        area_resumen.setEditable(true);
+        area_resumen.setLineWrap(true);
+        area_resumen.setWrapStyleWord(true);
+        area_resumen.setFont(new Font("Arial", Font.PLAIN, 14));
+        area_resumen.setForeground(Color.WHITE);
+        area_resumen.setBackground(cafe);
+        area_resumen.setBorder(new EmptyBorder(15, 15, 15, 15));
+        
+        //Obtenemos el resumen de su pedido
+        String resumen = "Panes que se escogieron-->\n";
+        
+        for (ItemCarrito item : carrito) {
+            resumen += item.getProducto().getNombre() + " -- $"+item.getProducto().getPrecio() + " -- cant: "+item.getCantidad()+"\n";
+            subtotal += item.getSubtotal();
+            total = subtotal;
+        }
+        resumen += "Notas para los productos:\n Escriba las notas que guste\n-----------------------------------------";
+        //Hacemos que el mensaje aparezca en la pantalla
+        area_resumen.setText(resumen);
+        
 
-        JScrollPane scrollResumen = new JScrollPane(areaResumen);
-        scrollResumen.setBorder(BorderFactory.createEmptyBorder());
-        scrollResumen.setPreferredSize(new Dimension(520, 300));
+        JScrollPane scroll_resumen = new JScrollPane(area_resumen);
+        scroll_resumen.setBorder(BorderFactory.createEmptyBorder());
+        scroll_resumen.setPreferredSize(new Dimension(520, 300));
 
-        JPanel panelResumen = new JPanel(new BorderLayout());
-        panelResumen.setBackground(cafe);
-        panelResumen.setBorder(new EmptyBorder(10, 10, 10, 10));
-        panelResumen.add(scrollResumen, BorderLayout.CENTER);
+        JPanel panel_resumen = new JPanel(new BorderLayout());
+        panel_resumen.setBackground(cafe);
+        panel_resumen.setBorder(new EmptyBorder(10, 10, 10, 10));
+        panel_resumen.add(scroll_resumen, BorderLayout.CENTER);
 
         // ================= PANEL TOTALES =================
-        JPanel panelTotales = new JPanel();
-        panelTotales.setOpaque(false);
-        panelTotales.setLayout(new BoxLayout(panelTotales, BoxLayout.Y_AXIS));
-        panelTotales.setBorder(new EmptyBorder(40, 30, 30, 30));
-
-        panelTotales.add(new LabelPersonalizado("Subtotal:   $10.00", 18, Color.WHITE));
-        panelTotales.add(Box.createVerticalStrut(15));
-        panelTotales.add(new LabelPersonalizado("Cupón:      $0.00", 18, Color.WHITE));
-        panelTotales.add(Box.createVerticalStrut(15));
-        panelTotales.add(new LabelPersonalizado("Total:      $10.00", 20, dorado));
+        JPanel panel_totales = new JPanel();
+        panel_totales.setOpaque(false);
+        panel_totales.setLayout(new BoxLayout(panel_totales, BoxLayout.Y_AXIS));
+        panel_totales.setBorder(new EmptyBorder(40, 30, 30, 30));
+        
+        LabelPersonalizado label_subtotal = new LabelPersonalizado("Subtotal:      $"+subtotal, 18, Color.WHITE);
+        LabelPersonalizado label_cupon = new LabelPersonalizado("Cupón:      $0.0", 18, Color.WHITE);
+        LabelPersonalizado label_total = new LabelPersonalizado("Total:      $"+total, 20, dorado);
+        
+        panel_totales.add(label_subtotal);
+        panel_totales.add(Box.createVerticalStrut(15));
+        panel_totales.add(label_cupon);
+        panel_totales.add(Box.createVerticalStrut(15));
+        panel_totales.add(label_total);
 
         // ================= PANEL CENTRAL =================
-        JPanel panelCentro = new JPanel(new BorderLayout(20, 0));
-        panelCentro.setOpaque(false);
-        panelCentro.setBorder(new EmptyBorder(10, 20, 20, 20));
+        JPanel panel_centro = new JPanel(new BorderLayout(20, 0));
+        panel_centro.setOpaque(false);
+        panel_centro.setBorder(new EmptyBorder(10, 20, 20, 20));
 
-        panelCentro.add(panelResumen, BorderLayout.CENTER);
-        panelCentro.add(panelTotales, BorderLayout.EAST);
+        panel_centro.add(panel_resumen, BorderLayout.CENTER);
+        panel_centro.add(panel_totales, BorderLayout.EAST);
 
         // ================= PANEL INFERIOR =================
-        JPanel panelInferior = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 15));
-        panelInferior.setOpaque(false);
+        JPanel panel_inferior = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 15));
+        panel_inferior.setOpaque(false);
 
-        PlaceholderTextField txtCupon = new PlaceholderTextField("Código del cupón");
-        txtCupon.setPreferredSize(new Dimension(200, 40));
+        PlaceholderTextField txt_cupon = new PlaceholderTextField("Código del cupón");
+        txt_cupon.setPreferredSize(new Dimension(200, 40));
 
-        RoundedButton btnCupon = new RoundedButton("Insertar Cupón");
-        RoundedButton btnCancelar = new RoundedButton("Cancelar");
-        RoundedButton btnAceptar = new RoundedButton("Aceptar");
+        RoundedButton btn_cupon = new RoundedButton("Insertar Cupón");
+        RoundedButton btn_cancelar = new RoundedButton("Cancelar");
+        RoundedButton btn_aceptar = new RoundedButton("Aceptar");
 
-        panelInferior.add(txtCupon);
-        panelInferior.add(btnCupon);
-        panelInferior.add(btnCancelar);
-        panelInferior.add(btnAceptar);
+        panel_inferior.add(txt_cupon);
+        panel_inferior.add(btn_cupon);
+        panel_inferior.add(btn_cancelar);
+        panel_inferior.add(btn_aceptar);
 
         // ================= ENSAMBLADO =================
-        add(panelSuperior, BorderLayout.NORTH);
-        add(panelCentro, BorderLayout.CENTER);
-        add(panelInferior, BorderLayout.SOUTH);
+        add(panel_superior, BorderLayout.NORTH);
+        add(panel_centro, BorderLayout.CENTER);
+        add(panel_inferior, BorderLayout.SOUTH);
 
         setVisible(true);
+        
+        
+        btn_cupon.addActionListener(e -> {
+            
+            
+            try{
+                String texto_cupon = txt_cupon.getText();
+                
+                if (texto_cupon.isEmpty()) {
+                    JOptionPane.showMessageDialog(null, "Debe de ingresar un codigo de cupon.");
+                    return;
+                }
+                
+                Pattern pattern = Pattern.compile("^[0-9]+$");
+                Matcher matcher = pattern.matcher(texto_cupon);
+                
+                if (!matcher.find()) {
+                    JOptionPane.showMessageDialog(null, "No debe de ingresar letras o numero invalidos\nen el campo de cupon.");
+                    return;
+                }
+                
+                fabricaBO = new FabricaBOs();
+                cuponBO = fabricaBO.obtenerCuponBO();
+                
+                int codigo = Integer.parseInt(texto_cupon);
+                
+                CuponDTO cupon_obtenido = cuponBO.obtenerCupon(codigo);
+                
+                label_cupon.setText("Cupón:      $"+cupon_obtenido.getDesc());
+                
+                total -= cupon_obtenido.getDesc();
+                
+                label_total.setText("Total:      $"+total);
+                
+            }catch(NegocioExcepcion ex){
+                System.out.println("Hubo un error al querer insertar un cupon.");
+                System.out.println(ex.getMessage());
+            }
+        });
     }
+    
 
 }

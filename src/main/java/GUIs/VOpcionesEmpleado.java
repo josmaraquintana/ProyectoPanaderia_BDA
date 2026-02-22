@@ -12,6 +12,7 @@ import java.net.URL;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.SwingUtilities;
 
 /**
  *
@@ -85,5 +86,11 @@ public class VOpcionesEmpleado extends JFrame {
         });
         
     }
-
+    /*
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> {
+            new VOpcionesEmpleado(empleado).setVisible(true);
+        });
+    }
+    */
 }

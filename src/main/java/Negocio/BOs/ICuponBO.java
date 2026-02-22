@@ -4,10 +4,15 @@
  */
 package Negocio.BOs;
 
+import Negocio.DTOs.CuponDTO;
+import NegocioException.NegocioExcepcion;
+
 /**
  *
  * @author josma
  */
 public interface ICuponBO {
+    
+    public CuponDTO obtenerCupon(int codigo) throws NegocioExcepcion;
     
 }
