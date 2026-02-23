@@ -10,6 +10,6 @@ package ClasesEnum;
  */
 public enum EstadoPedido {
     
-    PENDIENTE, PREPARACION, LISTO, ENTREGADO, CANCELADO, DESATENDIDO;
+    PENDIENTE, LISTO, ENTREGADO, CANCELADO, DESATENDIDO;
     
 }

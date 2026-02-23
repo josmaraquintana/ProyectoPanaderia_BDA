@@ -5,6 +5,7 @@
 package Persistencia.DAO;
 
 import Negocio.DTOs.ProductoDTO;
+import Negocio.DTOs.ProductoIdDTO;
 import Persistencia.conexion.IConexionBD;
 import PersistenciaException.PersistenciaExcepcion;
 import java.sql.Connection;
@@ -62,6 +63,38 @@ public class ProductoDAO implements IProductoDAO{
                     producto.setDescripcion(resul.getString("descripcion"));
                     producto.setEstado(resul.getString("estado"));
                     producto.setPrecio(resul.getDouble("precio"));
+                    //agregamos en la lista el objeto
+                    lista_productos.add(producto);
+                    
+                }
+            }
+            
+        }catch(SQLException ex){
+            LOG.warning("No se encontraron productos.");
+            throw new PersistenciaExcepcion("Hubo un error al lista los productos", ex);
+        }
+        return lista_productos;
+        
+    }
+    
+    @Override
+    public List<ProductoIdDTO> obtenerListaProductosId() throws PersistenciaExcepcion{
+        //Lista para guardar los productos 
+        List<ProductoIdDTO> lista_productos = new ArrayList<>();
+        //comando para sql
+        String comandoSQL = """
+                            SELECT id_producto, nombre_producto FROM productos;
+                            """;
+        
+        try(Connection conn = this.conexionBD.crearConexion(); PreparedStatement ps = conn.prepareStatement(comandoSQL)){
+            //Creamos la conexion y ejecutamos el comando
+            try(ResultSet resul = ps.executeQuery()){
+                while(resul.next()){
+                    //creamos el dto producto para que podamos guardarlos en la lista 
+                    ProductoIdDTO producto = new ProductoIdDTO();
+                    //guardamos en el objeto los atributos que necesitamos 
+                    producto.setId(resul.getInt("id_producto"));
+                    producto.setNombre(resul.getString("nombre_producto"));
                     //agregamos en la lista el objeto
                     lista_productos.add(producto);
                     
