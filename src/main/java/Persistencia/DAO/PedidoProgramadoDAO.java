@@ -84,7 +84,7 @@ public class PedidoProgramadoDAO implements IPedidoProgramadoDAO {
             ps_uno.setDouble(3, pedidoDTO.getSubtotal());
             ps_uno.setDouble(4, pedidoDTO.getTotal());
             ps_uno.setString(5, "Pendiente");
-            ps_uno.setInt(6, cliente.getId());
+            ps_uno.setInt(6, cliente.getId_usuario());
             //Ejecutamos los comandos
             ps_uno.executeUpdate();
             try(ResultSet resul = ps_uno.getGeneratedKeys()){

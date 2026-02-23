@@ -48,7 +48,7 @@ public class VTomarPedido extends JFrame {
         ClienteDTO cliente = new ClienteDTO();
         // 2. Llenamos los atributos HEREDADOS de UsuarioDTO 
         // (Asumiendo los nombres de tus métodos, cámbialos si se llaman distinto)
-        cliente.setId(1);
+        cliente.setId_usuario(1);
         cliente.setNombre_usuario("juanp");
         cliente.setNombres("Juan");
         cliente.setApellido_paterno("Pérez");
