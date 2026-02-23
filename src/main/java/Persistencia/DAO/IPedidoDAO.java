@@ -6,6 +6,7 @@ package Persistencia.DAO;
 
 import ClasesEnum.EstadoPedido;
 import Negocio.DTOs.PedidoDTO;
+import Negocio.DTOs.PedidoEstadoDTO;
 import PersistenciaException.PersistenciaExcepcion;
 import java.sql.Date;
 import java.util.List;
@@ -15,5 +16,12 @@ import java.util.List;
  * @author josma
  */
 public interface IPedidoDAO {
-    public List<PedidoDTO> traerHistorial(Date fecha_inicio, Date fecha_fin, String tipo, EstadoPedido estado) throws PersistenciaExcepcion;
+    
+    
+    public List<PedidoDTO> traerHistorial(Date fecha_inicio, Date fecha_fin,int id_cliente, String tipo, EstadoPedido estado) throws PersistenciaExcepcion;
+
+    public List<PedidoEstadoDTO> obtenerListaPedidosConResumen() throws PersistenciaExcepcion;
+    
+    public boolean cambiarEstadoPedido(int id, String estado) throws PersistenciaExcepcion;
+    
 }

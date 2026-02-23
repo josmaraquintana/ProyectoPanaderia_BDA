@@ -6,6 +6,7 @@ package Persistencia.DAO;
 
 import ClasesEnum.EstadoPedido;
 import Negocio.DTOs.PedidoDTO;
+import Negocio.DTOs.PedidoEstadoDTO;
 import Persistencia.conexion.IConexionBD;
 import PersistenciaException.PersistenciaExcepcion;
 import java.sql.Connection;
@@ -44,28 +45,34 @@ public class PedidoDAO implements IPedidoDAO {
     public PedidoDAO(IConexionBD conexionBD) {
         this.conexionBD = conexionBD;
     }
-
-    public List<PedidoDTO> traerHistorial(Date fecha_inicio, Date fecha_fin, String tipo, EstadoPedido estado) throws PersistenciaExcepcion {
+    @Override
+    public List<PedidoDTO> traerHistorial(Date fecha_inicio, Date fecha_fin,int id_cliente, String tipo, EstadoPedido estado) throws PersistenciaExcepcion {
         List<PedidoDTO> lista_historial = new ArrayList<>();
-        String comandoSQL = "SELECT p.id_pedido, p.fecha, p.estado, "
+        String comandoSQL = "SELECT p.id_pedido, p.numero_pedido, p.fecha, p.num_productos, "
+                + "p.subtotal, p.total, p.estado, p.id_usuario, "
                 + "CASE "
-                + "WHEN pp.id_pedido IS NOT NULL THEN 'Programado' "
-                + "WHEN pe.id_pedido IS NOT NULL THEN 'Express' "
+                + "    WHEN pp.id_pedido IS NOT NULL THEN 'Programado' "
+                + "    WHEN pe.id_pedido IS NOT NULL THEN 'Express' "
                 + "END AS tipo "
                 + "FROM Pedidos p "
                 + "LEFT JOIN PedidosProgramados pp ON p.id_pedido = pp.id_pedido "
                 + "LEFT JOIN PedidosExpress pe ON p.id_pedido = pe.id_pedido "
                 + "WHERE p.fecha BETWEEN ? AND ? "
                 + "AND p.estado = ? "
-                + "AND ((? = 'Programado' AND pp.id_pedido IS NOT NULL) "
-                + "OR (? = 'Express' AND pe.id_pedido IS NOT NULL))";
+                + "AND p.id_usuario = ? "
+                + "AND ("
+                + "    (? = 'Programado' AND pp.id_pedido IS NOT NULL) "
+                + "    OR "
+                + "    (? = 'Express' AND pe.id_pedido IS NOT NULL)"
+                + ")";
 
         try (Connection conn = this.conexionBD.crearConexion(); PreparedStatement ps = conn.prepareStatement(comandoSQL)) {
             ps.setDate(1, fecha_inicio);
             ps.setDate(2, fecha_fin);
             ps.setString(3, estado.name());
-            ps.setString(4, tipo);
+            ps.setInt(4, id_cliente);
             ps.setString(5, tipo);
+            ps.setString(6, tipo);
             //le pasamos doblemente el tipo porque hace dos where, uno entra y el tro no 
             //fue la manera menos compleja de hacerlo, otra era separar dos consultas sql distintas
             //pero no se estaba logrando 
@@ -89,5 +96,70 @@ public class PedidoDAO implements IPedidoDAO {
 
         return lista_historial;
 
+    }
+    
+    @Override
+    public List<PedidoEstadoDTO> obtenerListaPedidosConResumen() throws PersistenciaExcepcion{
+        //Hacemos el comando para la base de datos
+        String comando = """
+                         SELECT p.id_pedido, p.estado, MAX(dp.nota) AS nota_del_pedido
+                         FROM Pedidos p
+                         LEFT JOIN DetallePedidos dp ON p.id_pedido = dp.id_pedido
+                         GROUP BY p.id_pedido, p.estado;
+                         """;
+        //Creamos la conexion
+        try(Connection conn = this.conexionBD.crearConexion(); 
+                PreparedStatement ps = conn.prepareStatement(comando)){
+            //Creamos la lista para guardar los pedidos
+            List<PedidoEstadoDTO> lista = new ArrayList<>();
+            //Obtenemos el resultado de la consulta
+            try(ResultSet rs = ps.executeQuery()){
+                //Creamos un objeto tipo PedidoEstadoDTO para guardar en la lista 
+                while(rs.next()){
+                    PedidoEstadoDTO pedido = new PedidoEstadoDTO();
+                    pedido.setId(rs.getInt("p.id_pedido"));
+                    pedido.setEstado(rs.getString("p.estado"));
+                    pedido.setResumen(rs.getString("nota_del_pedido"));
+                    
+                    lista.add(pedido);
+                    
+                }
+                
+            }
+            return lista;
+            
+        }catch(SQLException ex){
+            LOG.warning("Hubo un error al querer consultar los pedidos con su resumen.");
+            throw new PersistenciaExcepcion("No se pudo obtener la lista.", ex);
+        }
+        
+        
+    }
+    
+    @Override
+    public boolean cambiarEstadoPedido(int id, String estado) throws PersistenciaExcepcion{
+        
+        String comando = """
+                         UPDATE Pedidos SET estado = ? WHERE id_pedido = ?;
+                         """;
+        
+        try(Connection conn = this.conexionBD.crearConexion(); 
+                PreparedStatement ps = conn.prepareStatement(comando)){
+            
+            ps.setString(1, estado);
+            ps.setInt(2, id);
+            
+            int rs = ps.executeUpdate();
+            if (rs > 0 ) {
+                return true;
+            }else{
+                return false;
+            }
+            
+        }catch(SQLException ex){
+            LOG.warning("Hubo un error al querer actualizar.");
+            throw new PersistenciaExcepcion("No se completo la actualizacion de estado.", ex);
+        }
+        
     }
 }
