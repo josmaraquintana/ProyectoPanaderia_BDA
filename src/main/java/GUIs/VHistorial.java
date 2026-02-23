@@ -175,78 +175,75 @@ public class VHistorial extends JFrame {
         });
               
         btnConsultar.addActionListener(e -> {
-    try {
-        // 1. Validar Fechas (que no estén vacías)
-        String fecha_inicio = txtFechaInicio.getText().trim();
-        String fecha_fin = txtFechaFin.getText().trim();
+            try {
+                // 1. Validar Fechas (que no estén vacías)
+                String fecha_inicio = txtFechaInicio.getText().trim();
+                String fecha_fin = txtFechaFin.getText().trim();
 
-        if (fecha_inicio.isEmpty() || fecha_fin.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Debe ingresar ambas fechas (AAAA-MM-DD)");
-            return;
-        }
+                if (fecha_inicio.isEmpty() || fecha_fin.isEmpty()) {
+                    JOptionPane.showMessageDialog(this, "Debe ingresar ambas fechas (AAAA-MM-DD)");
+                    return;
+                }
 
-        // 2. Determinar Tipo de Pedido
-        String tipo_pedido = "";
-        if (rbProgramado.isSelected()) {
-            tipo_pedido = "Programado";
-        } else if (rbExpress.isSelected()) {
-            tipo_pedido = "Express";
-        } else {
-            JOptionPane.showMessageDialog(this, "Debe seleccionar un tipo de pedido (Programado o Express)");
-            return;
-        }
+                // 2. Determinar Tipo de Pedido
+                String tipo_pedido = "";
+                if (rbProgramado.isSelected()) {
+                    tipo_pedido = "Programado";
+                } else if (rbExpress.isSelected()) {
+                    tipo_pedido = "Express";
+                } else {
+                    JOptionPane.showMessageDialog(this, "Debe seleccionar un tipo de pedido (Programado o Express)");
+                    return;
+                }
 
-        // 3. Validar el ENUM del Estado
-        String estado_letras = txtEstado.getText().trim().toUpperCase();
-        EstadoPedido estado_pedido;
-        try {
-            estado_pedido = EstadoPedido.valueOf(estado_letras);
-        } catch (IllegalArgumentException ex) {
-            JOptionPane.showMessageDialog(this, "El estado '" + estado_letras + "' no es válido.\nEstados permitidos: PENDIENTE, LISTO, ENTREGADO, CANCELADO, DESATENDIDO", "Error de Estado", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
+                // 3. Validar el ENUM del Estado
+                String estado_letras = txtEstado.getText().trim().toUpperCase();
+                EstadoPedido estado_pedido;
+                try {
+                    estado_pedido = EstadoPedido.valueOf(estado_letras);
+                } catch (IllegalArgumentException ex) {
+                    JOptionPane.showMessageDialog(this, "El estado '" + estado_letras + "' no es válido.\nEstados permitidos: PENDIENTE, LISTO, ENTREGADO, CANCELADO, DESATENDIDO", "Error de Estado", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
 
-        // 4. Validar ID del Cliente (Seguridad)
-        if (cliente == null || cliente.getId_cliente() <= 0) {
-            JOptionPane.showMessageDialog(this, "Error: No se ha cargado la información del cliente actual.", "Error de Sesión", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
+                // 4. Validar ID del Cliente (Seguridad)
+                if (cliente == null || cliente.getId_cliente() <= 0) {
+                    JOptionPane.showMessageDialog(this, "Error: No se ha cargado la información del cliente actual.", "Error de Sesión", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
 
-        // 5. Llamada al BO (Pasando los 5 parámetros requeridos)
-        List<PedidoDTO> lista = pedidoBO.consultarHistorial(
-                fecha_inicio, 
-                fecha_fin, 
-                cliente.getId_cliente(), 
-                tipo_pedido, 
-                estado_pedido
-        );
+                // 5. Llamada al BO (Pasando los 5 parámetros requeridos)
+                List<PedidoDTO> lista = pedidoBO.consultarHistorial(
+                        fecha_inicio, 
+                        fecha_fin, 
+                        cliente.getId_cliente(), 
+                        tipo_pedido, 
+                        estado_pedido
+                );
 
-        // 6. Procesar Resultados
-        if (lista.isEmpty()) {
-            JOptionPane.showMessageDialog(this, 
-                    "No se encontraron pedidos con los filtros seleccionados.", 
-                    "Sin resultados", 
-                    JOptionPane.INFORMATION_MESSAGE);
-            // Si tu tabla tiene un método limpiar, úsalo aquí
-            // DefaultTableModel modelo = (DefaultTableModel) tblPedidos.getModel();
-            // modelo.setRowCount(0);
-        } else {
-            actualizarTabla(lista); // Asegúrate de que este método exista en tu GUI
-        }
+                // 6. Procesar Resultados
+                if (lista.isEmpty()) {
+                    JOptionPane.showMessageDialog(this, 
+                            "No se encontraron pedidos con los filtros seleccionados.", 
+                            "Sin resultados", 
+                            JOptionPane.INFORMATION_MESSAGE);
+                    // Si tu tabla tiene un método limpiar, úsalo aquí
+                    // DefaultTableModel modelo = (DefaultTableModel) tblPedidos.getModel();
+                    // modelo.setRowCount(0);
+                } else {
+                    actualizarTabla(lista); // Asegúrate de que este método exista en tu GUI
+                }
 
-    } catch (NegocioExcepcion ex) {
-        // Aquí caerán los errores de Date.valueOf() que lanzará el BO
-        JOptionPane.showMessageDialog(this, ex.getMessage(), "Error de Negocio", JOptionPane.ERROR_MESSAGE);
-    } catch (Exception ex) {
-        // Error genérico por si algo más falla
-        JOptionPane.showMessageDialog(this, "Ocurrió un error inesperado: " + ex.getMessage(), "Error Crítico", JOptionPane.ERROR_MESSAGE);
-        ex.printStackTrace();
-    }
-});
-        
-        
-        
-        
+            } catch (NegocioExcepcion ex) {
+                // Aquí caerán los errores de Date.valueOf() que lanzará el BO
+                JOptionPane.showMessageDialog(this, ex.getMessage(), "Error de Negocio", JOptionPane.ERROR_MESSAGE);
+            } catch (Exception ex) {
+                // Error genérico por si algo más falla
+                JOptionPane.showMessageDialog(this, "Ocurrió un error inesperado: " + ex.getMessage(), "Error Crítico", JOptionPane.ERROR_MESSAGE);
+                ex.printStackTrace();
+            }
+        });
+
     }
 
     private void actualizarTabla(List<PedidoDTO> lista) {

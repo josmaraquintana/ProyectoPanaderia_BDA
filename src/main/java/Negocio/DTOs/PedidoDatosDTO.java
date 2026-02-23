@@ -3,7 +3,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package Negocio.DTOs;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 /**
  *
@@ -11,13 +11,13 @@ import java.time.LocalDate;
  */
 public class PedidoDatosDTO {
     
-    private LocalDate fecha;
+    private LocalDateTime fecha;
     private int num_productos;
     private double subtotal;
     private double total;
 
-    public PedidoDatosDTO(LocalDate fecha, int num_productos, double subtotal, double total) {
-        this.fecha = LocalDate.now();
+    public PedidoDatosDTO(LocalDateTime fecha, int num_productos, double subtotal, double total) {
+        this.fecha = LocalDateTime.now();
         this.num_productos = num_productos;
         this.subtotal = subtotal;
         this.total = total;
@@ -26,11 +26,11 @@ public class PedidoDatosDTO {
     public PedidoDatosDTO() {
     }
 
-    public LocalDate getFecha() {
+    public LocalDateTime getFecha() {
         return fecha;
     }
 
-    public void setFecha(LocalDate fecha) {
+    public void setFecha(LocalDateTime fecha) {
         this.fecha = fecha;
     }
 
