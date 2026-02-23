@@ -9,21 +9,21 @@ package Negocio.DTOs;
  * @author RAMSES
  */
 public class UsuarioDTO {
-    private int id;
+    private int id_usuario;
     private String nombre_usuario;
     private String contrasena;
     private String nombres;
     private String apellido_paterno;
     private String apellido_materno; 
 
-    public UsuarioDTO(int id, String nombre_usuario, String contrasena) {
-        this.id = id;
+    public UsuarioDTO(int id_usuario, String nombre_usuario, String contrasena) {
+        this.id_usuario = id_usuario;
         this.nombre_usuario = nombre_usuario;
         this.contrasena = contrasena;
     }
 
-    public UsuarioDTO(int id, String nombre_usuario, String contrasena, String nombres, String apellido_paterno, String apellido_materno) {
-        this.id = id;
+    public UsuarioDTO(int id_usuario, String nombre_usuario, String contrasena, String nombres, String apellido_paterno, String apellido_materno) {
+        this.id_usuario = id_usuario;
         this.nombre_usuario = nombre_usuario;
         this.contrasena = contrasena;
         this.nombres = nombres;
@@ -35,12 +35,12 @@ public class UsuarioDTO {
     public UsuarioDTO() {
     }
 
-    public int getId() {
-        return id;
+    public int getId_usuario() {
+        return id_usuario;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setId_usuario(int id_usuario) {
+        this.id_usuario = id_usuario;
     }
 
     public String getNombre_usuario() {

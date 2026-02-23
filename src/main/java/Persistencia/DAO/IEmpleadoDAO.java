@@ -1,13 +1,18 @@
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Interface.java to edit this template
  */
 package Persistencia.DAO;
 
+import Negocio.DTOs.EmpleadoDTO;
+import PersistenciaException.PersistenciaExcepcion;
+
 /**
  *
- * @author josma
+ * @author DANIEL
  */
-public class IEmpleadoDAO {
+public interface IEmpleadoDAO {
+    public void registrarUsuario(EmpleadoDTO empleado) throws PersistenciaExcepcion;
     
+    public boolean empleadoExiste(int id_usuario) throws PersistenciaExcepcion;
 }
