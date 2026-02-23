@@ -45,27 +45,33 @@ public class PedidoDAO implements IPedidoDAO {
         this.conexionBD = conexionBD;
     }
 
-    public List<PedidoDTO> traerHistorial(Date fecha_inicio, Date fecha_fin, String tipo, EstadoPedido estado) throws PersistenciaExcepcion {
+    public List<PedidoDTO> traerHistorial(Date fecha_inicio, Date fecha_fin,int id_cliente, String tipo, EstadoPedido estado) throws PersistenciaExcepcion {
         List<PedidoDTO> lista_historial = new ArrayList<>();
-        String comandoSQL = "SELECT p.id_pedido, p.fecha, p.estado, "
+        String comandoSQL = "SELECT p.id_pedido, p.numero_pedido, p.fecha, p.num_productos, "
+                + "p.subtotal, p.total, p.estado, p.id_usuario, "
                 + "CASE "
-                + "WHEN pp.id_pedido IS NOT NULL THEN 'Programado' "
-                + "WHEN pe.id_pedido IS NOT NULL THEN 'Express' "
+                + "    WHEN pp.id_pedido IS NOT NULL THEN 'Programado' "
+                + "    WHEN pe.id_pedido IS NOT NULL THEN 'Express' "
                 + "END AS tipo "
                 + "FROM Pedidos p "
                 + "LEFT JOIN PedidosProgramados pp ON p.id_pedido = pp.id_pedido "
                 + "LEFT JOIN PedidosExpress pe ON p.id_pedido = pe.id_pedido "
                 + "WHERE p.fecha BETWEEN ? AND ? "
                 + "AND p.estado = ? "
-                + "AND ((? = 'Programado' AND pp.id_pedido IS NOT NULL) "
-                + "OR (? = 'Express' AND pe.id_pedido IS NOT NULL))";
+                + "AND p.id_usuario = ? "
+                + "AND ("
+                + "    (? = 'Programado' AND pp.id_pedido IS NOT NULL) "
+                + "    OR "
+                + "    (? = 'Express' AND pe.id_pedido IS NOT NULL)"
+                + ")";
 
         try (Connection conn = this.conexionBD.crearConexion(); PreparedStatement ps = conn.prepareStatement(comandoSQL)) {
             ps.setDate(1, fecha_inicio);
             ps.setDate(2, fecha_fin);
             ps.setString(3, estado.name());
-            ps.setString(4, tipo);
+            ps.setInt(4, id_cliente);
             ps.setString(5, tipo);
+            ps.setString(6, tipo);
             //le pasamos doblemente el tipo porque hace dos where, uno entra y el tro no 
             //fue la manera menos compleja de hacerlo, otra era separar dos consultas sql distintas
             //pero no se estaba logrando 

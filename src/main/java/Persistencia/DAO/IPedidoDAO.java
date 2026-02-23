@@ -15,5 +15,5 @@ import java.util.List;
  * @author josma
  */
 public interface IPedidoDAO {
-    public List<PedidoDTO> traerHistorial(Date fecha_inicio, Date fecha_fin, String tipo, EstadoPedido estado) throws PersistenciaExcepcion;
+    public List<PedidoDTO> traerHistorial(Date fecha_inicio, Date fecha_fin, int id_cliente, String tipo, EstadoPedido estado) throws PersistenciaExcepcion;
 }
