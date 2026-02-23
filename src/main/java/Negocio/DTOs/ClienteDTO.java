@@ -11,6 +11,7 @@ import java.sql.Date;
  * @author RAMSES
  */
 public class ClienteDTO extends UsuarioDTO{
+    private int id_cliente; 
     private int edad;
     private Date fecha_nacimiento; 
     private String calle;
@@ -18,7 +19,8 @@ public class ClienteDTO extends UsuarioDTO{
     private int numero_casa;
     private String colonia;
 
-    public ClienteDTO(int edad, Date fecha_nacimiento, String calle, String colonia, int codigo_postal, int numero_casa) {
+    public ClienteDTO(int id_cliente,int edad, Date fecha_nacimiento, String calle, String colonia, int codigo_postal, int numero_casa) {
+        this.id_cliente = id_cliente;
         this.edad = edad;
         this.fecha_nacimiento = fecha_nacimiento;
         this.calle = calle;
@@ -26,6 +28,16 @@ public class ClienteDTO extends UsuarioDTO{
         this.numero_casa = numero_casa;
         this.colonia = colonia;
     }
+
+    public int getId_cliente() {
+        return id_cliente;
+    }
+
+    public void setId_cliente(int id_cliente) {
+        this.id_cliente = id_cliente;
+    }
+    
+    
     
     public ClienteDTO() {
     }

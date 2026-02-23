@@ -49,7 +49,7 @@ public class UsuarioDAO implements IUsuarioDAO {
 
     public Usuario buscarUsuarioLogin(String usuario_nombre, String contrasena) throws PersistenciaExcepcion {
         Usuario usuario = null;
-        String comandoSQL = "SELECT u.id_usuario, u.usuario, u.contrasena, u.nombres, u.apellido_paterno, u.apellido_materno, c.id_usuario AS cliente_checar, c.edad, c.fecha_nac, e.id_usuario AS empleado_checar FROM Usuarios u LEFT JOIN Clientes c ON u.id_usuario = c.id_usuario LEFT JOIN Empleados e ON u.id_usuario = e.id_usuario WHERE u.usuario = ? AND u.contrasena = ?";
+        String comandoSQL = "SELECT u.id_usuario, u.usuario, u.contrasena, u.nombres, u.apellido_paterno, u.apellido_materno, c.id_cliente, c.id_usuario AS cliente_checar, c.edad, c.fecha_nac, e.id_usuario AS empleado_checar FROM Usuarios u LEFT JOIN Clientes c ON u.id_usuario = c.id_usuario LEFT JOIN Empleados e ON u.id_usuario = e.id_usuario WHERE u.usuario = ? AND u.contrasena = ?";
 
         try (Connection conn = this.conexionBD.crearConexion(); PreparedStatement ps = conn.prepareStatement(comandoSQL)) {
             ps.setString(1, usuario_nombre);
@@ -60,6 +60,7 @@ public class UsuarioDAO implements IUsuarioDAO {
                     if (rs.getObject("cliente_checar") != null) {
 
                         Cliente cliente = new Cliente();
+                        cliente.setId_cliente(rs.getInt("id_cliente"));
                         cliente.setId_usuario(rs.getInt("id_usuario"));
                         cliente.setNombre_usuario(rs.getString("usuario"));
                         cliente.setEdad(rs.getInt("edad"));

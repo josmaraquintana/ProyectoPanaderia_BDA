@@ -13,7 +13,7 @@ import java.time.LocalDate;
  * @author josmara, ramses, daniel
  */
 public class Cliente extends Usuario{
-    
+    private int id_cliente; 
     private int edad;
     private Date fecha_nacimiento;
     private int codigo_postal;
@@ -24,10 +24,11 @@ public class Cliente extends Usuario{
     public Cliente() {
     }
 
-    public Cliente(int edad, Date fecha_nacimiento, int codigo_postal, String colonia, int numero_casa, 
+    public Cliente(int id_cliente, int edad, Date fecha_nacimiento, int codigo_postal, String colonia, int numero_casa, 
             String calle, int id_usuario, String nombre_usuario, String contrasena, String nombres, 
             String apellidoPaterno, String apellidoMaterno) {
         super(id_usuario, nombre_usuario, contrasena, nombres, apellidoPaterno, apellidoMaterno);
+        this.id_cliente = id_cliente; 
         this.edad = edad;
         this.fecha_nacimiento = fecha_nacimiento;
         this.codigo_postal = codigo_postal;
@@ -48,6 +49,13 @@ public class Cliente extends Usuario{
         this.calle = calle;
     }
 
+    public int getId_cliente() {
+        return id_cliente;
+    }
+
+    public void setId_cliente(int id_cliente) {
+        this.id_cliente = id_cliente;
+    }
 
     public int getEdad() {
         return edad;

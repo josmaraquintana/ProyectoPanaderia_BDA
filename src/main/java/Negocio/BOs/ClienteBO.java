@@ -10,6 +10,7 @@ import Persistencia.DAO.*;
 import Persistencia.DAO.IPedidoProgramadoDAO;
 import PersistenciaException.PersistenciaExcepcion;
 import java.sql.SQLException;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -48,5 +49,24 @@ public class ClienteBO implements IClienteBO{
             throw new NegocioExcepcion("Error al registrar al cliente " + ex.getMessage());
         }
         
+    }
+    
+    @Override
+    public ClienteDTO obtenerCliente(int id_cliente) throws NegocioExcepcion{
+        if (id_cliente <= 0) {
+            throw new NegocioExcepcion("Id de usuario invalido");
+        }
+        
+        try{
+            ClienteDTO cliente = clienteDAO.obtenerClientePorUsuario(id_cliente);
+            
+            if (cliente == null) {
+                throw new NegocioExcepcion("No eciste el cliente asociado");
+                
+            }
+            return cliente;
+        } catch (PersistenciaExcepcion ex) {
+            throw new NegocioExcepcion("Error al obtener cliente");
+        }
     }
 }

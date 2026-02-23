@@ -164,6 +164,7 @@ public class VAgregarTelefonos extends JFrame {
     }
 
     private void agregarTelefono() {
+        System.out.println("ID cliente actual: " + cliente.getId_cliente());
         try {
             String telefonito = txtTelefono.getText().trim();
             String etiqueta = txtEtiqueta.getText().trim();
@@ -180,7 +181,7 @@ public class VAgregarTelefonos extends JFrame {
             TelefonoDTO telefono = new TelefonoDTO();
             telefono.setTelefono(telefonito);
             telefono.setTipo(etiqueta);
-            telefono.setId(cliente.getId());
+            telefono.setId(cliente.getId_usuario());
 
             // Guardar en BD
             telefonoBO.agregarTelefono(telefono);

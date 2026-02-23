@@ -14,4 +14,5 @@ import NegocioException.NegocioExcepcion;
 public interface IClienteBO {
     
     public void registrarCliente(ClienteDTO cliente) throws NegocioExcepcion;
+    public ClienteDTO obtenerCliente(int id_cliente) throws NegocioExcepcion;
 }

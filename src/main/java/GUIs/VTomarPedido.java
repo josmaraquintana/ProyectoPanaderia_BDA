@@ -215,7 +215,7 @@ public class VTomarPedido extends JFrame {
         btn_cancelar.addActionListener(e -> {
             
             
-            VOpcionesCliente menu_cliente = new VOpcionesCliente(null, cliente);
+            VOpcionesCliente menu_cliente = new VOpcionesCliente(null, cliente,null);
             menu_cliente.setVisible(true);
             this.dispose();
             

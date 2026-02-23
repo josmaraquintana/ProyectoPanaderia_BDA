@@ -47,8 +47,8 @@ public class TelefonoBO implements ITelefonoBO {
             }
 
             if (telefono.getId_cliente() <= 0) {
-                LOG.warning("Algo fallo con el usuario");
-                throw new NegocioExcepcion("Algo fallo con el usuario");
+                LOG.warning("Algo fallo con el cliente");
+                throw new NegocioExcepcion("Algo fallo con el cliente");
             }
 
             return telefonoDAO.agregarTelefono(telefono.getTelefono().trim(), telefono.getTipo().trim(), telefono.getId());
@@ -64,7 +64,7 @@ public class TelefonoBO implements ITelefonoBO {
                 throw new NegocioExcepcion("Usuario invalida, intenta otra ves");
             }
 
-            return telefonoDAO.obtenerTelefnos(cliente.getId());
+            return telefonoDAO.obtenerTelefnos(cliente.getId_usuario());
 
         } catch (SQLException ex) {
             throw new NegocioExcepcion("No se pudo obtener la lista de telefonos");

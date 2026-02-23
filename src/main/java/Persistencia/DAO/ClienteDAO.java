@@ -5,6 +5,7 @@
 package Persistencia.DAO;
 
 import Negocio.DTOs.*;
+import NegocioException.NegocioExcepcion;
 import Persistencia.conexion.IConexionBD;
 import PersistenciaException.PersistenciaExcepcion;
 import java.sql.CallableStatement;
@@ -12,6 +13,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -75,14 +77,39 @@ public class ClienteDAO implements IClienteDAO {
             cs.setInt(9, cliente.getNumero_casa());
             cs.setString(10, cliente.getColonia());
             cs.setInt(11, cliente.getCodigo_postal());
-           
+
             cs.execute();
-            
+
         } catch (SQLException ex) {
             ex.printStackTrace();
-                throw new PersistenciaExcepcion("Error al registrar cliente: " + ex.getMessage(), ex);
+            throw new PersistenciaExcepcion("Error al registrar cliente: " + ex.getMessage(), ex);
         }
 
+    }
+
+    @Override
+    public ClienteDTO obtenerClientePorUsuario(int id_cliente) throws PersistenciaExcepcion {
+        String ComandoSQL = "SELECT id_cliente, edad, fecha_nac, calle, numero, colonia, codigo_postal id_usuario FROM Clientes WHERE id_usuario = ?";
+        try (Connection con = this.conexionBD.crearConexion(); PreparedStatement ps = con.prepareStatement(ComandoSQL)) {
+            ps.setInt(1, id_cliente);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return new ClienteDTO(
+                            rs.getInt("id_cliente"),
+                            rs.getInt("edad"),
+                            rs.getDate("fecha_nacimiento"),
+                            rs.getString("calle"),
+                            rs.getString("colonia"),
+                            rs.getInt("codigo_postal"),
+                            rs.getInt("numero_casa")
+                    );
+
+                }
+            }
+        } catch (SQLException ex) {
+            throw new PersistenciaExcepcion("Error al obtener el clinete" + ex.getMessage(), ex);
+        }
+        return null;
     }
 
 }
