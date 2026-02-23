@@ -45,7 +45,7 @@ public class CuponDAO implements ICuponDAO {
     @Override
     public CuponDTO obtenerCupon(int codigo) throws PersistenciaExcepcion {
         String comando = """
-                         SELECT id_cupon, id_pedido, nombre, descuento, vigencia, max_uso FROM cupones WHERE id_cupon = ? AND max_uso > 0;
+                         SELECT id_cupon, nombre, descuento, vigencia, max_uso FROM cupones WHERE id_cupon = ? AND max_uso > 0;
                          """;
         //Comando para actualizar el cupon
         String actualizar = """
@@ -81,6 +81,36 @@ public class CuponDAO implements ICuponDAO {
         }catch(SQLException ex){
             LOG.warning("No se encontro ningun cupon");
             throw new PersistenciaExcepcion("Hubo un error al querer consultar los cupones.", ex);
+        }
+        
+    }
+    
+    
+    @Override
+    public CuponDTO obtenerCuponNombre(String nombre) throws PersistenciaExcepcion {
+        String comando = """
+                         SELECT id_cupon, nombre FROM cupones WHERE nombre = ?;
+                         """;
+        
+        try(Connection conn = this.conexionBD.crearConexion(); PreparedStatement ps = conn.prepareStatement(comando)){
+            ps.setString(1, nombre);
+            try(ResultSet resul = ps.executeQuery()){
+                if (resul.next()) {
+                    CuponDTO cupon_obtenido = new CuponDTO();
+                    
+                    cupon_obtenido.setId(resul.getInt("id_cupon"));
+                    
+                    // 3. Retornamos el cupón real en lugar de null
+                    return cupon_obtenido;
+                    
+                }
+            }
+            return null;
+            
+            
+        }catch(SQLException ex){
+            LOG.warning("No se encontro ningun cupon");
+            throw new PersistenciaExcepcion("Hubo un error al querer consultar el cupon.", ex);
         }
         
     }

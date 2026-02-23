@@ -42,6 +42,7 @@ public class ClienteDAO implements IClienteDAO {
         this.conexionBD = conexionBD;
     }
 
+    @Override
     public boolean clienteExiste(int id_usuario) throws PersistenciaExcepcion {
         String comandoSQL = "SELECT id_usuario FROM Clientes WHERE id_usuario  =?";
 

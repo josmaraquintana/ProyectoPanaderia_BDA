@@ -15,4 +15,6 @@ public interface ICuponDAO {
     
     public CuponDTO obtenerCupon(int codigo) throws PersistenciaExcepcion;
     
+    public CuponDTO obtenerCuponNombre(String nombre) throws PersistenciaExcepcion;
+    
 }

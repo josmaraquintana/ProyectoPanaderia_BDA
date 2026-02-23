@@ -12,6 +12,7 @@ import java.time.LocalDate;
  */
 public class CuponDTO {
     
+    private int id;
     private String nombre;
     private double desc;
     private LocalDate vigencia;
@@ -20,11 +21,27 @@ public class CuponDTO {
     public CuponDTO() {
     }
 
+    public CuponDTO(int id, String nombre, double desc, LocalDate vigencia, int max_usos) {
+        this.id = id;
+        this.nombre = nombre;
+        this.desc = desc;
+        this.vigencia = vigencia;
+        this.max_usos = max_usos;
+    }
+
     public CuponDTO(String nombre, double desc, LocalDate vigencia, int max_usos) {
         this.nombre = nombre;
         this.desc = desc;
         this.vigencia = vigencia;
         this.max_usos = max_usos;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getNombre() {

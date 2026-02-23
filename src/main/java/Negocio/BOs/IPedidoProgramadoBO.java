@@ -4,10 +4,18 @@
  */
 package Negocio.BOs;
 
+import Componentes.ItemCarrito;
+import Negocio.DTOs.ClienteDTO;
+import Negocio.DTOs.CuponDTO;
+import NegocioException.NegocioExcepcion;
+import java.util.List;
+
 /**
  *
  * @author josma
  */
 public interface IPedidoProgramadoBO {
+    
+    public void realizarRegistrosPedidosClientesCupones(List<ItemCarrito> carrito, ClienteDTO cliente, List<CuponDTO> lista_cupones, double subtotal, double total, String notas) throws NegocioExcepcion;
     
 }

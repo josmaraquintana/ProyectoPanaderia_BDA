@@ -20,7 +20,7 @@ import javax.swing.SwingUtilities;
  */
 public class VOpcionesEmpleado extends JFrame {
     //Declaracion del DTO
-    private EmpleadoDTO empleado;
+    private static EmpleadoDTO empleado;
     private RoundedButton btn_agregar_producto;
     private RoundedButton btn_agregar_cupon;
     private RoundedButton btn_cambiar_estado;

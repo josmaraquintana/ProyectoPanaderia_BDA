@@ -42,7 +42,30 @@ public class VTomarPedido extends JFrame {
     // Esta es tu lista de carrito
     private List<ItemCarrito> carrito = new ArrayList<>();
     
-    public VTomarPedido(ClienteDTO cliente) {
+    public VTomarPedido(ClienteDTO clienteNuevo) {
+        
+
+        ClienteDTO cliente = new ClienteDTO();
+        // 2. Llenamos los atributos HEREDADOS de UsuarioDTO 
+        // (Asumiendo los nombres de tus métodos, cámbialos si se llaman distinto)
+        cliente.setId_usuario(1);
+        cliente.setNombre_usuario("juanp");
+        cliente.setNombres("Juan");
+        cliente.setApellido_paterno("Pérez");
+        cliente.setApellido_materno("Gómez");
+        cliente.setContrasena("password123");
+        cliente.setEdad(35);
+        cliente.setCalle("Av. Tecnológico");
+        cliente.setCodigo_postal(85000);
+        cliente.setNumero_casa(1234);
+        cliente.setColonia("Centro");
+        cliente.setFecha_nacimiento(java.sql.Date.valueOf("1991-05-20"));
+        
+        
+        
+        
+        
+        
         this.cliente = cliente; 
         fabricaBO = new FabricaBOs();
         productoBO = fabricaBO.obtenerProductoBO();
@@ -188,6 +211,15 @@ public class VTomarPedido extends JFrame {
         // =================================================================
         add(scroll_pane, BorderLayout.CENTER);   
         add(panel_derecho, BorderLayout.EAST);   
+        
+        btn_cancelar.addActionListener(e -> {
+            
+            
+            VOpcionesCliente menu_cliente = new VOpcionesCliente(null, cliente);
+            menu_cliente.setVisible(true);
+            this.dispose();
+            
+        });
         
         
         btn_realizar.addActionListener(e -> {

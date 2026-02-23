@@ -5,6 +5,7 @@
 package Persistencia.DAO;
 
 import Negocio.DTOs.ProductoDTO;
+import Negocio.DTOs.ProductoIdDTO;
 import PersistenciaException.PersistenciaExcepcion;
 import java.util.List;
 
@@ -15,5 +16,7 @@ import java.util.List;
 public interface IProductoDAO {
     
     public List<ProductoDTO> obtenerListaProductos() throws PersistenciaExcepcion;
+    
+    public List<ProductoIdDTO> obtenerListaProductosId() throws PersistenciaExcepcion;
     
 }

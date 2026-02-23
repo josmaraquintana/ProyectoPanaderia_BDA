@@ -9,6 +9,7 @@ import Componentes.LabelPersonalizado;
 import Componentes.PlaceholderTextField;
 import Componentes.RoundedButton;
 import Negocio.BOs.ICuponBO;
+import Negocio.BOs.IPedidoProgramadoBO;
 import Negocio.DTOs.ClienteDTO;
 import Negocio.DTOs.CuponDTO;
 import Negocio.fabrica.FabricaBOs;
@@ -16,9 +17,11 @@ import NegocioException.NegocioExcepcion;
 import javax.swing.*;
 import java.awt.*;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.swing.border.EmptyBorder;
+import java.util.List;
 
 /**
  *
@@ -32,11 +35,16 @@ public class VResumenPedido extends JFrame {
     private FabricaBOs fabricaBO;
     private double subtotal;
     private double total;
+    private List<CuponDTO>  lista_cupones;
+    private String notas;
     
-    public VResumenPedido(ClienteDTO cliente, java.util.List<ItemCarrito> carrito) {
+    public VResumenPedido(ClienteDTO cliente, List<ItemCarrito> carrito) {
         this.cliente = cliente; 
+        lista_cupones = new ArrayList<>();
+        fabricaBO = new FabricaBOs();
         subtotal = 0.0;
         total = 0.0;
+        notas = "";
         setTitle("Resumen del pedido");
         setSize(950, 520);
         setLocationRelativeTo(null);
@@ -99,6 +107,7 @@ public class VResumenPedido extends JFrame {
         JScrollPane scroll_resumen = new JScrollPane(area_resumen);
         scroll_resumen.setBorder(BorderFactory.createEmptyBorder());
         scroll_resumen.setPreferredSize(new Dimension(520, 300));
+        notas = area_resumen.getText();
 
         JPanel panel_resumen = new JPanel(new BorderLayout());
         panel_resumen.setBackground(cafe);
@@ -152,18 +161,46 @@ public class VResumenPedido extends JFrame {
 
         setVisible(true);
         
-        
-        btn_cupon.addActionListener(e -> {
-            
+        //Realizamos el pedido
+        btn_aceptar.addActionListener(e -> {
+            //Obtenemos el BO para trabajar
+            IPedidoProgramadoBO pedidoBO = fabricaBO.obtenerPedidoProgramadoBO();
             
             try{
-                String texto_cupon = txt_cupon.getText();
+                //Realizamos los registros de pedido en la base de datos
+                pedidoBO.realizarRegistrosPedidosClientesCupones(carrito, cliente, lista_cupones, subtotal, total, notas);
+                JOptionPane.showMessageDialog(null, "Se realizo el pedido exitosamente");
                 
+            }catch(NegocioExcepcion ex){
+                System.out.println("Hubo un error al querer hacer los registros del pedido.");
+                System.out.println(ex.getMessage());
+            }
+            
+        });
+        
+        
+        //Cerrar ventana en caso de cambiar de cancelar
+        btn_cancelar.addActionListener(e -> {
+            
+            VTomarPedido tomar_pedido = new VTomarPedido(cliente);
+            tomar_pedido.setVisible(true);
+            this.dispose();
+            
+        });
+        
+        
+        //Boton para agregar cupon 
+        btn_cupon.addActionListener(e -> {
+            
+            //obtenemos del campo de texto el codigo del cupon que quiere canjear 
+            try{
+                String texto_cupon = txt_cupon.getText();
+                //Validamos que no este vacio
                 if (texto_cupon.isEmpty()) {
                     JOptionPane.showMessageDialog(null, "Debe de ingresar un codigo de cupon.");
                     return;
                 }
-                
+                //Hacemos una expresion regular para saber si es que cumple la sintaxis
                 Pattern pattern = Pattern.compile("^[0-9]+$");
                 Matcher matcher = pattern.matcher(texto_cupon);
                 
@@ -172,13 +209,15 @@ public class VResumenPedido extends JFrame {
                     return;
                 }
                 
-                fabricaBO = new FabricaBOs();
+                
                 cuponBO = fabricaBO.obtenerCuponBO();
-                
+                //Convertimos a entero el codigo del texto
                 int codigo = Integer.parseInt(texto_cupon);
-                
+                //Obtenemos el cupon que estamos buscando
                 CuponDTO cupon_obtenido = cuponBO.obtenerCupon(codigo);
-                
+                //Lo agregamos a los cupones que usamos en este pedido
+                lista_cupones.add(cupon_obtenido);
+                //Establecemos los nuevos valores del cupon y actualizamos los valores en los campos de texto
                 label_cupon.setText("Cupón:      $"+cupon_obtenido.getDesc());
                 
                 total -= cupon_obtenido.getDesc();
@@ -190,6 +229,9 @@ public class VResumenPedido extends JFrame {
                 System.out.println(ex.getMessage());
             }
         });
+        
+        
+        
     }
     
 

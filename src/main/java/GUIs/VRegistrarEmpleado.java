@@ -7,7 +7,13 @@ package GUIs;
 import Componentes.LabelPersonalizado;
 import Componentes.PlaceholderTextField;
 import Componentes.RoundedButton;
+import Negocio.BOs.EmpleadoBO;
+import Negocio.DTOs.ClienteDTO;
 import Negocio.DTOs.EmpleadoDTO;
+import Persistencia.DAO.EmpleadoDAO;
+import Persistencia.DAO.IEmpleadoDAO;
+import Persistencia.conexion.ConexionBD;
+import Persistencia.conexion.IConexionBD;
 import Validadores.Validaciones;
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -26,6 +32,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
 import static javax.swing.WindowConstants.EXIT_ON_CLOSE;
 import javax.swing.border.EmptyBorder;
 
@@ -44,7 +51,7 @@ public class VRegistrarEmpleado extends JFrame {
     private PlaceholderTextField txt_contrasena;
     private RoundedButton btn_agregar;
     private RoundedButton btn_cancelar; 
-    public VRegistrarEmpleado(EmpleadoDTO empleado) {
+    public VRegistrarEmpleado(EmpleadoBO empleadoBO) {
         this.empleado = empleado;
         Color color  = Color.decode("#c4a484");
         
@@ -65,11 +72,11 @@ public class VRegistrarEmpleado extends JFrame {
 
         
         //CONFIGURAR ETIQUETAS
-        lbl_tipo = new LabelPersonalizado("Registro Usuario",Color.white);
+        lbl_tipo = new LabelPersonalizado("Registro Empleado",Color.white);
         gbc.gridx = 0; 
         gbc.gridy = 0; 
         add(lbl_tipo, gbc);   
-        lbl_tipo = new LabelPersonalizado("Registro Usuario", color);
+        lbl_tipo = new LabelPersonalizado("Registro Empleado", color);
         gbc.gridx = 1; 
         gbc.gridy = 0; 
         add(lbl_tipo, gbc); 
@@ -130,10 +137,8 @@ public class VRegistrarEmpleado extends JFrame {
         
         
         btn_agregar.addActionListener(e ->{
-            if (!Validaciones.validarNombres(txt_nombre.getText())) {
-                JOptionPane.showMessageDialog(this,"El nombre no cumple con el formato");
-                return;
-            }
+            
+            try{
             if (!Validaciones.validarNombres(txt_nombre.getText())) {
                 JOptionPane.showMessageDialog(this,"El nombre no cumple con el formato");
                 return;
@@ -146,11 +151,39 @@ public class VRegistrarEmpleado extends JFrame {
                 JOptionPane.showMessageDialog(this,"El apellido materno no cumple con el formato");
                 return;
             }
+            EmpleadoDTO empleado = new EmpleadoDTO();
+
+            empleado.setNombres(txt_nombre.getText());
+            empleado.setApellido_paterno(txt_apellido_paterno.getText());
+            empleado.setApellido_materno(txt_apellido_materno.getText());
+            empleado.setContrasena(txt_contrasena.getText());
+            empleado.setNombre_usuario(txt_nombre_usuario.getText());
+
+            empleadoBO.registrarEmpleado(empleado);
+
+                JOptionPane.showMessageDialog(this, "Registro exitoso");
+
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                JOptionPane.showMessageDialog(this, ex.getMessage());
+            }
+            
         });
         
         btn_cancelar.addActionListener(e ->{
             new VOpcionesEmpleado(null).setVisible(true);
             this.dispose();
+        });
+    }
+    
+        public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> {
+           
+        IConexionBD conexion = new ConexionBD();
+        IEmpleadoDAO empleadoDAO = new EmpleadoDAO(conexion);
+        EmpleadoBO empleadoBO = new EmpleadoBO(empleadoDAO);
+
+        new VRegistrarEmpleado(empleadoBO).setVisible(true);
         });
     }
     
