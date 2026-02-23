@@ -11,6 +11,7 @@ import Componentes.RoundedButton;
 import Componentes.TablaSimplePanel;
 import Negocio.BOs.ClienteBO;
 import Negocio.BOs.PedidoBO;
+import Negocio.BOs.TelefonoBO;
 import Negocio.DTOs.ClienteDTO;
 import Negocio.DTOs.PedidoDTO;
 import NegocioException.NegocioExcepcion;
@@ -36,8 +37,9 @@ public class VHistorial extends JFrame {
     private TablaSimplePanel tablaPedidos;
     private ClienteDTO cliente;
     private PedidoBO pedidoBO;
+    private TelefonoBO telefono; 
 
-    public VHistorial(PedidoBO pedidoBO, ClienteDTO cliente) {
+    public VHistorial(PedidoBO pedidoBO, ClienteDTO cliente, TelefonoBO telefono) {
         this.cliente = cliente;
         this.pedidoBO = pedidoBO;
         setTitle("Historial");
@@ -168,7 +170,7 @@ public class VHistorial extends JFrame {
         setVisible(true);
 
         btnSalir.addActionListener(e -> {
-            new VOpcionesCliente(pedidoBO,cliente).setVisible(true);
+            new VOpcionesCliente(pedidoBO,cliente, telefono).setVisible(true);
             this.dispose();
         });
 

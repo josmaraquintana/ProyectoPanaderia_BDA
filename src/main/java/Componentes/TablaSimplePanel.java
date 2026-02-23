@@ -43,7 +43,7 @@ public class TablaSimplePanel extends JPanel {
         add(scroll, BorderLayout.CENTER);
     }
 
-    // Método reutilizable
+    // Metodo reutilizable
     public void agregarFila(Object... datos) {
         modelo.addRow(datos);
     }

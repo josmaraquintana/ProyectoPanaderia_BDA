@@ -81,16 +81,10 @@ public class VOpcionesEmpleado extends JFrame {
         
         
         btn_volver.addActionListener(e ->{
-            new VInicioSesion(null,null).setVisible(true);
+            new VInicioSesion(null,null,null).setVisible(true);
             this.dispose();
         });
         
     }
-    /*
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            new VOpcionesEmpleado(empleado).setVisible(true);
-        });
-    }
-    */
+
 }

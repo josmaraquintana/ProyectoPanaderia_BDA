@@ -5,20 +5,35 @@
 package GUIs;
 
 import Componentes.*;
+import Negocio.BOs.PedidoBO;
+import Negocio.BOs.TelefonoBO;
 import Negocio.DTOs.ClienteDTO;
+import Negocio.DTOs.TelefonoDTO;
+import Negocio.DTOs.UsuarioDTO;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.net.URL;
+import java.util.List;
+import java.util.ArrayList;
 
 /**
  *
  * @author RAMSES
  */
-public class VAgregarTelefonos extends JFrame{
-    private ClienteDTO cliente;
-    public VAgregarTelefonos(ClienteDTO cliente) {
-        this.cliente  = cliente; 
+public class VAgregarTelefonos extends JFrame {
+
+    private PlaceholderTextField txtTelefono;
+    private PlaceholderTextField txtEtiqueta;
+    private TelefonoBO telefonoBO;
+    private PedidoBO pedidoBO;
+    private TablaSimplePanel tablaTelefonos;
+    private ClienteDTO cliente; 
+
+    public VAgregarTelefonos(PedidoBO pedidoBO, ClienteDTO cliente, TelefonoBO telefonoBO) {
+        this.pedidoBO = pedidoBO; 
+        this.telefonoBO = telefonoBO;
+        this.cliente = cliente; 
         setTitle("Agregar teléfonos");
         setSize(700, 520);
         setLocationRelativeTo(null);
@@ -33,8 +48,8 @@ public class VAgregarTelefonos extends JFrame{
         panelSuperior.setOpaque(false);
         panelSuperior.setBorder(new EmptyBorder(20, 30, 10, 30));
 
-        LabelPersonalizado lblTitulo =
-                new LabelPersonalizado("Agregar teléfonos", 28, Color.WHITE);
+        LabelPersonalizado lblTitulo
+                = new LabelPersonalizado("Agregar teléfonos", 28, Color.WHITE);
         lblTitulo.setHorizontalAlignment(SwingConstants.LEFT);
 
         JLabel lblLogo = new JLabel();
@@ -60,15 +75,14 @@ public class VAgregarTelefonos extends JFrame{
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.weightx = 1;
 
-        PlaceholderTextField txtTelefono =
-                new PlaceholderTextField("Teléfono");
-        PlaceholderTextField txtEtiqueta =
-                new PlaceholderTextField("Etiqueta");
+        txtTelefono = new PlaceholderTextField("Teléfono");
+        txtEtiqueta = new PlaceholderTextField("Etiqueta");
 
         txtTelefono.setPreferredSize(new Dimension(250, 40));
         txtEtiqueta.setPreferredSize(new Dimension(250, 40));
 
-        gbc.gridx = 0; gbc.gridy = 0;
+        gbc.gridx = 0;
+        gbc.gridy = 0;
         panelCampos.add(txtTelefono, gbc);
 
         gbc.gridx = 1;
@@ -80,22 +94,11 @@ public class VAgregarTelefonos extends JFrame{
         panelTablaContenedor.setLayout(new BoxLayout(panelTablaContenedor, BoxLayout.Y_AXIS));
         panelTablaContenedor.setBorder(new EmptyBorder(10, 60, 10, 60));
 
-        LabelPersonalizado lblTabla =
-                new LabelPersonalizado("Teléfonos ya agregados", 16, Color.WHITE);
+        LabelPersonalizado lblTabla
+                = new LabelPersonalizado("Teléfonos ya agregados", 16, Color.WHITE);
         lblTabla.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        TablaSimplePanel tablaTelefonos =
-                new TablaSimplePanel(new String[]{"Número", "Etiqueta"});
-
-        // Datos de ejemplo
-        tablaTelefonos.agregarFila("6441665434", "Personal");
-        tablaTelefonos.agregarFila("6621456798", "Casa");
-        tablaTelefonos.agregarFila("6441665434", "Personal");
-        tablaTelefonos.agregarFila("6621456798", "Casa");
-        tablaTelefonos.agregarFila("6441665434", "Personal");
-        tablaTelefonos.agregarFila("6621456798", "Casa");
-        tablaTelefonos.agregarFila("6441665434", "Personal");
-        tablaTelefonos.agregarFila("6621456798", "Casa");
+        tablaTelefonos = new TablaSimplePanel(new String[]{"Número", "Etiqueta"});
 
         panelTablaContenedor.add(lblTabla);
         panelTablaContenedor.add(Box.createVerticalStrut(10));
@@ -123,6 +126,81 @@ public class VAgregarTelefonos extends JFrame{
         add(panelCentro, BorderLayout.SOUTH);
 
         setVisible(true);
+        //BOTON PARA EJECUTAR TODO
+        btnAgregar.addActionListener(e -> agregarTelefono());
+        
+        btnSalir.addActionListener(e ->{
+            new VOpcionesCliente(pedidoBO,cliente,telefonoBO).setVisible(true);
+            this.dispose();
+        });
     }
 
+    private void cargarTelefonos() {
+        try {
+            tablaTelefonos.limpiar();
+
+            List<TelefonoDTO> lista = telefonoBO.listarTelefonos(cliente);
+
+            if (lista.isEmpty()) {
+                JOptionPane.showMessageDialog(this,
+                        "No hay telefonos registrados.",
+                        "Informacion",
+                        JOptionPane.INFORMATION_MESSAGE);
+            } else {
+                for (TelefonoDTO tel : lista) {
+                    tablaTelefonos.agregarFila(
+                            tel.getTelefono(),
+                            tel.getTipo()
+                    );
+                }
+            }
+
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this,
+                    "Error al cargar teléfonos: " + e.getMessage(),
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    private void agregarTelefono() {
+        try {
+            String telefonito = txtTelefono.getText().trim();
+            String etiqueta = txtEtiqueta.getText().trim();
+
+            if (telefonito.isEmpty() || etiqueta.isEmpty()) {
+                JOptionPane.showMessageDialog(this,
+                        "Todos los campos son obligatorios",
+                        "Advertencia",
+                        JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+
+            // Crear DTO
+            TelefonoDTO telefono = new TelefonoDTO();
+            telefono.setTelefono(telefonito);
+            telefono.setTipo(etiqueta);
+            telefono.setId(cliente.getId());
+
+            // Guardar en BD
+            telefonoBO.agregarTelefono(telefono);
+
+            JOptionPane.showMessageDialog(this,
+                    "Telefono agregado correctamente",
+                    "Éxito",
+                    JOptionPane.INFORMATION_MESSAGE);
+
+            // Limpiar campos una vez agregado el telefono
+            txtTelefono.setText("");
+            txtEtiqueta.setText("");
+
+            cargarTelefonos();
+
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this,
+                    "Error: " + e.getMessage(),
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE);
+        }
+    }
 }

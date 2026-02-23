@@ -6,10 +6,13 @@ package Pruebas;
 
 import GUIs.*;
 import Negocio.BOs.PedidoBO;
+import Negocio.BOs.TelefonoBO;
 import Negocio.BOs.UsuarioBO;
 import Persistencia.DAO.IPedidoDAO;
+import Persistencia.DAO.ITelefonoDAO;
 import Persistencia.DAO.IUsuarioDAO;
 import Persistencia.DAO.PedidoDAO;
+import Persistencia.DAO.TelefonoDAO;
 import Persistencia.DAO.UsuarioDAO;
 import Persistencia.conexion.ConexionBD;
 import Persistencia.conexion.IConexionBD;
@@ -32,8 +35,11 @@ public class pruebasjos {
         
         IPedidoDAO pedidoDAO = new PedidoDAO(conexion);
         PedidoBO pedidoBO = new PedidoBO(pedidoDAO);
+        
+        ITelefonoDAO telefonoDAO = new TelefonoDAO(conexion);
+        TelefonoBO telefonoBO = new TelefonoBO(telefonoDAO);
 
-        new VInicioSesion(pedidoBO,usuarioBO).setVisible(true);
+        new VInicioSesion(pedidoBO,usuarioBO,telefonoBO).setVisible(true);
 
     }
 

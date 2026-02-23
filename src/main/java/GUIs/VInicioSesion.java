@@ -7,6 +7,7 @@ package GUIs;
 import Componentes.PlaceholderTextField;
 import Componentes.RoundedButton;
 import Negocio.BOs.PedidoBO;
+import Negocio.BOs.TelefonoBO;
 import Negocio.BOs.UsuarioBO;
 import Negocio.DTOs.ClienteDTO;
 import Negocio.DTOs.EmpleadoDTO;
@@ -23,12 +24,14 @@ import java.net.URL;
  * @author RAMSES
  */
 public class VInicioSesion extends JFrame {
+    private TelefonoBO telefono;
     private UsuarioBO usuarioBO; 
     private PedidoBO pedido;
-    public VInicioSesion(PedidoBO pedido,UsuarioBO usuarioBO) {
+    public VInicioSesion(PedidoBO pedido,UsuarioBO usuarioBO, TelefonoBO telefono) {
         
         this.usuarioBO = usuarioBO;
         this.pedido = pedido; 
+        this.telefono = telefono; 
         
         
         setTitle("Inicio de sesión");
@@ -125,7 +128,7 @@ public class VInicioSesion extends JFrame {
                
                if(usuario instanceof ClienteDTO){
                    //Hacemos casting o conversion
-                   VOpcionesCliente ventana_op_cliente = new VOpcionesCliente(pedido,(ClienteDTO) usuario);
+                   VOpcionesCliente ventana_op_cliente = new VOpcionesCliente(pedido,(ClienteDTO) usuario, telefono);
                    ventana_op_cliente.setVisible(true);
                    this.dispose();
                }else if(usuario instanceof EmpleadoDTO){

@@ -7,6 +7,7 @@ package GUIs;
 import Componentes.LabelPersonalizado;
 import Componentes.RoundedButton;
 import Negocio.BOs.PedidoBO;
+import Negocio.BOs.TelefonoBO;
 import Negocio.DTOs.ClienteDTO;
 import java.awt.*;
 import java.awt.Color;
@@ -23,6 +24,7 @@ import javax.swing.SwingConstants;
 public class VOpcionesCliente extends JFrame {
     private ClienteDTO cliente; 
     private PedidoBO pedido; 
+    private TelefonoBO telefono;
     private RoundedButton btn_pedido;
     private RoundedButton btn_historial;
     private RoundedButton btn_editar_datos;
@@ -30,11 +32,13 @@ public class VOpcionesCliente extends JFrame {
     private RoundedButton btn_volver;
     private LabelPersonalizado lbl_usuario;
     private LabelPersonalizado lbl_nombre_usuario; 
-    public VOpcionesCliente(PedidoBO pedido,ClienteDTO cliente) {
+    public VOpcionesCliente(PedidoBO pedido,ClienteDTO cliente,TelefonoBO telefono) {
         
         //Valor para el cliente
         this.cliente = cliente; 
         this.pedido = pedido; 
+        this.telefono = telefono; 
+        
         
         
         setTitle("Opciones de Cliente");
@@ -120,7 +124,7 @@ public class VOpcionesCliente extends JFrame {
         });
         
         btn_historial.addActionListener(e->{
-            new VHistorial(pedido,cliente).setVisible(true);
+            new VHistorial(pedido,cliente,telefono).setVisible(true);
             this.dispose();
         });
         
@@ -130,11 +134,11 @@ public class VOpcionesCliente extends JFrame {
         });
         
         btn_agregar_telefono.addActionListener(e->{
-            new VAgregarTelefonos(cliente).setVisible(true);
+            new VAgregarTelefonos(pedido,cliente,telefono).setVisible(true);
         });
         
         btn_volver.addActionListener(e -> {
-            new VInicioSesion(null,null).setVisible(true);
+            new VInicioSesion(null,null,null).setVisible(true);
             this.dispose();
         });
         

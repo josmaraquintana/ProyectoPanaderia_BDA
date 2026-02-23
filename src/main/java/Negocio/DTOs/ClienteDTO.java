@@ -26,7 +26,7 @@ public class ClienteDTO extends UsuarioDTO{
         this.numero_casa = numero_casa;
         this.colonia = colonia;
     }
-
+    
     public ClienteDTO() {
     }
 
@@ -79,6 +79,6 @@ public class ClienteDTO extends UsuarioDTO{
     public void setFecha_nacimiento(Date fecha_nacimiento) {
         this.fecha_nacimiento = fecha_nacimiento;
     }
-    
-    
+
+  
 }
