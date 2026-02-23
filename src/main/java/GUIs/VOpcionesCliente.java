@@ -119,7 +119,7 @@ public class VOpcionesCliente extends JFrame {
             lbl_logo.setIcon(new ImageIcon(img));
         }
         btn_pedido.addActionListener(e->{
-            new VTomarPedido(cliente).setVisible(true);
+            new VTomarPedido(pedido, cliente, telefono).setVisible(true);
             this.dispose();
         });
         

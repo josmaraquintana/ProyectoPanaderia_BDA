@@ -10,6 +10,8 @@ import Componentes.PlaceholderTextField;
 import Componentes.RoundedButton;
 import Negocio.BOs.ICuponBO;
 import Negocio.BOs.IPedidoProgramadoBO;
+import Negocio.BOs.PedidoBO;
+import Negocio.BOs.TelefonoBO;
 import Negocio.DTOs.ClienteDTO;
 import Negocio.DTOs.CuponDTO;
 import Negocio.fabrica.FabricaBOs;
@@ -30,6 +32,8 @@ import java.util.List;
 public class VResumenPedido extends JFrame {
 
     private ClienteDTO cliente;
+    private PedidoBO pedido;
+    private TelefonoBO telefono;
     private double cupon = 0.0;
     private ICuponBO cuponBO;
     private FabricaBOs fabricaBO;
@@ -38,7 +42,9 @@ public class VResumenPedido extends JFrame {
     private List<CuponDTO>  lista_cupones;
     private String notas;
     
-    public VResumenPedido(ClienteDTO cliente, List<ItemCarrito> carrito) {
+    public VResumenPedido(PedidoBO pedido,ClienteDTO cliente,TelefonoBO telefono, List<ItemCarrito> carrito) {
+        this.telefono = telefono;
+        this.pedido = pedido;
         this.cliente = cliente; 
         lista_cupones = new ArrayList<>();
         fabricaBO = new FabricaBOs();
@@ -182,7 +188,7 @@ public class VResumenPedido extends JFrame {
         //Cerrar ventana en caso de cambiar de cancelar
         btn_cancelar.addActionListener(e -> {
             
-            VTomarPedido tomar_pedido = new VTomarPedido(cliente);
+            VTomarPedido tomar_pedido = new VTomarPedido(pedido, cliente, telefono);
             tomar_pedido.setVisible(true);
             this.dispose();
             

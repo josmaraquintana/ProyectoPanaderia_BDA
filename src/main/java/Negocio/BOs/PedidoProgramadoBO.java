@@ -13,7 +13,7 @@ import NegocioException.NegocioExcepcion;
 import Persistencia.DAO.*;
 import Persistencia.fabrica.FabricaDAO;
 import PersistenciaException.PersistenciaExcepcion;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
@@ -51,7 +51,7 @@ public class PedidoProgramadoBO implements IPedidoProgramadoBO{
             
             
             PedidoDatosDTO pedidoDTO = new PedidoDatosDTO();
-            pedidoDTO.setFecha(LocalDate.now());
+            pedidoDTO.setFecha(LocalDateTime.now());
             pedidoDTO.setNum_productos(carrito.size());
             pedidoDTO.setSubtotal(subtotal);
             pedidoDTO.setTotal(total);

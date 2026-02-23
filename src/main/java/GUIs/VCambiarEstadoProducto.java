@@ -23,6 +23,8 @@ public class VCambiarEstadoProducto extends JFrame {
 
     private RoundedButton btnSalir;
     private RoundedButton btnCambiarEstado;
+    
+    // private List<>
 
     public VCambiarEstadoProducto() {
         setTitle("Cambiar Estado de Productos");
@@ -101,11 +103,7 @@ public class VCambiarEstadoProducto extends JFrame {
         // Tabla Simple Panel
         String[] columnas = {"Id producto", "Producto", "Estado"};
         tablaProductos = new TablaSimplePanel(columnas);
-        tablaProductos.agregarFila("1", "Dona de chocolate", "Disponible");
-        tablaProductos.agregarFila("2", "Pan integral", "No disponible");
-        tablaProductos.agregarFila("3", "Pan integral", "No disponible");
-        tablaProductos.agregarFila("4", "Pan integral", "No disponible");
-        tablaProductos.agregarFila("5", "Pan integral", "No disponible");
+        
         
         
         // Forzamos a que el JScrollPane muestre SIEMPRE la barra vertical

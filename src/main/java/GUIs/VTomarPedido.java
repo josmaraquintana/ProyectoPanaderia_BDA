@@ -6,6 +6,8 @@ package GUIs;
 
 import Componentes.*;
 import Negocio.BOs.IProductoBO;
+import Negocio.BOs.PedidoBO;
+import Negocio.BOs.TelefonoBO;
 import Negocio.DTOs.ClienteDTO;
 import Negocio.DTOs.ProductoDTO;
 import Negocio.fabrica.FabricaBOs;
@@ -30,6 +32,8 @@ public class VTomarPedido extends JFrame {
     private JPanel panel_lista;
     private List<ProductoDTO> listaTodosLosProductos;
     private static ClienteDTO cliente;
+    private static PedidoBO pedido;
+    private static TelefonoBO telefono;
     private IProductoBO productoBO;
     private FabricaBOs fabricaBO;
     
@@ -42,30 +46,9 @@ public class VTomarPedido extends JFrame {
     // Esta es tu lista de carrito
     private List<ItemCarrito> carrito = new ArrayList<>();
     
-    public VTomarPedido(ClienteDTO clienteNuevo) {
-        
-
-        ClienteDTO cliente = new ClienteDTO();
-        // 2. Llenamos los atributos HEREDADOS de UsuarioDTO 
-        // (Asumiendo los nombres de tus métodos, cámbialos si se llaman distinto)
-        cliente.setId_usuario(1);
-        cliente.setNombre_usuario("juanp");
-        cliente.setNombres("Juan");
-        cliente.setApellido_paterno("Pérez");
-        cliente.setApellido_materno("Gómez");
-        cliente.setContrasena("password123");
-        cliente.setEdad(35);
-        cliente.setCalle("Av. Tecnológico");
-        cliente.setCodigo_postal(85000);
-        cliente.setNumero_casa(1234);
-        cliente.setColonia("Centro");
-        cliente.setFecha_nacimiento(java.sql.Date.valueOf("1991-05-20"));
-        
-        
-        
-        
-        
-        
+    public VTomarPedido(PedidoBO pedido,ClienteDTO cliente,TelefonoBO telefono) {
+        this.telefono = telefono;
+        this.pedido = pedido;
         this.cliente = cliente; 
         fabricaBO = new FabricaBOs();
         productoBO = fabricaBO.obtenerProductoBO();
@@ -215,7 +198,7 @@ public class VTomarPedido extends JFrame {
         btn_cancelar.addActionListener(e -> {
             
             
-            VOpcionesCliente menu_cliente = new VOpcionesCliente(null, cliente,null);
+            VOpcionesCliente menu_cliente = new VOpcionesCliente(pedido, cliente, telefono);
             menu_cliente.setVisible(true);
             this.dispose();
             
@@ -229,7 +212,7 @@ public class VTomarPedido extends JFrame {
                 return;
             }
             
-            VResumenPedido ventana = new VResumenPedido(cliente, carrito);
+            VResumenPedido ventana = new VResumenPedido(pedido, cliente, telefono, carrito);
             ventana.setVisible(true);
             this.dispose();
             
@@ -358,7 +341,7 @@ public class VTomarPedido extends JFrame {
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
-            new VTomarPedido(cliente).setVisible(true);
+            new VTomarPedido(pedido, cliente, telefono).setVisible(true);
         });
     }
     
