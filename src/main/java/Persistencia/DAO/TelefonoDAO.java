@@ -43,9 +43,9 @@ public class TelefonoDAO implements ITelefonoDAO {
         this.conexionBD = conexionBD;
     }
 
-    public boolean agregarTelefono(String numero, String tipo,int id_cliente) throws SQLException {
+    public boolean agregarTelefono(String numero, String tipo, int id_cliente) throws SQLException {
 
-        String comandoInsert =  "INSERT INTO TelefonosClientes (id_cliente, telefono, tipo) VALUES (?,?,?)";
+        String comandoInsert = "INSERT INTO TelefonosClientes (id_cliente, telefono, tipo) VALUES (?,?,?)";
 
         try (Connection conn = this.conexionBD.crearConexion(); PreparedStatement ps = conn.prepareStatement(comandoInsert)) {
 
@@ -58,10 +58,10 @@ public class TelefonoDAO implements ITelefonoDAO {
     }
 
     //Metodo para poder listar todos los telefonos de un cliente
-    public List<TelefonoDTO> obtenerTelefnos(int id_cliente) throws SQLException {
+    public List<TelefonoDTO> obtenerTelefonos(int id_cliente) throws SQLException {
         List<TelefonoDTO> lista_telefonos = new ArrayList<>();
 
-        String comandoSQL = "SELECT t.id_telefono, t.telefono, t.tipo FROM TelefonosClientes t JOIN Clientes c ON t.id_cliente = c.id_cliente WHERE c.id_usuario = ?";
+        String comandoSQL = "SELECT id_telefono, id_cliente, telefono, tipo FROM TelefonosClientes WHERE id_cliente = ?";;
         try (Connection conn = this.conexionBD.crearConexion(); PreparedStatement ps = conn.prepareStatement(comandoSQL)) {
             ps.setInt(1, id_cliente);
             ResultSet rs = ps.executeQuery();
@@ -73,6 +73,9 @@ public class TelefonoDAO implements ITelefonoDAO {
                 telefonoDTO.setTipo(rs.getString("tipo"));
                 lista_telefonos.add(telefonoDTO);
             }
+        }catch(SQLException ex){
+            System.out.println("ERROR DE LA SQL: " + ex.getMessage());
+            throw ex;
         }
         return lista_telefonos;
 

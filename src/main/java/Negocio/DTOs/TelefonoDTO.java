@@ -20,6 +20,7 @@ public class TelefonoDTO {
         this.telefono = telefono;
         this.tipo = tipo; 
     }
+    
 
     public TelefonoDTO() {
     }

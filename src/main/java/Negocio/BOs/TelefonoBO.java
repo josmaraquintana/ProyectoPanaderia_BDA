@@ -45,13 +45,13 @@ public class TelefonoBO implements ITelefonoBO {
                 LOG.warning("Es necesaria una etiqueta para el telefono");
                 throw new NegocioExcepcion("Debe colocar un tipo de etiqueta al telefono");
             }
-
+            System.out.println("PRUEBA DE QUE EL ID SI ESTE LLEGANDO: " + telefono.getId_cliente());
             if (telefono.getId_cliente() <= 0) {
                 LOG.warning("Algo fallo con el cliente");
                 throw new NegocioExcepcion("Algo fallo con el cliente");
             }
 
-            return telefonoDAO.agregarTelefono(telefono.getTelefono().trim(), telefono.getTipo().trim(), telefono.getId());
+            return telefonoDAO.agregarTelefono(telefono.getTelefono().trim(), telefono.getTipo().trim(), telefono.getId_cliente());
         } catch (SQLException ex) {
             throw new NegocioExcepcion("Algo fallo a la hora de agregar el telefono");
         }
@@ -64,9 +64,10 @@ public class TelefonoBO implements ITelefonoBO {
                 throw new NegocioExcepcion("Usuario invalida, intenta otra ves");
             }
 
-            return telefonoDAO.obtenerTelefnos(cliente.getId_usuario());
+            return telefonoDAO.obtenerTelefonos(cliente.getId_cliente());
 
         } catch (SQLException ex) {
+            ex.printStackTrace();
             throw new NegocioExcepcion("No se pudo obtener la lista de telefonos");
         }
     }

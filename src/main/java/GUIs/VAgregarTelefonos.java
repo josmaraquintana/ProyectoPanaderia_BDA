@@ -181,7 +181,7 @@ public class VAgregarTelefonos extends JFrame {
             TelefonoDTO telefono = new TelefonoDTO();
             telefono.setTelefono(telefonito);
             telefono.setTipo(etiqueta);
-            telefono.setId(cliente.getId_usuario());
+            telefono.setId_cliente(cliente.getId_cliente());
 
             // Guardar en BD
             telefonoBO.agregarTelefono(telefono);

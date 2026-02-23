@@ -14,6 +14,6 @@ import java.util.List;
  */
 public interface ITelefonoDAO {
     public boolean agregarTelefono(String numero, String tipo, int id_usuario) throws SQLException;
-    public List<TelefonoDTO> obtenerTelefnos(int id_usuario) throws SQLException;
+    public List<TelefonoDTO> obtenerTelefonos(int id_usuario) throws SQLException;
     
 }
