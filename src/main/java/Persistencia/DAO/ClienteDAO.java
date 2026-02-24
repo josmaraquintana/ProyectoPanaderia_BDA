@@ -112,4 +112,62 @@ public class ClienteDAO implements IClienteDAO {
         return null;
     }
 
+    @Override
+    public void actualizarCliente(ClienteDTO cliente) throws PersistenciaExcepcion {
+
+        String sqlUsuario = """
+        UPDATE Usuarios
+        SET nombres = ?,
+            apellido_paterno = ?,
+            apellido_materno = ?
+        WHERE id_usuario = ?
+    """;
+
+        String sqlCliente = """
+        UPDATE Clientes
+        SET edad = ?,
+            fecha_nacimiento = ?,
+            calle = ?,
+            numero_casa = ?,
+            colonia = ?,
+            codigo_postal = ?
+        WHERE id_cliente = ?
+    """;
+
+        try (Connection conn = conexionBD.crearConexion()) {
+
+            conn.setAutoCommit(false);
+
+            try (PreparedStatement psUsuario = conn.prepareStatement(sqlUsuario); PreparedStatement psCliente = conn.prepareStatement(sqlCliente)) {
+
+                // UPDATE USUARIO
+                psUsuario.setString(1, cliente.getNombres());
+                psUsuario.setString(2, cliente.getApellido_paterno());
+                psUsuario.setString(3, cliente.getApellido_materno());
+                psUsuario.setInt(4, cliente.getId_usuario());
+                psUsuario.executeUpdate();
+
+                // UPDATE CLIENTE
+                psCliente.setInt(1, cliente.getEdad());
+                psCliente.setDate(2, cliente.getFecha_nacimiento());
+                psCliente.setString(3, cliente.getCalle());
+                psCliente.setInt(4, cliente.getNumero_casa());
+                psCliente.setString(5, cliente.getColonia());
+                psCliente.setInt(6, cliente.getCodigo_postal());
+                psCliente.setInt(7, cliente.getId_cliente());
+                psCliente.executeUpdate();
+
+                conn.commit();
+
+            } catch (SQLException ex) {
+                conn.rollback();
+                throw ex;
+            }
+
+        } catch (SQLException ex) {
+            throw new PersistenciaExcepcion("Error al actualizar cliente", ex);
+        }
+    }
+    
+    
 }

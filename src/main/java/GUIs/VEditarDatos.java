@@ -9,6 +9,8 @@ import Componentes.PlaceholderTextField;
 import Componentes.RoundedButton;
 import Negocio.BOs.ClienteBO;
 import Negocio.DTOs.ClienteDTO;
+import Negocio.DTOs.UsuarioDTO;
+import NegocioException.NegocioExcepcion;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
@@ -18,12 +20,16 @@ import java.net.URL;
  *
  * @author RAMSES
  */
-public class VEditarDatos extends JFrame{
+public class VEditarDatos extends JFrame {
+
     private ClienteDTO cliente;
     private ClienteBO clienteBO;
-    public VEditarDatos(ClienteDTO cliente, ClienteBO clienteBO) {
-        this.cliente = cliente; 
+    private JFrame ventanaAnterior;
+
+    public VEditarDatos(ClienteDTO cliente, ClienteBO clienteBO, JFrame ventanaAnterior) {
+        this.cliente = cliente;
         this.clienteBO = clienteBO;
+        this.ventanaAnterior = ventanaAnterior;
         setTitle("Editar datos");
         setSize(700, 520);
         setLocationRelativeTo(null);
@@ -40,8 +46,8 @@ public class VEditarDatos extends JFrame{
         panelSuperior.setOpaque(false);
         panelSuperior.setBorder(new EmptyBorder(20, 30, 10, 30));
 
-        LabelPersonalizado lblTitulo =
-                new LabelPersonalizado("Editar datos", 28, texto);
+        LabelPersonalizado lblTitulo
+                = new LabelPersonalizado("Editar datos", 28, texto);
         lblTitulo.setHorizontalAlignment(SwingConstants.LEFT);
 
         JLabel lblLogo = new JLabel();
@@ -68,36 +74,47 @@ public class VEditarDatos extends JFrame{
         gbc.weightx = 1;
 
         // ===== CAMPOS =====
-        PlaceholderTextField txtNumCasa1 = new PlaceholderTextField("Número de casa");
+        PlaceholderTextField txtNombre = new PlaceholderTextField("Nombre");
+        PlaceholderTextField txtApellidoPaterno = new PlaceholderTextField("Apellido Paterno");
+        PlaceholderTextField txtApellidoMaterno = new PlaceholderTextField("Apellido Materno");
         PlaceholderTextField txtCalle = new PlaceholderTextField("Calle");
         PlaceholderTextField txtColonia = new PlaceholderTextField("Colonia");
         PlaceholderTextField txtCodigoPostal = new PlaceholderTextField("Código Postal");
-        PlaceholderTextField txtNumCasa2 = new PlaceholderTextField("Número de casa");
+        PlaceholderTextField txtNumCasa = new PlaceholderTextField("Número de casa");
         PlaceholderTextField txtEdad = new PlaceholderTextField("Edad");
 
         Dimension campoSize = new Dimension(250, 40);
-        txtNumCasa1.setPreferredSize(campoSize);
+        txtNombre.setPreferredSize(campoSize);
+        txtApellidoPaterno.setPreferredSize(campoSize);
+        txtApellidoMaterno.setPreferredSize(campoSize);
         txtCalle.setPreferredSize(campoSize);
         txtColonia.setPreferredSize(campoSize);
         txtCodigoPostal.setPreferredSize(campoSize);
-        txtNumCasa2.setPreferredSize(campoSize);
+        txtNumCasa.setPreferredSize(campoSize);
         txtEdad.setPreferredSize(campoSize);
 
         // Fila 1
-        gbc.gridx = 0; gbc.gridy = 0;
-        panelFormulario.add(txtNumCasa1, gbc);
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        panelFormulario.add(txtNombre, gbc);
         gbc.gridx = 1;
-        panelFormulario.add(txtCalle, gbc);
+        panelFormulario.add(txtApellidoPaterno, gbc);
+        gbc.gridx = 2;
+        panelFormulario.add(txtApellidoMaterno, gbc);
 
         // Fila 2
-        gbc.gridx = 0; gbc.gridy = 1;
+        gbc.gridx = 0;
+        gbc.gridy = 1;
         panelFormulario.add(txtColonia, gbc);
         gbc.gridx = 1;
         panelFormulario.add(txtCodigoPostal, gbc);
+        gbc.gridx = 2;
+        panelFormulario.add(txtCalle, gbc);
 
         // Fila 3
-        gbc.gridx = 0; gbc.gridy = 2;
-        panelFormulario.add(txtNumCasa2, gbc);
+        gbc.gridx = 0;
+        gbc.gridy = 2;
+        panelFormulario.add(txtNumCasa, gbc);
         gbc.gridx = 1;
         panelFormulario.add(txtEdad, gbc);
 
@@ -105,10 +122,41 @@ public class VEditarDatos extends JFrame{
         JPanel panelBotones = new JPanel(new FlowLayout(FlowLayout.CENTER, 30, 20));
         panelBotones.setOpaque(false);
 
-        RoundedButton btnCancelar = new RoundedButton("Cancelar");
-        
-        
+        RoundedButton btnCancelar = new RoundedButton("Volver");
+
+        btnCancelar.addActionListener(e -> {
+            if (ventanaAnterior != null) {
+                ventanaAnterior.setVisible(true);
+            }
+            this.dispose();
+        });
+
         RoundedButton btnRegistrar = new RoundedButton("Editar");
+
+        btnRegistrar.addActionListener(e -> {
+
+            try {
+                cliente.setNombres(txtNombre.getText().trim());
+                cliente.setApellido_paterno(txtApellidoPaterno.getText().trim());
+                cliente.setApellido_materno(txtApellidoMaterno.getText().trim());
+
+                cliente.setNumero_casa(Integer.parseInt(txtNumCasa.getText().trim()));
+                cliente.setCalle(txtCalle.getText().trim());
+                cliente.setColonia(txtColonia.getText().trim());
+                cliente.setCodigo_postal(Integer.parseInt(txtCodigoPostal.getText().trim()));
+                cliente.setEdad(Integer.parseInt(txtEdad.getText().trim()));
+
+                clienteBO.actualizarCliente(cliente);
+
+                JOptionPane.showMessageDialog(this, "Datos actualizados correctamente");
+                this.dispose();
+
+            } catch (NegocioExcepcion ex) {
+                JOptionPane.showMessageDialog(this, ex.getMessage());
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(this, "Campos numéricos inválidos");
+            }
+        });
 
         panelBotones.add(btnCancelar);
         panelBotones.add(btnRegistrar);
@@ -120,6 +168,5 @@ public class VEditarDatos extends JFrame{
 
         setVisible(true);
     }
-    
 
 }

@@ -12,6 +12,7 @@ import PersistenciaException.PersistenciaExcepcion;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.mindrot.jbcrypt.BCrypt;
 
 /**
  *
@@ -72,6 +73,37 @@ public class ClienteBO implements IClienteBO{
             return cliente;
         } catch (PersistenciaExcepcion ex) {
             throw new NegocioExcepcion("Error al obtener cliente");
+        }
+    }
+    
+    @Override
+    public void actualizarCliente(ClienteDTO cliente) throws NegocioExcepcion {
+
+        if (cliente.getId_cliente() <= 0) {
+            throw new NegocioExcepcion("Id de cliente inválido");
+        }
+
+        if (cliente.getEdad() <= 0) {
+            throw new NegocioExcepcion("Edad inválida");
+        }
+
+        if (cliente.getCalle() == null || cliente.getCalle().isBlank()) {
+            throw new NegocioExcepcion("La calle es obligatoria");
+        }
+
+        if (cliente.getColonia() == null || cliente.getColonia().isBlank()) {
+            throw new NegocioExcepcion("La colonia es obligatoria");
+        }
+
+        if (cliente.getCodigo_postal() <= 0) {
+            throw new NegocioExcepcion("Código postal inválido");
+        }
+
+        try {
+            clienteDAO.actualizarCliente(cliente);
+        } catch (PersistenciaExcepcion ex) {
+            LOG.log(Level.SEVERE, "Error al actualizar cliente", ex);
+            throw new NegocioExcepcion("No se pudo actualizar el cliente");
         }
     }
 }

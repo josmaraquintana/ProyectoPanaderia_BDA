@@ -5,6 +5,7 @@
 package Persistencia.DAO;
 
 import Negocio.DTOs.ClienteDTO;
+import NegocioException.NegocioExcepcion;
 import PersistenciaException.PersistenciaExcepcion;
 import java.sql.SQLException;
 
@@ -17,5 +18,6 @@ public interface IClienteDAO {
     
     public void registrarUsuario(ClienteDTO cliente) throws PersistenciaExcepcion;
     public ClienteDTO obtenerClientePorUsuario(int id_cliente) throws PersistenciaExcepcion;
+    public void actualizarCliente(ClienteDTO cliente) throws PersistenciaExcepcion;
 }
 
