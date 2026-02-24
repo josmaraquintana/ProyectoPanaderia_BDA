@@ -9,6 +9,7 @@ import Persistencia.conexion.IConexionBD;
 import Persistencia.dominio.Cupon;
 import PersistenciaException.PersistenciaExcepcion;
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -64,7 +65,7 @@ public class CuponDAO implements ICuponDAO {
                     
                     cupon_obtenido.setNombre(resul.getString("nombre"));
                     cupon_obtenido.setDesc(resul.getDouble("descuento"));
-                    cupon_obtenido.setVigencia(resul.getObject("vigencia", LocalDate.class));
+                    cupon_obtenido.setVigencia(resul.getDate("vigencia"));
                     cupon_obtenido.setMax_usos(resul.getInt("max_uso"));
                     
                     // 2. Configuramos el ID para el UPDATE y lo ejecutamos
@@ -85,7 +86,6 @@ public class CuponDAO implements ICuponDAO {
         }
         
     }
-    
     
     @Override
     public CuponDTO obtenerCuponNombre(String nombre) throws PersistenciaExcepcion {
@@ -117,13 +117,40 @@ public class CuponDAO implements ICuponDAO {
     }
     
     @Override
-    public CuponDTO agregarCupon(CuponDTO cupon) throws PersistenciaExcepcion{
+    public CuponDTO agregarCupon(CuponDTO cupon) throws PersistenciaExcepcion {
         String comandoSQL = "INSERT INTO Cupones (nombre, descuento, vigencia, max_uso) VALUES (?,?,?,?)";
-        try(Connection conn = this.conexionBD.crearConexion(); PreparedStatement ps = conn.prepareStatement(comandoSQL){
+        try (Connection conn = this.conexionBD.crearConexion(); PreparedStatement ps = conn.prepareStatement(comandoSQL, Statement.RETURN_GENERATED_KEYS)) {
+            /**
+             * Con el return generated keys vamos a devolver el id para evitar
+             * otra consulta y asi podremos saber que id se le asigno al cupon
+             * de manera sencilla
+             *
+             */
             ps.setString(1, cupon.getNombre());
-            ps.setDouble(2,cupon.getDesc());
+            ps.setDouble(2, cupon.getDesc());
             ps.setDate(3, new java.sql.Date(cupon.getVigencia().getTime()));
-            
+            ps.setInt(4, cupon.getMax_usos());
+
+            int filas_afectadas = ps.executeUpdate();
+            //Para poder saber si si se agrego asginamos las filas que se afectaron 
+            //si es que se afectaron 
+            if (filas_afectadas == 0) {
+                LOG.warning("No se pudo agregar el cupon");
+            }
+            //Si se agrego pasamos a este try para obtener el id del cupon
+            try (ResultSet id_generado = ps.getGeneratedKeys()) {
+                if (id_generado.next()) {
+                    cupon.setId(id_generado.getInt(1));
+                } else {
+                    LOG.warning("No se pudo obtener el id del cupon, revisa de nuevo");
+                }
+            }
+            return cupon;
+            //Una vez hecha esa validacion
+        } catch (SQLException ex) {
+            throw new PersistenciaExcepcion("No se pudo agregar el cupon", ex.getCause());
         }
     }
+    
+    
 }

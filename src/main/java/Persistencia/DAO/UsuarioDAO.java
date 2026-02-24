@@ -63,6 +63,9 @@ public class UsuarioDAO implements IUsuarioDAO {
                         cliente.setId_cliente(rs.getInt("id_cliente"));
                         cliente.setId_usuario(rs.getInt("id_usuario"));
                         cliente.setNombre_usuario(rs.getString("usuario"));
+                        cliente.setNombres(rs.getString("nombres"));
+                        cliente.setApellidoPaterno(rs.getString("apellido_paterno"));
+                        cliente.setApellidoMaterno(rs.getString("apellido_materno"));
                         cliente.setEdad(rs.getInt("edad"));
                         cliente.setFecha_nacimiento(rs.getDate("fecha_nac"));
 

@@ -27,29 +27,33 @@ public class CuponBO implements ICuponBO{
     public CuponDTO obtenerCupon(int codigo) throws NegocioExcepcion {
         
         try{
-            //Buscamos el cupon
+            // Buscamos el cupon
             CuponDTO cupon = cuponDAO.obtenerCupon(codigo);
             
-            //Validamos que no este vacio
+            // Validamos que no este vacio
             if (cupon == null) {
                 LOG.warning("El cupon que obtuvimos esta vacio.");
                 throw new NegocioExcepcion("No se encontro el cupon.");
             }
-            //Que las fechas sean vigentes 
+            
+            // --- AQUÍ OCURRE LA MAGIA DE LA CONVERSIÓN ---
+            // 1. Convertimos el Date de SQL a LocalDate
+            LocalDate fechaVigencia = cupon.getVigencia().toLocalDate(); 
             LocalDate hoy = LocalDate.now();
-            if (cupon.getVigencia().isAfter(hoy)) {
+            
+            // 2. Ahora sí, hacemos la comparación usando el LocalDate
+            if (fechaVigencia.isAfter(hoy)) {
                 LOG.warning("El cupon todavia no esta habilitado.");
                 throw new NegocioExcepcion("El cupon aun no esta vigente.");
             }
+            // ----------------------------------------------
             
-            //Regresamos el cupon
+            // Regresamos el cupon
             return cupon;
-            
             
         }catch(PersistenciaExcepcion ex){
             LOG.warning("No se pudo encontrar el cupon.");
             throw new NegocioExcepcion("Hubo un error al quere encontrar el cupon.");
         }
-
     }
 }

@@ -32,6 +32,7 @@ import java.util.List;
  */
 public class VResumenPedido extends JFrame {
 
+
     private ClienteBO clienteBO;
     private ClienteDTO cliente;
     private PedidoBO pedido;
@@ -44,6 +45,7 @@ public class VResumenPedido extends JFrame {
     private List<CuponDTO>  lista_cupones;
     private String notas;
     
+
     public VResumenPedido(PedidoBO pedido,ClienteDTO cliente,TelefonoBO telefono, List<ItemCarrito> carrito, ClienteBO clienteBO) {
         this.telefono = telefono;
         this.pedido = pedido;
@@ -175,9 +177,36 @@ public class VResumenPedido extends JFrame {
             IPedidoProgramadoBO pedidoBO = fabricaBO.obtenerPedidoProgramadoBO();
             
             try{
+                
+                // 1. Obtenemos TODO el texto que hay en el área en el momento de dar clic
+                String texto_completo = area_resumen.getText();
+                String separador = "-----------------------------------------";
+                String nota_final = ""; // Empezamos con una nota vacía por si acaso
+                
+                // 2. Buscamos dónde empieza la línea de guiones
+                int indice = texto_completo.indexOf(separador);
+                
+                //Si si encontro la línea (el usuario no la borró por accidente)
+                if (indice != -1) {
+                    //Cortamos el texto desde donde termina el separador hasta el final
+                    nota_final = texto_completo.substring(indice + separador.length());
+                    
+                    //Le quitamos los saltos de linea y espacios en blanco al inicio y al final
+                    nota_final = nota_final.trim();
+                    
+                    //Evitamos que pase de 200 caracteres para la BD
+                    if (nota_final.length() > 200) {
+                        nota_final = nota_final.substring(0, 200);
+                        System.out.println("La nota era muy larga y se recortó.");
+                    }
+                }
+                
                 //Realizamos los registros de pedido en la base de datos
-                pedidoBO.realizarRegistrosPedidosClientesCupones(carrito, cliente, lista_cupones, subtotal, total, notas);
+                pedidoBO.realizarRegistrosPedidosClientesCupones(carrito, cliente, lista_cupones, subtotal, total, nota_final);
                 JOptionPane.showMessageDialog(null, "Se realizo el pedido exitosamente");
+                VOpcionesCliente menu_cliente = new VOpcionesCliente(pedido, cliente, telefono,clienteBO);
+                menu_cliente.setVisible(true);
+                this.dispose();
                 
             }catch(NegocioExcepcion ex){
                 System.out.println("Hubo un error al querer hacer los registros del pedido.");
