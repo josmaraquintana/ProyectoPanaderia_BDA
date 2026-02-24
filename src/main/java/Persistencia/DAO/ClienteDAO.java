@@ -89,7 +89,7 @@ public class ClienteDAO implements IClienteDAO {
 
     @Override
     public ClienteDTO obtenerClientePorUsuario(int id_cliente) throws PersistenciaExcepcion {
-        String ComandoSQL = "SELECT id_cliente, edad, fecha_nac, calle, numero, colonia, codigo_postal id_usuario FROM Clientes WHERE id_usuario = ?";
+        String ComandoSQL = "SELECT id_cliente, edad, fecha_nacimiento, calle, numero_casa, colonia, codigo_postal, id_usuario FROM Clientes WHERE id_cliente = ?";
         try (Connection con = this.conexionBD.crearConexion(); PreparedStatement ps = con.prepareStatement(ComandoSQL)) {
             ps.setInt(1, id_cliente);
             try (ResultSet rs = ps.executeQuery()) {

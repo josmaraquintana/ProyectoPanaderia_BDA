@@ -132,7 +132,7 @@ public class VOpcionesCliente extends JFrame {
         });
         
         btn_editar_datos.addActionListener(e->{
-            new VEditarDatos(cliente).setVisible(true);
+            new VEditarDatos(cliente, clienteBO).setVisible(true);
             this.dispose();
         });
         
