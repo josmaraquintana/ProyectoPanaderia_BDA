@@ -4,9 +4,18 @@
  */
 package GUIs;
 
+import ClasesEnum.TipoProducto;
 import Componentes.LabelPersonalizado;
 import Componentes.PlaceholderTextField;
 import Componentes.RoundedButton;
+import Negocio.BOs.CuponBO;
+import Negocio.BOs.EmpleadoBO;
+import Negocio.BOs.PedidoBO;
+import Negocio.BOs.ProductoBO;
+import Negocio.BOs.UsuarioBO;
+import Negocio.DTOs.EmpleadoDTO;
+import Negocio.DTOs.ProductoDTO;
+import NegocioException.NegocioExcepcion;
 import java.awt.*;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
@@ -19,19 +28,28 @@ import javax.swing.border.LineBorder;
  * @author RAMSES
  */
 public class VAgregarProducto extends JFrame {
-
+    private EmpleadoDTO empleadoDTO;
+    private PedidoBO pedidoBO; 
+    private UsuarioBO usuarioBO;
+    private CuponBO cuponBO;
+    private EmpleadoBO empleadoBO;
     private PlaceholderTextField txtNombre;
     private PlaceholderTextField txtPrecio;
     private JTextArea txtDescripcion;
     private JTextArea txtIngredientes;
-
+    private ButtonGroup bgTipo; 
+    private ButtonGroup bgEstado;
     private JRadioButton rbDulce, rbSalado, rbIntegral;
     private JRadioButton rbDisponible, rbNoDisponible;
 
     private RoundedButton btnCancelar;
     private RoundedButton btnAgregar;
+    
+    private ProductoBO productoBO; 
 
-    public VAgregarProducto() {
+    public VAgregarProducto(ProductoBO productoBO, EmpleadoDTO empleadoDTO) {
+        this.productoBO = productoBO; 
+        this.empleadoDTO = empleadoDTO;
         setTitle("Agregar Producto");
         setSize(780, 540); // Reduje un poco la altura al quitar etiquetas
         setLocationRelativeTo(null);
@@ -119,18 +137,6 @@ public class VAgregarProducto extends JFrame {
         gbc.insets = new Insets(0, 20, 15, 20);
         add(scrollDesc, gbc);
 
-        // --- TEXTAREA INGREDIENTES ---
-        txtIngredientes = new JTextArea();
-        txtIngredientes.setLineWrap(true); txtIngredientes.setWrapStyleWord(true);
-        txtIngredientes.setBorder(BorderFactory.createEmptyBorder(8, 8, 8, 8));
-        configurarPlaceholderTextArea(txtIngredientes, "Ingredientes");
-        
-        JScrollPane scrollIngred = new JScrollPane(txtIngredientes);
-        scrollIngred.setBorder(null);
-        gbc.gridx = 2; gbc.gridy = 2;
-        gbc.insets = new Insets(0, 10, 15, 30);
-        add(scrollIngred, gbc);
-
         /**
          * ==========================================
          * 4. FILA 3 y 4: RADIO BUTTONS (TIPO Y ESTADO)
@@ -148,7 +154,7 @@ public class VAgregarProducto extends JFrame {
         ));
 
         rbDulce = new JRadioButton("Dulce"); rbSalado = new JRadioButton("Salado"); rbIntegral = new JRadioButton("Integral");
-        ButtonGroup bgTipo = new ButtonGroup(); bgTipo.add(rbDulce); bgTipo.add(rbSalado); bgTipo.add(rbIntegral);
+        bgTipo = new ButtonGroup(); bgTipo.add(rbDulce); bgTipo.add(rbSalado); bgTipo.add(rbIntegral);
 
         for (JRadioButton rb : new JRadioButton[]{rbDulce, rbSalado, rbIntegral}) {
             rb.setOpaque(false); rb.setForeground(colorTextoOscuro); rb.setFont(fuenteRadio);
@@ -173,7 +179,7 @@ public class VAgregarProducto extends JFrame {
         ));
 
         rbDisponible = new JRadioButton("Disponible"); rbNoDisponible = new JRadioButton("No disponible");
-        ButtonGroup bgEstado = new ButtonGroup(); bgEstado.add(rbDisponible); bgEstado.add(rbNoDisponible);
+        bgEstado = new ButtonGroup(); bgEstado.add(rbDisponible); bgEstado.add(rbNoDisponible);
 
         for (JRadioButton rb : new JRadioButton[]{rbDisponible, rbNoDisponible}) {
             rb.setOpaque(false); rb.setForeground(colorTextoOscuro); rb.setFont(fuenteRadio);
@@ -205,8 +211,80 @@ public class VAgregarProducto extends JFrame {
         
         // Foco inicial en un botón para que los placeholders se muestren correctamente
         SwingUtilities.invokeLater(() -> btnAgregar.requestFocusInWindow());
+        
+        btnAgregar.addActionListener(e-> registrarProducto());
+        //ESTO HACE QUE AUTOMATICO PONGA EL CURSOS EN EL PRIMER CAMPO A LLENAR
+        SwingUtilities.invokeLater(()-> btnAgregar.requestFocusInWindow());
+        btnCancelar.addActionListener(e->{
+            new VOpcionesEmpleado(productoBO,cuponBO, empleadoDTO,empleadoBO,usuarioBO,pedidoBO, null).setVisible(true);
+            this.dispose();
+        });
     }
-
+    private void registrarProducto(){
+        try{
+            ProductoDTO producto = new ProductoDTO();
+            producto.setNombre(txtNombre.getText());
+            
+            //Validacion del precio
+            try{
+                producto.setPrecio(Double.parseDouble(txtPrecio.getText()));
+            }catch(NumberFormatException e){
+                JOptionPane.showMessageDialog(this, "El precio no esta permitido");
+                return; 
+            }
+            //Obtener desc
+            String desc = txtDescripcion.getText();
+            //AQUI NO ES NADA DEL OTRO MUNDO CHICOS, NADA MAS APLIQUE UN TERNEARIO
+            //ESTOY AHORRANDO LINEAS DE CODIGO (entre en demencia) 
+            producto.setDescripcion(desc.equals("Descripcion") ? "" : desc);
+            
+            //MAPEO DEL ENUM DEL TIPO
+            //aqui ya no aplique terneario por el else if vale
+            if (rbDulce.isSelected()) {
+                producto.setTipo(TipoProducto.DULCE);
+            }else if(rbSalado.isSelected()){
+                producto.setTipo(TipoProducto.SALADO);
+            }else if(rbIntegral.isSelected()){
+                producto.setTipo(TipoProducto.INTEGRAL);
+            }else{
+                JOptionPane.showMessageDialog(this, "Seleccione un tipo de pan");
+                return; 
+            }
+            
+            //MAPEO DEL ESTADO (DISPONIBLE O NO) 
+            
+            if (rbDisponible.isSelected()) {
+                producto.setEstado("Disponible");
+            }else if(rbNoDisponible.isSelected()){
+                producto.setEstado("Agotado");
+                
+            }else{
+                JOptionPane.showMessageDialog(this, "Seleccione un estado");
+                return; 
+            }
+            
+            productoBO.registrarProducto(producto);
+            JOptionPane.showMessageDialog(this, "Producto agregado de manera correcta");
+            limpiarCampos();
+        }catch(NegocioExcepcion ex){
+            JOptionPane.showMessageDialog(this, "Error: " + ex.getMessage());
+        }
+        
+    }
+    
+    private void limpiarCampos(){
+        txtNombre.setText("");
+        txtPrecio.setText("");
+        
+        txtDescripcion.setText("Descripción");
+        
+        txtDescripcion.setForeground(Color.GRAY);
+        bgTipo.clearSelection();
+        bgEstado.clearSelection();
+        txtNombre.requestFocus();
+        
+    }
+    
     /**
      * Método auxiliar para darle comportamiento de Placeholder a un JTextArea
      */
@@ -230,12 +308,6 @@ public class VAgregarProducto extends JFrame {
                     textArea.setText(placeholder);
                 }
             }
-        });
-    }
-
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            new VAgregarProducto().setVisible(true);
         });
     }
 }

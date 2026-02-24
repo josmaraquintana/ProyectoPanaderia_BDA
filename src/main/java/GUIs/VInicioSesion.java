@@ -10,6 +10,7 @@ import Negocio.BOs.ClienteBO;
 import Negocio.BOs.CuponBO;
 import Negocio.BOs.EmpleadoBO;
 import Negocio.BOs.PedidoBO;
+import Negocio.BOs.ProductoBO;
 import Negocio.BOs.TelefonoBO;
 import Negocio.BOs.UsuarioBO;
 import Negocio.DTOs.ClienteDTO;
@@ -27,6 +28,7 @@ import java.net.URL;
  * @author RAMSES
  */
 public class VInicioSesion extends JFrame {
+    private ProductoBO productoBO;
     private TelefonoBO telefono;
     private UsuarioBO usuarioBO; 
     private PedidoBO pedido;
@@ -34,7 +36,8 @@ public class VInicioSesion extends JFrame {
     private EmpleadoBO empleadoBO;
     private ClienteBO clienteBO;
     
-    public VInicioSesion(PedidoBO pedido, UsuarioBO usuarioBO, TelefonoBO telefono,CuponBO cuponBO, EmpleadoBO empleadoBO, ClienteBO clienteBO) {
+    public VInicioSesion(ProductoBO productoBO,PedidoBO pedido, UsuarioBO usuarioBO, TelefonoBO telefono,CuponBO cuponBO, EmpleadoBO empleadoBO, ClienteBO clienteBO) {
+        this.productoBO = productoBO;
         this.cuponBO = cuponBO;
         this.empleadoBO = empleadoBO;
         this.usuarioBO = usuarioBO;
@@ -136,11 +139,11 @@ public class VInicioSesion extends JFrame {
                
                if(usuario instanceof ClienteDTO){
                    //Hacemos casting o conversion
-                   VOpcionesCliente ventana_op_cliente = new VOpcionesCliente(pedido,(ClienteDTO) usuario, telefono, clienteBO);
+                   VOpcionesCliente ventana_op_cliente = new VOpcionesCliente(productoBO,pedido,(ClienteDTO) usuario, telefono, clienteBO);
                    ventana_op_cliente.setVisible(true);
                    this.dispose();
                }else if(usuario instanceof EmpleadoDTO){
-                   VOpcionesEmpleado ventana_op_empleado =  new VOpcionesEmpleado(cuponBO,(EmpleadoDTO) usuario, empleadoBO, usuarioBO, pedido, telefono);
+                   VOpcionesEmpleado ventana_op_empleado =  new VOpcionesEmpleado(productoBO,cuponBO,(EmpleadoDTO) usuario, empleadoBO, usuarioBO, pedido, telefono);
                    ventana_op_empleado.setVisible(true);
                    this.dispose();
                }else{

@@ -9,6 +9,7 @@ import Negocio.BOs.ClienteBO;
 import Negocio.BOs.CuponBO;
 import Negocio.BOs.EmpleadoBO;
 import Negocio.BOs.PedidoBO;
+import Negocio.BOs.ProductoBO;
 import Negocio.BOs.TelefonoBO;
 import Negocio.BOs.UsuarioBO;
 import Persistencia.DAO.ClienteDAO;
@@ -18,9 +19,11 @@ import Persistencia.DAO.IClienteDAO;
 import Persistencia.DAO.ICuponDAO;
 import Persistencia.DAO.IEmpleadoDAO;
 import Persistencia.DAO.IPedidoDAO;
+import Persistencia.DAO.IProductoDAO;
 import Persistencia.DAO.ITelefonoDAO;
 import Persistencia.DAO.IUsuarioDAO;
 import Persistencia.DAO.PedidoDAO;
+import Persistencia.DAO.ProductoDAO;
 import Persistencia.DAO.TelefonoDAO;
 import Persistencia.DAO.UsuarioDAO;
 import Persistencia.conexion.ConexionBD;
@@ -56,8 +59,11 @@ public class pruebasjos {
         
         ICuponDAO cuponDAO = new CuponDAO(conexion);
         CuponBO cuponBO = new CuponBO(cuponDAO);
+        
+        IProductoDAO productoDAO = new ProductoDAO(conexion);
+        ProductoBO productoBO  = new ProductoBO(productoDAO);
 
-        new VInicioSesion(pedidoBO,usuarioBO,telefonoBO,cuponBO,empleadoBO, clienteBO).setVisible(true);
+        new VInicioSesion(productoBO,pedidoBO,usuarioBO,telefonoBO,cuponBO,empleadoBO, clienteBO).setVisible(true);
 
     }
 

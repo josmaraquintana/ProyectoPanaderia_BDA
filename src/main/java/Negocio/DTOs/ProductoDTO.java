@@ -4,6 +4,8 @@
  */
 package Negocio.DTOs;
 
+import ClasesEnum.TipoProducto;
+
 /**
  *
  * @author RAMSES
@@ -12,15 +14,17 @@ public class ProductoDTO {
     private String nombre;
     private String estado;
     private String descripcion;
+    private TipoProducto tipo; 
     private double precio;
 
     public ProductoDTO() {
     }
 
-    public ProductoDTO(String nombre, String estado, String descripcion, double precio) {
+    public ProductoDTO(String nombre, String estado, String descripcion, TipoProducto tipo, double precio) {
         this.nombre = nombre;
         this.estado = estado;
         this.descripcion = descripcion;
+        this.tipo = tipo;
         this.precio = precio;
     }
 
@@ -48,6 +52,15 @@ public class ProductoDTO {
         this.descripcion = descripcion;
     }
 
+    public TipoProducto getTipo() {
+        return tipo;
+    }
+
+    public void setTipo(TipoProducto tipo) {
+        this.tipo = tipo;
+    }
+
+    
     public double getPrecio() {
         return precio;
     }

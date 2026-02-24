@@ -172,7 +172,7 @@ public class VHistorial extends JFrame {
         setVisible(true);
 
         btnSalir.addActionListener(e -> {
-            new VOpcionesCliente(pedidoBO, cliente, telefono, clienteBO).setVisible(true);
+            new VOpcionesCliente(null,pedidoBO, cliente, telefono, clienteBO).setVisible(true);
             this.dispose();
         });
 

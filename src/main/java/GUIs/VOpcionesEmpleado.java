@@ -9,6 +9,7 @@ import Componentes.RoundedButton;
 import Negocio.BOs.CuponBO;
 import Negocio.BOs.EmpleadoBO;
 import Negocio.BOs.PedidoBO;
+import Negocio.BOs.ProductoBO;
 import Negocio.BOs.TelefonoBO;
 import Negocio.BOs.UsuarioBO;
 import Negocio.DTOs.EmpleadoDTO;
@@ -25,7 +26,8 @@ import javax.swing.SwingUtilities;
  */
 public class VOpcionesEmpleado extends JFrame {
 
-    //Declaracion del DTO
+    
+    private ProductoBO productoBO;
     private CuponBO cuponBO;
     private EmpleadoDTO empleado;
     private EmpleadoBO empleadoBO;
@@ -40,7 +42,8 @@ public class VOpcionesEmpleado extends JFrame {
     private LabelPersonalizado lbl_nombre_usuario;
     private RoundedButton btn_registrar_empleado;
 
-    public VOpcionesEmpleado(CuponBO cuponBO, EmpleadoDTO empleado, EmpleadoBO empleadoBO, UsuarioBO usuarioBO, PedidoBO pedido, TelefonoBO telefono) {
+    public VOpcionesEmpleado(ProductoBO productoBO,CuponBO cuponBO, EmpleadoDTO empleado, EmpleadoBO empleadoBO, UsuarioBO usuarioBO, PedidoBO pedido, TelefonoBO telefono) {
+        this.productoBO = productoBO;
         this.cuponBO = cuponBO;
         this.empleado = empleado;
         this.empleadoBO = empleadoBO;
@@ -91,14 +94,19 @@ public class VOpcionesEmpleado extends JFrame {
         gbc.gridy = 3;
         btn_registrar_empleado.setPreferredSize(tamano);
         add(btn_registrar_empleado, gbc);
-        btn_volver = new RoundedButton("Volver");
+        btn_agregar_producto = new RoundedButton("Agregar Producto");
         gbc.gridx = 1;
         gbc.gridy = 4;
+        btn_agregar_producto.setPreferredSize(tamano);
+        add(btn_agregar_producto, gbc);
+        btn_volver = new RoundedButton("Volver");
+        gbc.gridx = 1;
+        gbc.gridy = 5;
         btn_volver.setPreferredSize(tamano);
         add(btn_volver, gbc);
 
         btn_volver.addActionListener(e -> {
-            new VInicioSesion(pedido, usuarioBO, telefono, cuponBO,empleadoBO, null).setVisible(true);
+            new VInicioSesion(productoBO,pedido, usuarioBO, telefono, cuponBO,empleadoBO, null).setVisible(true);
             this.dispose();
         });
 
@@ -113,7 +121,11 @@ public class VOpcionesEmpleado extends JFrame {
         });
 
         btn_agregar_cupon.addActionListener(e -> {
-            new VAgregarCupon(this, cuponBO).setVisible(true);
+            new VAgregarCupon(this, this.cuponBO).setVisible(true);
+            this.dispose();
+        });
+        btn_agregar_producto.addActionListener(e -> {
+            new VAgregarProducto(productoBO, empleado).setVisible(true);
             this.dispose();
         });
 

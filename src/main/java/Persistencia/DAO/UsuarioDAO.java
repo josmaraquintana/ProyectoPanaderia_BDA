@@ -51,7 +51,6 @@ public class UsuarioDAO implements IUsuarioDAO {
     public Usuario buscarUsuarioLogin(String usuario_nombre, String contrasena_plana) throws PersistenciaExcepcion {
         Usuario usuario = null;
         String comandoSQL = "SELECT u.id_usuario, u.usuario, u.contrasena, u.nombres, u.apellido_paterno, u.apellido_materno, c.id_cliente, c.id_usuario AS cliente_checar, c.edad, c.fecha_nacimiento, e.id_usuario AS empleado_checar FROM Usuarios u LEFT JOIN Clientes c ON u.id_usuario = c.id_usuario LEFT JOIN Empleados e ON u.id_usuario = e.id_usuario WHERE u.usuario = ? ";
-        System.out.println("NUEVO HASH: " + BCrypt.hashpw("123", BCrypt.gensalt()));
 
         try (Connection conn = this.conexionBD.crearConexion(); PreparedStatement ps = conn.prepareStatement(comandoSQL)) {
             ps.setString(1, usuario_nombre);

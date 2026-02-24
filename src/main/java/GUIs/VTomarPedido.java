@@ -8,6 +8,7 @@ import Componentes.*;
 import Negocio.BOs.ClienteBO;
 import Negocio.BOs.IProductoBO;
 import Negocio.BOs.PedidoBO;
+import Negocio.BOs.ProductoBO;
 import Negocio.BOs.TelefonoBO;
 import Negocio.DTOs.ClienteDTO;
 import Negocio.DTOs.ProductoDTO;
@@ -36,6 +37,7 @@ public class VTomarPedido extends JFrame {
     private PedidoBO pedido;
     private TelefonoBO telefono;
     private IProductoBO productoBO;
+    private ProductoBO producto;
     private FabricaBOs fabricaBO;
     private ClienteBO clienteBO;
     
@@ -48,7 +50,8 @@ public class VTomarPedido extends JFrame {
     // Esta es tu lista de carrito
     private List<ItemCarrito> carrito = new ArrayList<>();
     
-    public VTomarPedido(PedidoBO pedido,ClienteDTO cliente,TelefonoBO telefono, ClienteBO clienteBO) {
+    public VTomarPedido(ProductoBO producto, PedidoBO pedido,ClienteDTO cliente,TelefonoBO telefono, ClienteBO clienteBO) {
+        this.producto = producto;
         this.telefono = telefono;
         this.pedido = pedido;
         this.cliente = cliente; 
@@ -200,7 +203,7 @@ public class VTomarPedido extends JFrame {
         btn_cancelar.addActionListener(e -> {
             
             
-            VOpcionesCliente menu_cliente = new VOpcionesCliente(pedido, cliente, telefono, clienteBO);
+            VOpcionesCliente menu_cliente = new VOpcionesCliente(producto,pedido, cliente, telefono, clienteBO);
             menu_cliente.setVisible(true);
             this.dispose();
             
@@ -215,7 +218,7 @@ public class VTomarPedido extends JFrame {
             }
 
             
-            VResumenPedido ventana = new VResumenPedido(pedido, cliente, telefono, carrito, clienteBO);
+            VResumenPedido ventana = new VResumenPedido(producto,pedido, cliente, telefono, carrito, clienteBO);
 
             ventana.setVisible(true);
             this.dispose();

@@ -8,6 +8,7 @@ import Componentes.LabelPersonalizado;
 import Componentes.RoundedButton;
 import Negocio.BOs.ClienteBO;
 import Negocio.BOs.PedidoBO;
+import Negocio.BOs.ProductoBO;
 import Negocio.BOs.TelefonoBO;
 import Negocio.DTOs.ClienteDTO;
 import java.awt.*;
@@ -23,6 +24,7 @@ import javax.swing.SwingConstants;
  * @author josma
  */
 public class VOpcionesCliente extends JFrame {
+    private ProductoBO productoBO;
     private ClienteDTO cliente; 
     private PedidoBO pedido; 
     private TelefonoBO telefono;
@@ -34,9 +36,10 @@ public class VOpcionesCliente extends JFrame {
     private LabelPersonalizado lbl_usuario;
     private LabelPersonalizado lbl_nombre_usuario; 
     private ClienteBO clienteBO;
-    public VOpcionesCliente(PedidoBO pedido,ClienteDTO cliente,TelefonoBO telefono, ClienteBO clienteBO) {
+    public VOpcionesCliente(ProductoBO productoBO, PedidoBO pedido,ClienteDTO cliente,TelefonoBO telefono, ClienteBO clienteBO) {
         
         //Valor para el cliente
+        this.productoBO = productoBO;
         this.cliente = cliente; 
         this.clienteBO = clienteBO;
         this.pedido = pedido; 
@@ -122,7 +125,7 @@ public class VOpcionesCliente extends JFrame {
             lbl_logo.setIcon(new ImageIcon(img));
         }
         btn_pedido.addActionListener(e->{
-            new VTomarPedido(pedido, cliente, telefono, clienteBO).setVisible(true);
+            new VTomarPedido(productoBO,pedido, cliente, telefono, clienteBO).setVisible(true);
             this.dispose();
         });
         
@@ -141,7 +144,7 @@ public class VOpcionesCliente extends JFrame {
         });
         
         btn_volver.addActionListener(e -> {
-            new VInicioSesion(null,null,null, null, null,clienteBO).setVisible(true);
+            new VInicioSesion(null,null,null,null, null, null,clienteBO).setVisible(true);
             this.dispose();
         });
         

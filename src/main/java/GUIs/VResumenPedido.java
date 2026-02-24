@@ -12,6 +12,7 @@ import Negocio.BOs.ClienteBO;
 import Negocio.BOs.ICuponBO;
 import Negocio.BOs.IPedidoProgramadoBO;
 import Negocio.BOs.PedidoBO;
+import Negocio.BOs.ProductoBO;
 import Negocio.BOs.TelefonoBO;
 import Negocio.DTOs.ClienteDTO;
 import Negocio.DTOs.CuponDTO;
@@ -36,6 +37,7 @@ public class VResumenPedido extends JFrame {
     private ClienteBO clienteBO;
     private ClienteDTO cliente;
     private PedidoBO pedido;
+    private ProductoBO productoBO; 
     private TelefonoBO telefono;
     private double cupon = 0.0;
     private ICuponBO cuponBO;
@@ -46,7 +48,8 @@ public class VResumenPedido extends JFrame {
     private String notas;
     
 
-    public VResumenPedido(PedidoBO pedido,ClienteDTO cliente,TelefonoBO telefono, List<ItemCarrito> carrito, ClienteBO clienteBO) {
+    public VResumenPedido(ProductoBO productoBO, PedidoBO pedido,ClienteDTO cliente,TelefonoBO telefono, List<ItemCarrito> carrito, ClienteBO clienteBO) {
+        this.productoBO = productoBO;
         this.telefono = telefono;
         this.pedido = pedido;
         this.cliente = cliente; 
@@ -204,7 +207,7 @@ public class VResumenPedido extends JFrame {
                 //Realizamos los registros de pedido en la base de datos
                 pedidoBO.realizarRegistrosPedidosClientesCupones(carrito, cliente, lista_cupones, subtotal, total, nota_final);
                 JOptionPane.showMessageDialog(null, "Se realizo el pedido exitosamente");
-                VOpcionesCliente menu_cliente = new VOpcionesCliente(pedido, cliente, telefono,clienteBO);
+                VOpcionesCliente menu_cliente = new VOpcionesCliente(productoBO,pedido, cliente, telefono,clienteBO);
                 menu_cliente.setVisible(true);
                 this.dispose();
                 
@@ -219,7 +222,7 @@ public class VResumenPedido extends JFrame {
         //Cerrar ventana en caso de cambiar de cancelar
         btn_cancelar.addActionListener(e -> {
             
-            VTomarPedido tomar_pedido = new VTomarPedido(pedido, cliente, telefono, clienteBO);
+            VTomarPedido tomar_pedido = new VTomarPedido(productoBO,pedido, cliente, telefono, clienteBO);
             tomar_pedido.setVisible(true);
             this.dispose();
             

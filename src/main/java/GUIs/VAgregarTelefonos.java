@@ -7,6 +7,7 @@ package GUIs;
 import Componentes.*;
 import Negocio.BOs.ClienteBO;
 import Negocio.BOs.PedidoBO;
+import Negocio.BOs.ProductoBO;
 import Negocio.BOs.TelefonoBO;
 import Negocio.DTOs.ClienteDTO;
 import Negocio.DTOs.TelefonoDTO;
@@ -133,7 +134,7 @@ public class VAgregarTelefonos extends JFrame {
         btnAgregar.addActionListener(e -> agregarTelefono());
         
         btnSalir.addActionListener(e ->{
-            new VOpcionesCliente(pedidoBO,cliente,telefonoBO, clienteBO).setVisible(true);
+            new VOpcionesCliente(null,pedidoBO,cliente,telefonoBO, clienteBO).setVisible(true);
             this.dispose();
         });
     }

@@ -15,5 +15,5 @@ import java.util.List;
 public interface IProductoBO {
     
     public List<ProductoDTO> obtenerListaProductos() throws NegocioExcepcion;
-    
+    public void registrarProducto(ProductoDTO producto) throws NegocioExcepcion;
 }
