@@ -40,7 +40,7 @@ public class ConexionBD implements IConexionBD {
      * Contraseña asociada al usuario de la base de datos.
      */
 
-    private final String CONTRASENIA = "JoskPOTRO23";
+    private final String CONTRASENIA = "vaquita15";
 
     /**
      * Crea y retorna una conexión activa con la base de datos.

@@ -9,6 +9,7 @@ import Negocio.BOs.ClienteBO;
 import Negocio.BOs.PedidoBO;
 import Negocio.BOs.ProductoBO;
 import Negocio.BOs.TelefonoBO;
+import Negocio.BOs.UsuarioBO;
 import Negocio.DTOs.ClienteDTO;
 import Negocio.DTOs.TelefonoDTO;
 import Negocio.DTOs.UsuarioDTO;
@@ -32,12 +33,16 @@ public class VAgregarTelefonos extends JFrame {
     private TablaSimplePanel tablaTelefonos;
     private ClienteDTO cliente; 
     private ClienteBO clienteBO;
+    private UsuarioBO usuarioBO;
+    private JFrame ventanaAnterior;
 
-    public VAgregarTelefonos(PedidoBO pedidoBO, ClienteDTO cliente, TelefonoBO telefonoBO, ClienteBO clienteBO) {
+    public VAgregarTelefonos(PedidoBO pedidoBO, ClienteDTO cliente, TelefonoBO telefonoBO, ClienteBO clienteBO, UsuarioBO usuarioBO, JFrame ventanaAnterior) {
         this.pedidoBO = pedidoBO; 
         this.telefonoBO = telefonoBO;
         this.clienteBO = clienteBO;
         this.cliente = cliente; 
+        this.usuarioBO = usuarioBO;
+        this.ventanaAnterior = ventanaAnterior;
         setTitle("Agregar teléfonos");
         setSize(700, 520);
         setLocationRelativeTo(null);
@@ -133,8 +138,9 @@ public class VAgregarTelefonos extends JFrame {
         //BOTON PARA EJECUTAR TODO
         btnAgregar.addActionListener(e -> agregarTelefono());
         
-        btnSalir.addActionListener(e ->{
-            new VOpcionesCliente(null,pedidoBO,cliente,telefonoBO, clienteBO).setVisible(true);
+
+        btnSalir.addActionListener(e -> {
+            ventanaAnterior.setVisible(true);
             this.dispose();
         });
     }

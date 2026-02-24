@@ -201,6 +201,7 @@ public class VRegistrarCliente extends JFrame {
             ventanaAnterior.setVisible(true);
             this.dispose();
         });
+        
     }
     
     private void limpiarCampos() {

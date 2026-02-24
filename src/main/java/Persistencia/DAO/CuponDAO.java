@@ -151,6 +151,5 @@ public class CuponDAO implements ICuponDAO {
             throw new PersistenciaExcepcion("No se pudo agregar el cupon", ex.getCause());
         }
     }
-    
 
 }

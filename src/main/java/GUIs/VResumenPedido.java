@@ -14,6 +14,7 @@ import Negocio.BOs.IPedidoProgramadoBO;
 import Negocio.BOs.PedidoBO;
 import Negocio.BOs.ProductoBO;
 import Negocio.BOs.TelefonoBO;
+import Negocio.BOs.UsuarioBO;
 import Negocio.DTOs.ClienteDTO;
 import Negocio.DTOs.CuponDTO;
 import Negocio.fabrica.FabricaBOs;
@@ -46,11 +47,14 @@ public class VResumenPedido extends JFrame {
     private double total;
     private List<CuponDTO>  lista_cupones;
     private String notas;
+    private UsuarioBO usuarioBO;
+    private JFrame ventanaAnterior;
     
 
-    public VResumenPedido(ProductoBO productoBO, PedidoBO pedido,ClienteDTO cliente,TelefonoBO telefono, List<ItemCarrito> carrito, ClienteBO clienteBO) {
-        this.productoBO = productoBO;
+    public VResumenPedido(PedidoBO pedido,ClienteDTO cliente,TelefonoBO telefono, List<ItemCarrito> carrito, ClienteBO clienteBO, UsuarioBO usuarioBO, JFrame ventanaAnterior) {
         this.telefono = telefono;
+        this.ventanaAnterior = ventanaAnterior;
+        this.usuarioBO = usuarioBO;
         this.pedido = pedido;
         this.cliente = cliente; 
         lista_cupones = new ArrayList<>();
@@ -207,7 +211,7 @@ public class VResumenPedido extends JFrame {
                 //Realizamos los registros de pedido en la base de datos
                 pedidoBO.realizarRegistrosPedidosClientesCupones(carrito, cliente, lista_cupones, subtotal, total, nota_final);
                 JOptionPane.showMessageDialog(null, "Se realizo el pedido exitosamente");
-                VOpcionesCliente menu_cliente = new VOpcionesCliente(productoBO,pedido, cliente, telefono,clienteBO);
+                VOpcionesCliente menu_cliente = new VOpcionesCliente(pedido, cliente, telefono, clienteBO, usuarioBO, this);
                 menu_cliente.setVisible(true);
                 this.dispose();
                 
@@ -221,13 +225,10 @@ public class VResumenPedido extends JFrame {
         
         //Cerrar ventana en caso de cambiar de cancelar
         btn_cancelar.addActionListener(e -> {
-            
-            VTomarPedido tomar_pedido = new VTomarPedido(productoBO,pedido, cliente, telefono, clienteBO);
-            tomar_pedido.setVisible(true);
+            ventanaAnterior.setVisible(true);
             this.dispose();
-            
         });
-        
+
         
         //Boton para agregar cupon 
         btn_cupon.addActionListener(e -> {

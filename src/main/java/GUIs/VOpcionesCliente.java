@@ -10,6 +10,7 @@ import Negocio.BOs.ClienteBO;
 import Negocio.BOs.PedidoBO;
 import Negocio.BOs.ProductoBO;
 import Negocio.BOs.TelefonoBO;
+import Negocio.BOs.UsuarioBO;
 import Negocio.DTOs.ClienteDTO;
 import java.awt.*;
 import java.awt.Color;
@@ -36,7 +37,9 @@ public class VOpcionesCliente extends JFrame {
     private LabelPersonalizado lbl_usuario;
     private LabelPersonalizado lbl_nombre_usuario; 
     private ClienteBO clienteBO;
-    public VOpcionesCliente(ProductoBO productoBO, PedidoBO pedido,ClienteDTO cliente,TelefonoBO telefono, ClienteBO clienteBO) {
+    private UsuarioBO usuarioBO;
+    private JFrame ventanaAnterior;
+    public VOpcionesCliente(PedidoBO pedido,ClienteDTO cliente,TelefonoBO telefono, ClienteBO clienteBO, UsuarioBO usuarioBO, JFrame ventanaAnterior) {
         
         //Valor para el cliente
         this.productoBO = productoBO;
@@ -44,7 +47,8 @@ public class VOpcionesCliente extends JFrame {
         this.clienteBO = clienteBO;
         this.pedido = pedido; 
         this.telefono = telefono; 
-        
+        this.usuarioBO = usuarioBO;
+        this.ventanaAnterior = ventanaAnterior;
         
         
         setTitle("Opciones de Cliente");
@@ -125,12 +129,12 @@ public class VOpcionesCliente extends JFrame {
             lbl_logo.setIcon(new ImageIcon(img));
         }
         btn_pedido.addActionListener(e->{
-            new VTomarPedido(productoBO,pedido, cliente, telefono, clienteBO).setVisible(true);
+            new VTomarPedido(pedido, cliente, telefono, clienteBO, usuarioBO,this).setVisible(true);
             this.dispose();
         });
         
         btn_historial.addActionListener(e->{
-            new VHistorial(pedido,cliente,telefono, clienteBO).setVisible(true);
+            new VHistorial(pedido,cliente,telefono, clienteBO, usuarioBO, this).setVisible(true);
             this.dispose();
         });
         
@@ -140,11 +144,11 @@ public class VOpcionesCliente extends JFrame {
         });
         
         btn_agregar_telefono.addActionListener(e->{
-            new VAgregarTelefonos(pedido,cliente,telefono, clienteBO).setVisible(true);
+            new VAgregarTelefonos(pedido,cliente,telefono, clienteBO, usuarioBO, this).setVisible(true);
         });
         
         btn_volver.addActionListener(e -> {
-            new VInicioSesion(null,null,null,null, null, null,clienteBO).setVisible(true);
+            ventanaAnterior.setVisible(true);
             this.dispose();
         });
         
