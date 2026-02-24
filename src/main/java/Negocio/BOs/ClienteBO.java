@@ -3,7 +3,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package Negocio.BOs;
-
+import org.mindrot.jbcrypt.BCrypt;
 import Negocio.DTOs.ClienteDTO;
 import NegocioException.NegocioExcepcion;
 import Persistencia.DAO.*;
@@ -35,7 +35,12 @@ public class ClienteBO implements IClienteBO{
         if(cliente.getContrasena() == null || cliente.getContrasena().isBlank()){
             throw new NegocioExcepcion("Ingrese una contrasena");
         }
-        
+        //AQUI ES DONDE VAMOS A ENCRIPTAR LA CONTRASENA
+        //HOLA CHICOS PARA QUE ESTO NO LES MARQUE ERROR TIENEN QUE METERSE AL POM E INSERTAR LA DEPENDENCIA
+        //CLARO SI EL GITHUB YA LES ENVIA TODO CHIDO NO HACEN NADA Y ESTO NO LES MARCA ERROR
+        String passwordEncriptada = BCrypt.hashpw(cliente.getContrasena(), BCrypt.gensalt());
+        //Le cambiamos la contraseña al cliente por la encriptada
+        cliente.setContrasena(passwordEncriptada);
         if(cliente.getEdad() <= 0){
             throw new NegocioExcepcion("Ingrese una edad valida");
         }
