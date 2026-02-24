@@ -32,47 +32,46 @@ public class PedidoBO implements IPedidoBO {
     @Override
     public List<PedidoDTO> consultarHistorial(String fecha_inicio, String fecha_fin, int id_cliente, String tipo, EstadoPedido estado) throws NegocioExcepcion {
         try {
-            // 1. Validaciones de nulidad y vacíos
+            //Validacion de fechas vacias
             if (fecha_inicio == null || fecha_fin == null || fecha_inicio.isBlank() || fecha_fin.isBlank()) {
                 throw new NegocioExcepcion("Las fechas de búsqueda no pueden estar vacías.");
             }
-
+            //Validacion del id del cliente, que el problema con el id ya se soluciono en la dao jeje
             if (id_cliente <= 0) {
                 throw new NegocioExcepcion("ID de cliente no válido para la consulta.");
             }
-
+            //el tipo que es programado o express
             if (tipo == null || tipo.isBlank()) {
                 throw new NegocioExcepcion("Debe especificar el tipo de pedido (Programado/Express).");
             }
-
+            //el enum que en este caso se ingresa por texto, igual tiene validaciones
             if (estado == null) {
                 throw new NegocioExcepcion("El estado del pedido es obligatorio.");
             }
 
-            // 2. Limpieza de Strings de fecha (elimina espacios y caracteres invisibles)
-            // Solo permite números y guiones
-            String f1_limpia = fecha_inicio.trim().replaceAll("[^0-9-]", "");
-            String f2_limpia = fecha_fin.trim().replaceAll("[^0-9-]", "");
+            // Aqui estamos poniendonos estrictos con el tema de las fechas
+            //seteandolas para que hagan click de manera perfecta a la hora de consultar
+            String fecha_inicio_limpia = fecha_inicio.trim().replaceAll("[^0-9-]", "");
+            String fecha_fin_limpia = fecha_fin.trim().replaceAll("[^0-9-]", "");
 
-            // 3. Conversión de String a java.sql.Date
+            // Declaracion de variables date para luego darles el formato
             Date fecha_inicio_format;
             Date fecha_fin_format;
 
             try {
-                fecha_inicio_format = Date.valueOf(f1_limpia);
-                fecha_fin_format = Date.valueOf(f2_limpia);
+                fecha_inicio_format = Date.valueOf(fecha_inicio_limpia);
+                fecha_fin_format = Date.valueOf(fecha_fin_limpia);
             } catch (IllegalArgumentException e) {
-                LOG.warning("Error de formato en fechas: " + f1_limpia + " o " + f2_limpia);
+                LOG.warning("Error de formato en fechas: " + fecha_inicio_limpia + " o " + fecha_fin_limpia);
                 throw new NegocioExcepcion("Formato de fecha inválido. Use AAAA-MM-DD (ejemplo: 2026-02-23)");
             }
 
-            // 4. Validación de lógica de fechas
+            //La fecha de inicio no puede estar despues a la fecha fin
             if (fecha_inicio_format.after(fecha_fin_format)) {
                 throw new NegocioExcepcion("La fecha de inicio no puede ser posterior a la fecha de fin.");
             }
 
-            // 5. Llamada al DAO con los 5 parámetros
-            // (fecha_inicio, fecha_fin, id_cliente, tipo, estado)
+            // Llamada al dao
             return pedidoDAO.traerHistorial(fecha_inicio_format, fecha_fin_format, id_cliente, tipo, estado);
 
         } catch (PersistenciaExcepcion e) {

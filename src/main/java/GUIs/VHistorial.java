@@ -37,7 +37,7 @@ public class VHistorial extends JFrame {
     private TablaSimplePanel tablaPedidos;
     private ClienteDTO cliente;
     private PedidoBO pedidoBO;
-    private TelefonoBO telefono; 
+    private TelefonoBO telefono;
 
     public VHistorial(PedidoBO pedidoBO, ClienteDTO cliente, TelefonoBO telefono) {
         this.cliente = cliente;
@@ -170,22 +170,22 @@ public class VHistorial extends JFrame {
         setVisible(true);
 
         btnSalir.addActionListener(e -> {
-            new VOpcionesCliente(pedidoBO,cliente, telefono).setVisible(true);
+            new VOpcionesCliente(pedidoBO, cliente, telefono).setVisible(true);
             this.dispose();
         });
-              
+
         btnConsultar.addActionListener(e -> {
             try {
-                // 1. Validar Fechas (que no estén vacías)
+                //Validams que las fechas no vengan vacias o con espacios
                 String fecha_inicio = txtFechaInicio.getText().trim();
                 String fecha_fin = txtFechaFin.getText().trim();
-
+                //Lanzamos una ventana con el formato correcto en caso de que ingresen mal la fecha
                 if (fecha_inicio.isEmpty() || fecha_fin.isEmpty()) {
                     JOptionPane.showMessageDialog(this, "Debe ingresar ambas fechas (AAAA-MM-DD)");
                     return;
                 }
 
-                // 2. Determinar Tipo de Pedido
+                // Determinamos el tipo de pedido con los radiobutton
                 String tipo_pedido = "";
                 if (rbProgramado.isSelected()) {
                     tipo_pedido = "Programado";
@@ -196,7 +196,7 @@ public class VHistorial extends JFrame {
                     return;
                 }
 
-                // 3. Validar el ENUM del Estado
+                //Validamos el enum de ls pedidos y el damos el formato para que lo acepte la base de datos
                 String estado_letras = txtEstado.getText().trim().toUpperCase();
                 EstadoPedido estado_pedido;
                 try {
@@ -206,40 +206,41 @@ public class VHistorial extends JFrame {
                     return;
                 }
 
-                // 4. Validar ID del Cliente (Seguridad)
-                if (cliente == null || cliente.getId_cliente() <= 0) {
+                //Validar el id del cliente
+                /**
+                 * Esto lo tuvimos que resolver(por cuestion de tiempo) haciendo una consulta de id
+                 * dentro del comandosql para asginar los id a una sola variable por asi decirlo
+                 */
+                if (cliente == null || cliente.getId_cliente()<= 0) {
                     JOptionPane.showMessageDialog(this, "Error: No se ha cargado la información del cliente actual.", "Error de Sesión", JOptionPane.ERROR_MESSAGE);
                     return;
                 }
 
-                // 5. Llamada al BO (Pasando los 5 parámetros requeridos)
+                //Formamos el bo
                 List<PedidoDTO> lista = pedidoBO.consultarHistorial(
-                        fecha_inicio, 
-                        fecha_fin, 
-                        cliente.getId_cliente(), 
-                        tipo_pedido, 
+                        fecha_inicio,
+                        fecha_fin,
+                        cliente.getId_cliente(), //--> volvimos al id cliente porque cambiamos la consulta
+                        tipo_pedido,
                         estado_pedido
                 );
 
-                // 6. Procesar Resultados
+                //Si no se encontraron pedidos 
                 if (lista.isEmpty()) {
-                    JOptionPane.showMessageDialog(this, 
-                            "No se encontraron pedidos con los filtros seleccionados.", 
-                            "Sin resultados", 
+                    JOptionPane.showMessageDialog(this,
+                            "No se encontraron pedidos con los filtros seleccionados.",
+                            "Sin resultados",
                             JOptionPane.INFORMATION_MESSAGE);
-                    // Si tu tabla tiene un método limpiar, úsalo aquí
-                    // DefaultTableModel modelo = (DefaultTableModel) tblPedidos.getModel();
-                    // modelo.setRowCount(0);
                 } else {
-                    actualizarTabla(lista); // Asegúrate de que este método exista en tu GUI
+                    actualizarTabla(lista);
                 }
 
             } catch (NegocioExcepcion ex) {
-                // Aquí caerán los errores de Date.valueOf() que lanzará el BO
+                //Estos catch  son para cuando las fechas de formato fallan (que ya no deberian de fallar pero los voy a dejar)
                 JOptionPane.showMessageDialog(this, ex.getMessage(), "Error de Negocio", JOptionPane.ERROR_MESSAGE);
             } catch (Exception ex) {
-                // Error genérico por si algo más falla
-                JOptionPane.showMessageDialog(this, "Ocurrió un error inesperado: " + ex.getMessage(), "Error Crítico", JOptionPane.ERROR_MESSAGE);
+                //Esto es ya por si otra cosa me falla (que espero que no) en caso de que no sea ni el enum o la fecha y sea algo más
+                JOptionPane.showMessageDialog(this, "Paso algo inesperado: " + ex.getMessage(), "Error Critico", JOptionPane.ERROR_MESSAGE);
                 ex.printStackTrace();
             }
         });
