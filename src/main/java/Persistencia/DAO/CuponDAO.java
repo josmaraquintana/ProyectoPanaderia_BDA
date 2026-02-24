@@ -115,15 +115,15 @@ public class CuponDAO implements ICuponDAO {
         }
         
     }
-    
-    @Override
-    public CuponDTO agregarCupon(CuponDTO cupon) throws PersistenciaExcepcion{
-        String comandoSQL = "INSERT INTO Cupones (nombre, descuento, vigencia, max_uso) VALUES (?,?,?,?)";
-        try(Connection conn = this.conexionBD.crearConexion(); PreparedStatement ps = conn.prepareStatement(comandoSQL){
-            ps.setString(1, cupon.getNombre());
-            ps.setDouble(2,cupon.getDesc());
-            ps.setDate(3, new java.sql.Date(cupon.getVigencia().getTime()));
-            
-        }
-    }
+//    
+//    @Override
+//    public CuponDTO agregarCupon(CuponDTO cupon) throws PersistenciaExcepcion{
+//        String comandoSQL = "INSERT INTO Cupones (nombre, descuento, vigencia, max_uso) VALUES (?,?,?,?)";
+//        try(Connection conn = this.conexionBD.crearConexion(); PreparedStatement ps = conn.prepareStatement(comandoSQL){
+//            ps.setString(1, cupon.getNombre());
+//            ps.setDouble(2,cupon.getDesc());
+//            ps.setDate(3, new java.sql.Date(cupon.getVigencia().getTime()));
+//            
+//        }
+//    }
 }
