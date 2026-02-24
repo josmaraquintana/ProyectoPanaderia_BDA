@@ -62,7 +62,7 @@ public class VOpcionesCliente extends JFrame {
         
         
         //CONFIGURAR ETIQUETAS
-        lbl_usuario = new LabelPersonalizado("Usuario: ",Color.white);
+        lbl_usuario = new LabelPersonalizado("Cliente: ",Color.white);
         gbc.gridx = 0; 
         gbc.gridy = 0; 
         add(lbl_usuario, gbc);

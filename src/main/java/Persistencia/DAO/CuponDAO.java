@@ -12,6 +12,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.time.LocalDate;
 import java.util.logging.Logger;
 
@@ -113,5 +114,16 @@ public class CuponDAO implements ICuponDAO {
             throw new PersistenciaExcepcion("Hubo un error al querer consultar el cupon.", ex);
         }
         
+    }
+    
+    @Override
+    public CuponDTO agregarCupon(CuponDTO cupon) throws PersistenciaExcepcion{
+        String comandoSQL = "INSERT INTO Cupones (nombre, descuento, vigencia, max_uso) VALUES (?,?,?,?)";
+        try(Connection conn = this.conexionBD.crearConexion(); PreparedStatement ps = conn.prepareStatement(comandoSQL){
+            ps.setString(1, cupon.getNombre());
+            ps.setDouble(2,cupon.getDesc());
+            ps.setDate(3, new java.sql.Date(cupon.getVigencia().getTime()));
+            
+        }
     }
 }

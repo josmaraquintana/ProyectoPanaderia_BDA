@@ -58,7 +58,7 @@ public class VOpcionesEmpleado extends JFrame {
         gbc.fill = GridBagConstraints.NONE; // para que no se expandan 
         
        //CONFIGURAR ETIQUETAS
-        lbl_usuario = new LabelPersonalizado("Usuario: ",Color.white);
+        lbl_usuario = new LabelPersonalizado("Empleado: ",Color.white);
         gbc.gridx = 0; 
         gbc.gridy = 0; 
         add(lbl_usuario, gbc);
