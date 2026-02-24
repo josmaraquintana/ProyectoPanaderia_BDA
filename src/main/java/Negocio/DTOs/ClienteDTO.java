@@ -29,17 +29,17 @@ public class ClienteDTO extends UsuarioDTO{
         this.colonia = colonia;
     }
 
+    public ClienteDTO() {
+    }
+    
+    
+
     public int getId_cliente() {
         return id_cliente;
     }
 
     public void setId_cliente(int id_cliente) {
         this.id_cliente = id_cliente;
-    }
-    
-    
-    
-    public ClienteDTO() {
     }
 
     public void setCalle(String calle) {

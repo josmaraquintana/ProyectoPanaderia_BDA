@@ -32,9 +32,9 @@ public class VTomarPedido extends JFrame {
 
     private JPanel panel_lista;
     private List<ProductoDTO> listaTodosLosProductos;
-    private static ClienteDTO cliente;
-    private static PedidoBO pedido;
-    private static TelefonoBO telefono;
+    private ClienteDTO cliente;
+    private PedidoBO pedido;
+    private TelefonoBO telefono;
     private IProductoBO productoBO;
     private FabricaBOs fabricaBO;
     private ClienteBO clienteBO;
@@ -213,8 +213,10 @@ public class VTomarPedido extends JFrame {
                 JOptionPane.showMessageDialog(null, "El carrito esta vacio no es posible esta opcion.");
                 return;
             }
+
             
             VResumenPedido ventana = new VResumenPedido(pedido, cliente, telefono, carrito, clienteBO);
+
             ventana.setVisible(true);
             this.dispose();
             
@@ -284,24 +286,26 @@ public class VTomarPedido extends JFrame {
                 double precio = producto_seleccionado.getPrecio();
                 double subtotal_articulo = precio * cantidad;
                 
-                boolean bandera = true;
-                int cont = 0;
-                for (ItemCarrito item_carrito : carrito) {
-                    bandera = false;
-                    //Si ya existe un producto con el mismo nombre en el carrito entonces se suma la cantidad y el subtotal 
-                    if (item_carrito.getProducto().getNombre().equals(producto_seleccionado.getNombre())) {
-                        carrito.get(cont).setCantidad(carrito.get(cont).getCantidad() + cantidad);
-                        carrito.get(cont).setSubtotal( carrito.get(cont).getSubtotal() + subtotal_articulo);
-                    }else{
-                        //Si no se agrega como nuevo
-                        carrito.add(new ItemCarrito(producto_seleccionado, cantidad, subtotal_articulo));
+                // --- NUEVA LÓGICA DEL CARRITO ---
+                boolean producto_ya_existe = false;
+
+                // Recorremos el carrito para ver si ya tenemos este producto
+                for (ItemCarrito item : carrito) {
+                    if (item.getProducto().getNombre().equals(producto_seleccionado.getNombre())) {
+                        // Sí existe: Sumamos la cantidad y el subtotal directo al objeto
+                        item.setCantidad(item.getCantidad() + cantidad);
+                        item.setSubtotal(item.getSubtotal() + subtotal_articulo);
+                        
+                        producto_ya_existe = true; // Marcamos que lo encontramos
+                        break; // ¡Importante! Salimos del ciclo porque ya lo actualizamos
                     }
                 }
                 
-                //Si no hay elementos se agrega 
-                if (bandera) {
+                // Si terminamos de buscar y no existía, entonces lo agregamos como nuevo
+                if (!producto_ya_existe) {
                     carrito.add(new ItemCarrito(producto_seleccionado, cantidad, subtotal_articulo));
                 }
+                // --------------------------------
 
                 // 6. Actualizar totales y visuales
                 subtotal_total += subtotal_articulo;
@@ -340,4 +344,5 @@ public class VTomarPedido extends JFrame {
         panel_lista.revalidate();
         panel_lista.repaint();
     }
+
 }

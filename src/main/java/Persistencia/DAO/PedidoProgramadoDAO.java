@@ -16,7 +16,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
-import java.time.LocalDate;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -80,12 +79,14 @@ public class PedidoProgramadoDAO implements IPedidoProgramadoDAO {
                 PreparedStatement ps_cuatro = conn.prepareStatement(comando_detalle)
                 ){
             //Remplazamos los signos de interrogacion
-            ps_uno.setObject(1, pedidoDTO.getFecha());
+            ps_uno.setTimestamp(1, Timestamp.valueOf(pedidoDTO.getFecha()));
             ps_uno.setInt(2, pedidoDTO.getNum_productos());
             ps_uno.setDouble(3, pedidoDTO.getSubtotal());
             ps_uno.setDouble(4, pedidoDTO.getTotal());
             ps_uno.setString(5, "Pendiente");
             ps_uno.setInt(6, cliente.getId_usuario());
+            
+            
             //Ejecutamos los comandos
             ps_uno.executeUpdate();
             try(ResultSet resul = ps_uno.getGeneratedKeys()){

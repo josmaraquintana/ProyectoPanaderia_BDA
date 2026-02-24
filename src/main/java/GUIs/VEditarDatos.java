@@ -7,6 +7,7 @@ package GUIs;
 import Componentes.LabelPersonalizado;
 import Componentes.PlaceholderTextField;
 import Componentes.RoundedButton;
+import Negocio.BOs.ClienteBO;
 import Negocio.DTOs.ClienteDTO;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -18,9 +19,11 @@ import java.net.URL;
  * @author RAMSES
  */
 public class VEditarDatos extends JFrame{
-    private ClienteDTO cliente; 
-    public VEditarDatos(ClienteDTO cliente) {
+    private ClienteDTO cliente;
+    private ClienteBO clienteBO;
+    public VEditarDatos(ClienteDTO cliente, ClienteBO clienteBO) {
         this.cliente = cliente; 
+        this.clienteBO = clienteBO;
         setTitle("Editar datos");
         setSize(700, 520);
         setLocationRelativeTo(null);
@@ -103,6 +106,8 @@ public class VEditarDatos extends JFrame{
         panelBotones.setOpaque(false);
 
         RoundedButton btnCancelar = new RoundedButton("Cancelar");
+        
+        
         RoundedButton btnRegistrar = new RoundedButton("Editar");
 
         panelBotones.add(btnCancelar);

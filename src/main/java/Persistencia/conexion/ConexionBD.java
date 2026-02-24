@@ -42,7 +42,6 @@ public class ConexionBD implements IConexionBD {
 
     private final String CONTRASENIA = "JoskPOTRO23";
 
-
     /**
      * Crea y retorna una conexión activa con la base de datos.
      *

@@ -38,6 +38,7 @@ public class UsuarioBO implements IUsuarioBO {
             if (usuario instanceof Cliente cliente) {
                 ClienteDTO cliente_dto = new ClienteDTO();
                 cliente_dto.setId_cliente(cliente.getId_cliente()); //CAMBIO DE ID DE USUARIO A CLIENTEEEEEE
+                cliente_dto.setId_usuario(cliente.getId_usuario());
                 cliente_dto.setNombre_usuario(cliente.getNombre_usuario());
                 cliente_dto.setNombres(cliente.getNombres());
                 cliente_dto.setApellido_paterno(cliente.getApellidoPaterno());
