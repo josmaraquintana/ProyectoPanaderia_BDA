@@ -9,6 +9,7 @@ import NegocioException.NegocioExcepcion;
 import Persistencia.DAO.*;
 import PersistenciaException.PersistenciaExcepcion;
 import java.time.LocalDate;
+import java.sql.Date;
 import java.util.logging.Logger;
 
 /**
@@ -36,8 +37,8 @@ public class CuponBO implements ICuponBO{
                 throw new NegocioExcepcion("No se encontro el cupon.");
             }
             //Que las fechas sean vigentes 
-            LocalDate hoy = LocalDate.now();
-            if (cupon.getVigencia().isAfter(hoy)) {
+            Date hoy = new Date(System.currentTimeMillis());
+            if (cupon.getVigencia().after(hoy)) {
                 LOG.warning("El cupon todavia no esta habilitado.");
                 throw new NegocioExcepcion("El cupon aun no esta vigente.");
             }
@@ -52,4 +53,37 @@ public class CuponBO implements ICuponBO{
         }
 
     }
+    
+    @Override
+    public CuponDTO agregarCupon(CuponDTO cupon) throws NegocioExcepcion {
+        try {
+            //Validamos el campo de cupon que no venga vacio
+            if (cupon.getNombre() == null || cupon.getNombre().isBlank()) {
+                throw new NegocioExcepcion("El nombre del cupon es obligatorio");
+            }
+
+            //Que el descuento no se exceda ni sea menos
+            if (cupon.getDesc()<= 0 || cupon.getDesc()> 100) {
+                throw new NegocioExcepcion("El descuento debe ser mayor a 0 y máximo 100%");
+            }
+
+            //Validamos que la fecha no sea una fecha pasada
+            java.util.Date hoy = new java.util.Date();
+            if (cupon.getVigencia() == null || cupon.getVigencia().before(hoy)) {
+                throw new NegocioExcepcion("La fecha de vigencia debe ser posterior a la fecha actual");
+            }
+
+            // 4. Validación de uso máximo
+            if (cupon.getMax_usos()<= 0) {
+                throw new NegocioExcepcion("El cupón debe tener al menos 1 uso permitido");
+            }
+
+            //Mnadamos al DAO para insertar
+            return cuponDAO.agregarCupon(cupon);
+
+        } catch (PersistenciaExcepcion e) {
+            throw new NegocioExcepcion("Error al guardar el cupon: " + e.getMessage());
+        }
+    }
+
 }

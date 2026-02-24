@@ -14,5 +14,6 @@ import NegocioException.NegocioExcepcion;
 public interface ICuponBO {
     
     public CuponDTO obtenerCupon(int codigo) throws NegocioExcepcion;
+    public CuponDTO agregarCupon(CuponDTO cupon) throws NegocioExcepcion;
     
 }

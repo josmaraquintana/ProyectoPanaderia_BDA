@@ -6,13 +6,16 @@ package Pruebas;
 
 import GUIs.*;
 import Negocio.BOs.ClienteBO;
+import Negocio.BOs.CuponBO;
 import Negocio.BOs.EmpleadoBO;
 import Negocio.BOs.PedidoBO;
 import Negocio.BOs.TelefonoBO;
 import Negocio.BOs.UsuarioBO;
 import Persistencia.DAO.ClienteDAO;
+import Persistencia.DAO.CuponDAO;
 import Persistencia.DAO.EmpleadoDAO;
 import Persistencia.DAO.IClienteDAO;
+import Persistencia.DAO.ICuponDAO;
 import Persistencia.DAO.IEmpleadoDAO;
 import Persistencia.DAO.IPedidoDAO;
 import Persistencia.DAO.ITelefonoDAO;
@@ -50,8 +53,11 @@ public class pruebasjos {
         
         IClienteDAO clienteDAO = new ClienteDAO(conexion);
         ClienteBO clienteBO = new ClienteBO(clienteDAO);
+        
+        ICuponDAO cuponDAO = new CuponDAO(conexion);
+        CuponBO cuponBO = new CuponBO(cuponDAO);
 
-        new VInicioSesion(pedidoBO,usuarioBO,telefonoBO,empleadoBO, clienteBO).setVisible(true);
+        new VInicioSesion(pedidoBO,usuarioBO,telefonoBO,cuponBO,empleadoBO, clienteBO).setVisible(true);
 
     }
 

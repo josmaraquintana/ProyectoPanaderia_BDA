@@ -4,6 +4,7 @@
  */
 package Negocio.DTOs;
 
+import java.sql.Date;
 import java.time.LocalDate;
 
 /**
@@ -15,13 +16,13 @@ public class CuponDTO {
     private int id;
     private String nombre;
     private double desc;
-    private LocalDate vigencia;
+    private Date vigencia;
     private int max_usos;
 
     public CuponDTO() {
     }
 
-    public CuponDTO(int id, String nombre, double desc, LocalDate vigencia, int max_usos) {
+    public CuponDTO(int id, String nombre, double desc, Date vigencia, int max_usos) {
         this.id = id;
         this.nombre = nombre;
         this.desc = desc;
@@ -29,7 +30,7 @@ public class CuponDTO {
         this.max_usos = max_usos;
     }
 
-    public CuponDTO(String nombre, double desc, LocalDate vigencia, int max_usos) {
+    public CuponDTO(String nombre, double desc, Date vigencia, int max_usos) {
         this.nombre = nombre;
         this.desc = desc;
         this.vigencia = vigencia;
@@ -60,11 +61,11 @@ public class CuponDTO {
         this.desc = desc;
     }
 
-    public LocalDate getVigencia() {
+    public Date getVigencia() {
         return vigencia;
     }
 
-    public void setVigencia(LocalDate vigencia) {
+    public void setVigencia(Date vigencia) {
         this.vigencia = vigencia;
     }
 

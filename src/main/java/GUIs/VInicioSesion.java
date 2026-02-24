@@ -7,6 +7,7 @@ package GUIs;
 import Componentes.PlaceholderTextField;
 import Componentes.RoundedButton;
 import Negocio.BOs.ClienteBO;
+import Negocio.BOs.CuponBO;
 import Negocio.BOs.EmpleadoBO;
 import Negocio.BOs.PedidoBO;
 import Negocio.BOs.TelefonoBO;
@@ -29,11 +30,12 @@ public class VInicioSesion extends JFrame {
     private TelefonoBO telefono;
     private UsuarioBO usuarioBO; 
     private PedidoBO pedido;
+    private CuponBO cuponBO; 
     private EmpleadoBO empleadoBO;
     private ClienteBO clienteBO;
     
-    public VInicioSesion(PedidoBO pedido, UsuarioBO usuarioBO, TelefonoBO telefono, EmpleadoBO empleadoBO, ClienteBO clienteBO) {
-        
+    public VInicioSesion(PedidoBO pedido, UsuarioBO usuarioBO, TelefonoBO telefono,CuponBO cuponBO, EmpleadoBO empleadoBO, ClienteBO clienteBO) {
+        this.cuponBO = cuponBO;
         this.empleadoBO = empleadoBO;
         this.usuarioBO = usuarioBO;
         this.pedido = pedido; 
@@ -139,7 +141,7 @@ public class VInicioSesion extends JFrame {
                    ventana_op_cliente.setVisible(true);
                    this.dispose();
                }else if(usuario instanceof EmpleadoDTO){
-                   VOpcionesEmpleado ventana_op_empleado =  new VOpcionesEmpleado((EmpleadoDTO) usuario, empleadoBO, usuarioBO, pedido, telefono);
+                   VOpcionesEmpleado ventana_op_empleado =  new VOpcionesEmpleado(cuponBO,(EmpleadoDTO) usuario, empleadoBO, usuarioBO, pedido, telefono);
                    ventana_op_empleado.setVisible(true);
                    this.dispose();
                }else{
