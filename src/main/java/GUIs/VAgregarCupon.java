@@ -22,11 +22,13 @@ public class VAgregarCupon extends JFrame {
     private PlaceholderTextField txtVigencia;
     private PlaceholderTextField txtDescuento;
     private PlaceholderTextField txtUsos; // Nuevo campo
+    private JFrame ventanaAnterior;
 
     private RoundedButton btnCancelar;
     private RoundedButton btnAgregar;
 
-    public VAgregarCupon() {
+    public VAgregarCupon(JFrame ventanaAnterior) {
+        this.ventanaAnterior = ventanaAnterior;
         setTitle("Agregar Cupón");
         setSize(700, 480); // Altura un poco mayor para acomodar el nuevo campo
         setLocationRelativeTo(null);
@@ -179,12 +181,19 @@ public class VAgregarCupon extends JFrame {
         gbc.fill = GridBagConstraints.NONE; 
         Dimension tamanoBotones = new Dimension(140, 40); 
 
-        btnCancelar = new RoundedButton("Cancelar");
+        btnCancelar = new RoundedButton("Volver");
         btnCancelar.setPreferredSize(tamanoBotones);
         gbc.gridx = 1; gbc.gridy = 7;
         gbc.anchor = GridBagConstraints.EAST; 
         gbc.insets = new Insets(10, 10, 20, 10);
         add(btnCancelar, gbc);
+        
+        btnCancelar.addActionListener(e -> {
+            if (ventanaAnterior != null) {
+                ventanaAnterior.setVisible(true);
+            }
+            this.dispose();
+        });
 
         btnAgregar = new RoundedButton("Agregar");
         btnAgregar.setPreferredSize(tamanoBotones);
@@ -195,11 +204,5 @@ public class VAgregarCupon extends JFrame {
         
         // Quitar el foco inicial de los text fields para que se vea el placeholder si lo hay
         SwingUtilities.invokeLater(() -> btnAgregar.requestFocusInWindow());
-    }
-
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            new VAgregarCupon().setVisible(true);
-        });
     }
 }

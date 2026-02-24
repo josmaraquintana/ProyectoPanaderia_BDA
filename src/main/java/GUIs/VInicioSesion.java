@@ -6,6 +6,7 @@ package GUIs;
 
 import Componentes.PlaceholderTextField;
 import Componentes.RoundedButton;
+import Negocio.BOs.EmpleadoBO;
 import Negocio.BOs.PedidoBO;
 import Negocio.BOs.TelefonoBO;
 import Negocio.BOs.UsuarioBO;
@@ -27,8 +28,11 @@ public class VInicioSesion extends JFrame {
     private TelefonoBO telefono;
     private UsuarioBO usuarioBO; 
     private PedidoBO pedido;
-    public VInicioSesion(PedidoBO pedido,UsuarioBO usuarioBO, TelefonoBO telefono) {
+    private EmpleadoBO empleadoBO;
+    
+    public VInicioSesion(PedidoBO pedido, UsuarioBO usuarioBO, TelefonoBO telefono, EmpleadoBO empleadoBO) {
         
+        this.empleadoBO = empleadoBO;
         this.usuarioBO = usuarioBO;
         this.pedido = pedido; 
         this.telefono = telefono; 
@@ -132,7 +136,7 @@ public class VInicioSesion extends JFrame {
                    ventana_op_cliente.setVisible(true);
                    this.dispose();
                }else if(usuario instanceof EmpleadoDTO){
-                   VOpcionesEmpleado ventana_op_empleado = new VOpcionesEmpleado((EmpleadoDTO) usuario);
+                   VOpcionesEmpleado ventana_op_empleado =  new VOpcionesEmpleado((EmpleadoDTO) usuario, empleadoBO, usuarioBO, pedido, telefono);
                    ventana_op_empleado.setVisible(true);
                    this.dispose();
                }else{
@@ -151,13 +155,13 @@ public class VInicioSesion extends JFrame {
         });
         
         btn_registrar.addActionListener(e ->{
-            new VRegistrarCliente(null).setVisible(true);
-            this.dispose();
+            new VRegistrarCliente(null, this).setVisible(true);
+            this.setVisible(false);
         });
         
         btn_express.addActionListener(e ->{
-            new VTomarPedidoExpress().setVisible(true);
-            this.dispose();
+            new VTomarPedidoExpress(this, null).setVisible(true);
+            this.setVisible(false);
         });
         
     }

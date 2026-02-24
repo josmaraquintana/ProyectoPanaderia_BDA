@@ -138,7 +138,7 @@ public class VOpcionesCliente extends JFrame {
         });
         
         btn_volver.addActionListener(e -> {
-            new VInicioSesion(null,null,null).setVisible(true);
+            new VInicioSesion(null,null,null, null).setVisible(true);
             this.dispose();
         });
         

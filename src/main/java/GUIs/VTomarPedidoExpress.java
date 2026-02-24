@@ -7,6 +7,7 @@ package GUIs;
 
 import Componentes.*;
 import Negocio.DTOs.ClienteDTO;
+import Negocio.DTOs.EmpleadoDTO;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.DocumentEvent;
@@ -24,9 +25,10 @@ public class VTomarPedidoExpress extends JFrame {
     private ClienteDTO cliente;
     private JPanel panelLista;
     private List<PanelProducto> listaTodosLosProductos;
+    private JFrame ventanaAnterior;
 
-    public VTomarPedidoExpress() {
-        
+    public VTomarPedidoExpress(JFrame ventanaAnterior, ClienteDTO cliente) {
+        this.ventanaAnterior = ventanaAnterior;
         this.cliente = cliente;
         setTitle("Catálogo de Productos");
         // 1. Reducimos el tamaño de la ventana (antes 875x650)
@@ -131,9 +133,16 @@ public class VTomarPedidoExpress extends JFrame {
         btnRealizar.setAlignmentX(Component.CENTER_ALIGNMENT);
         btnRealizar.setMaximumSize(sizeBotones);
 
-        RoundedButton btnCancelar = new RoundedButton("Cancelar");
+        RoundedButton btnCancelar = new RoundedButton("Atras");
         btnCancelar.setAlignmentX(Component.CENTER_ALIGNMENT);
         btnCancelar.setMaximumSize(sizeBotones);
+        
+        btnCancelar.addActionListener(e -> {
+            if (ventanaAnterior != null) {
+                ventanaAnterior.setVisible(true);
+            }
+            this.dispose();
+        });
 
         // --- ENSAMBLADO DEL PANEL DERECHO ---
         // 8. Espaciados (VerticalStrut) reducidos para que todo quede más junto

@@ -42,6 +42,8 @@ import javax.swing.border.EmptyBorder;
  */
 public class VRegistrarEmpleado extends JFrame {
     private EmpleadoDTO empleado;
+    private EmpleadoBO empleadoBO;
+    private JFrame ventanaAnterior;
     
     private LabelPersonalizado lbl_tipo;
     private PlaceholderTextField txt_nombre;
@@ -51,8 +53,10 @@ public class VRegistrarEmpleado extends JFrame {
     private PlaceholderTextField txt_contrasena;
     private RoundedButton btn_agregar;
     private RoundedButton btn_cancelar; 
-    public VRegistrarEmpleado(EmpleadoBO empleadoBO) {
-        this.empleado = empleado;
+    public VRegistrarEmpleado(EmpleadoBO empleadoBO, EmpleadoDTO empleado, JFrame ventanaAnterior) {
+        this.empleado = new EmpleadoDTO();
+        this.empleadoBO = empleadoBO;
+        this.ventanaAnterior = ventanaAnterior;
         Color color  = Color.decode("#c4a484");
         
         
@@ -129,7 +133,7 @@ public class VRegistrarEmpleado extends JFrame {
         gbc.gridx = 2; 
         gbc.gridy = 1;
         add(btn_agregar, gbc);
-        btn_cancelar = new RoundedButton("Cancelar");
+        btn_cancelar = new RoundedButton("Volver");
         gbc.gridx = 2; 
         gbc.gridy = 2;
         add(btn_cancelar, gbc);
@@ -151,7 +155,6 @@ public class VRegistrarEmpleado extends JFrame {
                 JOptionPane.showMessageDialog(this,"El apellido materno no cumple con el formato");
                 return;
             }
-            EmpleadoDTO empleado = new EmpleadoDTO();
 
             empleado.setNombres(txt_nombre.getText());
             empleado.setApellido_paterno(txt_apellido_paterno.getText());
@@ -170,22 +173,11 @@ public class VRegistrarEmpleado extends JFrame {
             
         });
         
-        btn_cancelar.addActionListener(e ->{
-            new VOpcionesEmpleado(null).setVisible(true);
-            this.dispose();
-        });
-    }
-    
-        public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-           
-        IConexionBD conexion = new ConexionBD();
-        IEmpleadoDAO empleadoDAO = new EmpleadoDAO(conexion);
-        EmpleadoBO empleadoBO = new EmpleadoBO(empleadoDAO);
-
-        new VRegistrarEmpleado(empleadoBO).setVisible(true);
-        });
-    }
-    
-       
+            btn_cancelar.addActionListener(e ->{
+                if (ventanaAnterior != null) {
+                    ventanaAnterior.setVisible(true);
+                }
+                this.dispose();
+            });
+    }  
 }

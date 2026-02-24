@@ -9,6 +9,7 @@ import Componentes.PlaceholderTextField;
 import Componentes.RoundedButton;
 import Componentes.TablaSimplePanel;
 import Negocio.BOs.IPedidoBO;
+import Negocio.DTOs.EmpleadoDTO;
 import Negocio.DTOs.PedidoEstadoDTO;
 import Negocio.fabrica.FabricaBOs;
 import NegocioException.NegocioExcepcion;
@@ -22,7 +23,8 @@ import javax.swing.*;
  * @author RAMSES
  */
 public class VCambioEstadoPedido extends JFrame {
-
+    private EmpleadoDTO empleado;
+    private JFrame ventanaAnterior;
     private PlaceholderTextField txtIdProducto;
     // NUEVO: Declaramos el ComboBox a nivel de clase para poder usarlo después en los botones
     private JComboBox<String> cbx_estado_pedido; 
@@ -36,8 +38,10 @@ public class VCambioEstadoPedido extends JFrame {
     
     
 
-    public VCambioEstadoPedido() {
+    public VCambioEstadoPedido(EmpleadoDTO empleado, JFrame ventanaAnterior) {
         fabricaBO = new FabricaBOs();
+        this.ventanaAnterior = ventanaAnterior;
+        this.empleado = empleado;
         pedidoBO = fabricaBO.obtenerPedidoBO();
         
         setTitle("Cambiar Estado de Productos");
@@ -176,7 +180,7 @@ public class VCambioEstadoPedido extends JFrame {
 
         Dimension tamanoBotones = new Dimension(160, 40); 
 
-        btnSalir = new RoundedButton("Salir");
+        btnSalir = new RoundedButton("Volver");
         btnSalir.setPreferredSize(tamanoBotones);
         pnlSur.add(btnSalir);
 
@@ -219,6 +223,13 @@ public class VCambioEstadoPedido extends JFrame {
             
         });
         
+        btnSalir.addActionListener(e -> {
+            if (ventanaAnterior != null) {
+                ventanaAnterior.setVisible(true);
+            }
+            this.dispose();
+        });
+        
         
     }
     
@@ -238,11 +249,5 @@ public class VCambioEstadoPedido extends JFrame {
             System.out.println("Hubo un error al obtener la lista para mostrar.");
             System.out.println(ex.getMessage());
         }
-    }
-
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            new VCambioEstadoPedido().setVisible(true);
-        });
     }
 }

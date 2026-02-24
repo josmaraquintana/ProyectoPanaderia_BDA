@@ -41,9 +41,11 @@ public class VRegistrarCliente extends JFrame {
     private JTextField nombre_usuarioField;
     private JTextField contrasenaField;
     private ClienteBO clienteBO;
+    private JFrame ventanaAnterior;
     
-    public VRegistrarCliente(ClienteBO clienteBO) {
+    public VRegistrarCliente(ClienteBO clienteBO, JFrame ventanaAnterior) {
         this.clienteBO = clienteBO;
+        this.ventanaAnterior = ventanaAnterior;
         setTitle("Registro");
         setSize(700, 520);
         setLocationRelativeTo(null);
@@ -115,10 +117,10 @@ public class VRegistrarCliente extends JFrame {
         JPanel botonesPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 30, 20));
         botonesPanel.setBackground(fondo);
 
-        RoundedButton btnCancelar = new RoundedButton("Cancelar");
+        RoundedButton btnAtras = new RoundedButton("Atras");
         RoundedButton btnRegistrar = new RoundedButton("Registrarse");
 
-        botonesPanel.add(btnCancelar);
+        botonesPanel.add(btnAtras);
         botonesPanel.add(btnRegistrar);
 
         mainPanel.add(topPanel, BorderLayout.NORTH);
@@ -194,6 +196,11 @@ public class VRegistrarCliente extends JFrame {
                 JOptionPane.showMessageDialog(this, ex.getMessage());
             }
         });
+        
+        btnAtras.addActionListener(e -> {
+            ventanaAnterior.setVisible(true);
+            this.dispose();
+        });
     }
     
 
@@ -210,7 +217,7 @@ public class VRegistrarCliente extends JFrame {
         IClienteDAO clienteDAO = new ClienteDAO(conexion);
         ClienteBO clienteBO = new ClienteBO(clienteDAO);
 
-        new VRegistrarCliente(clienteBO).setVisible(true);
+        new VRegistrarCliente(clienteBO, null).setVisible(true);
         });
     }
 
