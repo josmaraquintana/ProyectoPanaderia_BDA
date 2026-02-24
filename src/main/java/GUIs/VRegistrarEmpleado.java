@@ -41,10 +41,11 @@ import javax.swing.border.EmptyBorder;
  * @author josma
  */
 public class VRegistrarEmpleado extends JFrame {
+
     private EmpleadoDTO empleado;
     private EmpleadoBO empleadoBO;
     private JFrame ventanaAnterior;
-    
+
     private LabelPersonalizado lbl_tipo;
     private PlaceholderTextField txt_nombre;
     private PlaceholderTextField txt_apellido_paterno;
@@ -52,14 +53,14 @@ public class VRegistrarEmpleado extends JFrame {
     private PlaceholderTextField txt_nombre_usuario;
     private PlaceholderTextField txt_contrasena;
     private RoundedButton btn_agregar;
-    private RoundedButton btn_cancelar; 
+    private RoundedButton btn_cancelar;
+
     public VRegistrarEmpleado(EmpleadoBO empleadoBO, EmpleadoDTO empleado, JFrame ventanaAnterior) {
         this.empleado = new EmpleadoDTO();
         this.empleadoBO = empleadoBO;
         this.ventanaAnterior = ventanaAnterior;
-        Color color  = Color.decode("#c4a484");
-        
-        
+        Color color = Color.decode("#c4a484");
+
         setTitle("Registro Empleado");
         setSize(700, 420);
         setLocationRelativeTo(null);
@@ -68,22 +69,20 @@ public class VRegistrarEmpleado extends JFrame {
         setVisible(true);
         setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
-        
+
         gbc.insets = new Insets(4, 4, 4, 4); // espacio entre componentes
         gbc.anchor = GridBagConstraints.CENTER; // centrados
         gbc.fill = GridBagConstraints.NONE; // para que no se expandan 
-        
 
-        
         //CONFIGURAR ETIQUETAS
-        lbl_tipo = new LabelPersonalizado("Registro Empleado",Color.white);
-        gbc.gridx = 0; 
-        gbc.gridy = 0; 
-        add(lbl_tipo, gbc);   
+        lbl_tipo = new LabelPersonalizado("Registro Empleado", Color.white);
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        add(lbl_tipo, gbc);
         lbl_tipo = new LabelPersonalizado("Registro Empleado", color);
-        gbc.gridx = 1; 
-        gbc.gridy = 0; 
-        add(lbl_tipo, gbc); 
+        gbc.gridx = 1;
+        gbc.gridy = 0;
+        add(lbl_tipo, gbc);
         //AGREGAR EL LOGO
         JLabel lbl_logo = new JLabel();
         gbc.gridx = 2;
@@ -102,82 +101,90 @@ public class VRegistrarEmpleado extends JFrame {
         }
         //AGREGAR LOS CAMPOS A LLENAR
         txt_nombre = new PlaceholderTextField("Nombre");
-        gbc.gridx = 0; 
+        gbc.gridx = 0;
         gbc.gridy = 1;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         add(txt_nombre, gbc);
         //AGREGAR LOS CAMPOS A LLENAR
         txt_apellido_paterno = new PlaceholderTextField("Apellido paterno");
-        gbc.gridx = 0; 
+        gbc.gridx = 0;
         gbc.gridy = 2;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         add(txt_apellido_paterno, gbc);
         txt_apellido_materno = new PlaceholderTextField("Apellido materno");
-        gbc.gridx = 0; 
+        gbc.gridx = 0;
         gbc.gridy = 3;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         add(txt_apellido_materno, gbc);
         txt_nombre_usuario = new PlaceholderTextField("Usuario");
-        gbc.gridx = 1; 
+        gbc.gridx = 1;
         gbc.gridy = 1;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         add(txt_nombre_usuario, gbc);
         txt_contrasena = new PlaceholderTextField("Contraseña");
-        gbc.gridx = 1; 
+        gbc.gridx = 1;
         gbc.gridy = 2;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         add(txt_contrasena, gbc);
-        
+
         //AGREGAR BOTONES       
         btn_agregar = new RoundedButton("Agregar");
-        gbc.gridx = 2; 
+        gbc.gridx = 2;
         gbc.gridy = 1;
         add(btn_agregar, gbc);
         btn_cancelar = new RoundedButton("Volver");
-        gbc.gridx = 2; 
+        gbc.gridx = 2;
         gbc.gridy = 2;
         add(btn_cancelar, gbc);
         setVisible(true);
-        
-        
-        btn_agregar.addActionListener(e ->{
-            
-            try{
-            if (!Validaciones.validarNombres(txt_nombre.getText())) {
-                JOptionPane.showMessageDialog(this,"El nombre no cumple con el formato");
-                return;
-            }
-            if (!Validaciones.validarNombres(txt_apellido_paterno.getText())) {
-                JOptionPane.showMessageDialog(this,"El apellido paterno no cumple con el formato");
-                return;
-            }
-            if (!Validaciones.validarNombres(txt_apellido_materno.getText())) {
-                JOptionPane.showMessageDialog(this,"El apellido materno no cumple con el formato");
-                return;
-            }
 
-            empleado.setNombres(txt_nombre.getText());
-            empleado.setApellido_paterno(txt_apellido_paterno.getText());
-            empleado.setApellido_materno(txt_apellido_materno.getText());
-            empleado.setContrasena(txt_contrasena.getText());
-            empleado.setNombre_usuario(txt_nombre_usuario.getText());
+        btn_agregar.addActionListener(e -> {
 
-            empleadoBO.registrarEmpleado(empleado);
+            try {
+                if (!Validaciones.validarNombres(txt_nombre.getText())) {
+                    JOptionPane.showMessageDialog(this, "El nombre no cumple con el formato");
+                    return;
+                }
+                if (!Validaciones.validarNombres(txt_apellido_paterno.getText())) {
+                    JOptionPane.showMessageDialog(this, "El apellido paterno no cumple con el formato");
+                    return;
+                }
+                if (!Validaciones.validarNombres(txt_apellido_materno.getText())) {
+                    JOptionPane.showMessageDialog(this, "El apellido materno no cumple con el formato");
+                    return;
+                }
+
+                empleado.setNombres(txt_nombre.getText());
+                empleado.setApellido_paterno(txt_apellido_paterno.getText());
+                empleado.setApellido_materno(txt_apellido_materno.getText());
+                empleado.setContrasena(txt_contrasena.getText());
+                empleado.setNombre_usuario(txt_nombre_usuario.getText());
+
+                empleadoBO.registrarEmpleado(empleado);
 
                 JOptionPane.showMessageDialog(this, "Registro exitoso");
-
+                limpiarCamposEmpleado();
             } catch (Exception ex) {
                 ex.printStackTrace();
                 JOptionPane.showMessageDialog(this, ex.getMessage());
             }
-            
+
         });
-        
-            btn_cancelar.addActionListener(e ->{
-                if (ventanaAnterior != null) {
-                    ventanaAnterior.setVisible(true);
-                }
-                this.dispose();
-            });
-    }  
+
+        btn_cancelar.addActionListener(e -> {
+            if (ventanaAnterior != null) {
+                ventanaAnterior.setVisible(true);
+            }
+            this.dispose();
+        });
+    }
+
+    private void limpiarCamposEmpleado() {
+        txt_nombre.setText("");
+        txt_apellido_paterno.setText("");
+        txt_apellido_materno.setText("");
+        txt_contrasena.setText("");
+        txt_nombre_usuario.setText("");
+        txt_nombre.requestFocus();
+    }
 }

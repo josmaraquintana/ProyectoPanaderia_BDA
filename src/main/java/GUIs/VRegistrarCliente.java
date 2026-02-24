@@ -190,7 +190,7 @@ public class VRegistrarCliente extends JFrame {
             clienteBO.registrarCliente(cliente);
 
                 JOptionPane.showMessageDialog(this, "Registro exitoso");
-
+                limpiarCampos();
             } catch (Exception ex) {
                 ex.printStackTrace();
                 JOptionPane.showMessageDialog(this, ex.getMessage());
@@ -203,22 +203,25 @@ public class VRegistrarCliente extends JFrame {
         });
     }
     
+    private void limpiarCampos() {
+    nombreField.setText("");
+    apellidoPaternoField.setText("");
+    apellidoMaternoField.setText("");
+    fechaField.setText("");
+    edadField.setText("");
+    calleField.setText("");
+    numeroCasaField.setText("");
+    coloniaField.setText("");
+    cpField.setText("");
+    nombre_usuarioField.setText("");
+    contrasenaField.setText("");
+}
+    
 
     private PlaceholderTextField crearCampo(String placeholder) {
         PlaceholderTextField campo = new PlaceholderTextField(placeholder);
         campo.setPreferredSize(new Dimension(220, 40));
         return campo;
-    }
-
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-           
-        IConexionBD conexion = new ConexionBD();
-        IClienteDAO clienteDAO = new ClienteDAO(conexion);
-        ClienteBO clienteBO = new ClienteBO(clienteDAO);
-
-        new VRegistrarCliente(clienteBO, null).setVisible(true);
-        });
     }
 
 }
