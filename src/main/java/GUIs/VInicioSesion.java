@@ -123,11 +123,10 @@ public class VInicioSesion extends JFrame {
         btn_entrar.addActionListener(e -> {
             
             try {
-               LoginDTO loginDTO = new LoginDTO(txtUsuario.getText().trim(), txtContrasena.getText());
+               LoginDTO loginDTO = new LoginDTO(txtUsuario.getText().trim(), txtContrasena.getText().trim());
                
                //Llamamos al BO
                UsuarioDTO usuario = usuarioBO.login(loginDTO);
-               
                /**
                 * Aqui ocurrre el direccionamiento, que dependiendo de lo que se reciba en los txt
                 * puede ser cliente o empleado
@@ -150,11 +149,10 @@ public class VInicioSesion extends JFrame {
                }
                
             } catch (Exception ex) {
-                JOptionPane.showMessageDialog(null, "Usuario inválido");
-                txtUsuario.setText("");
-                txtContrasena.setText("");
-                txtUsuario.requestFocus();
+                ex.printStackTrace(); 
+                JOptionPane.showMessageDialog(null, "Usuario inválido: " + ex.getMessage());
             }
+            
         });
         
         btn_registrar.addActionListener(e ->{

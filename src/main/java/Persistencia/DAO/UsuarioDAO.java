@@ -49,7 +49,7 @@ public class UsuarioDAO implements IUsuarioDAO {
 
     public Usuario buscarUsuarioLogin(String usuario_nombre, String contrasena) throws PersistenciaExcepcion {
         Usuario usuario = null;
-        String comandoSQL = "SELECT u.id_usuario, u.usuario, u.contrasena, u.nombres, u.apellido_paterno, u.apellido_materno, c.id_cliente, c.id_usuario AS cliente_checar, c.edad, c.fecha_nac, e.id_usuario AS empleado_checar FROM Usuarios u LEFT JOIN Clientes c ON u.id_usuario = c.id_usuario LEFT JOIN Empleados e ON u.id_usuario = e.id_usuario WHERE u.usuario = ? AND u.contrasena = ?";
+        String comandoSQL = "SELECT u.id_usuario, u.usuario, u.contrasena, u.nombres, u.apellido_paterno, u.apellido_materno, c.id_cliente, c.id_usuario AS cliente_checar, c.edad, c.fecha_nacimiento, e.id_usuario AS empleado_checar FROM Usuarios u LEFT JOIN Clientes c ON u.id_usuario = c.id_usuario LEFT JOIN Empleados e ON u.id_usuario = e.id_usuario WHERE u.usuario = ? AND u.contrasena = ?";
 
         try (Connection conn = this.conexionBD.crearConexion(); PreparedStatement ps = conn.prepareStatement(comandoSQL)) {
             ps.setString(1, usuario_nombre);
@@ -57,7 +57,7 @@ public class UsuarioDAO implements IUsuarioDAO {
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
                     //En caso de que sea un cliente
-                    if (rs.getObject("cliente_checar") != null) {
+                    if (rs.getObject("id_cliente") != null) {
 
                         Cliente cliente = new Cliente();
                         cliente.setId_cliente(rs.getInt("id_cliente"));
@@ -67,11 +67,11 @@ public class UsuarioDAO implements IUsuarioDAO {
                         cliente.setApellidoPaterno(rs.getString("apellido_paterno"));
                         cliente.setApellidoMaterno(rs.getString("apellido_materno"));
                         cliente.setEdad(rs.getInt("edad"));
-                        cliente.setFecha_nacimiento(rs.getDate("fecha_nac"));
+                        cliente.setFecha_nacimiento(rs.getDate("fecha_nacimiento"));
 
                         usuario = cliente;
-                    } //En caso de que sea empleado
-                    else if (rs.getObject("empleado_checar") != null) {
+
+                    } else if (rs.getObject("empleado_checar") != null) {
 
                         Empleado empleado = new Empleado();
                         empleado.setId_usuario(rs.getInt("id_usuario"));
