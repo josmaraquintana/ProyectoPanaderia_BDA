@@ -5,6 +5,7 @@
 package GUIs;
 
 import Componentes.*;
+import Negocio.BOs.ClienteBO;
 import Negocio.BOs.PedidoBO;
 import Negocio.BOs.TelefonoBO;
 import Negocio.DTOs.ClienteDTO;
@@ -29,10 +30,12 @@ public class VAgregarTelefonos extends JFrame {
     private PedidoBO pedidoBO;
     private TablaSimplePanel tablaTelefonos;
     private ClienteDTO cliente; 
+    private ClienteBO clienteBO;
 
-    public VAgregarTelefonos(PedidoBO pedidoBO, ClienteDTO cliente, TelefonoBO telefonoBO) {
+    public VAgregarTelefonos(PedidoBO pedidoBO, ClienteDTO cliente, TelefonoBO telefonoBO, ClienteBO clienteBO) {
         this.pedidoBO = pedidoBO; 
         this.telefonoBO = telefonoBO;
+        this.clienteBO = clienteBO;
         this.cliente = cliente; 
         setTitle("Agregar teléfonos");
         setSize(700, 520);
@@ -130,7 +133,7 @@ public class VAgregarTelefonos extends JFrame {
         btnAgregar.addActionListener(e -> agregarTelefono());
         
         btnSalir.addActionListener(e ->{
-            new VOpcionesCliente(pedidoBO,cliente,telefonoBO).setVisible(true);
+            new VOpcionesCliente(pedidoBO,cliente,telefonoBO, clienteBO).setVisible(true);
             this.dispose();
         });
     }

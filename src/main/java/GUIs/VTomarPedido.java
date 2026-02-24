@@ -5,6 +5,7 @@
 package GUIs;
 
 import Componentes.*;
+import Negocio.BOs.ClienteBO;
 import Negocio.BOs.IProductoBO;
 import Negocio.BOs.PedidoBO;
 import Negocio.BOs.TelefonoBO;
@@ -36,6 +37,7 @@ public class VTomarPedido extends JFrame {
     private static TelefonoBO telefono;
     private IProductoBO productoBO;
     private FabricaBOs fabricaBO;
+    private ClienteBO clienteBO;
     
     private LabelPersonalizado lbl_subtotal;
     private PlaceholderTextField txt_cantidad;
@@ -46,7 +48,7 @@ public class VTomarPedido extends JFrame {
     // Esta es tu lista de carrito
     private List<ItemCarrito> carrito = new ArrayList<>();
     
-    public VTomarPedido(PedidoBO pedido,ClienteDTO cliente,TelefonoBO telefono) {
+    public VTomarPedido(PedidoBO pedido,ClienteDTO cliente,TelefonoBO telefono, ClienteBO clienteBO) {
         this.telefono = telefono;
         this.pedido = pedido;
         this.cliente = cliente; 
@@ -198,7 +200,7 @@ public class VTomarPedido extends JFrame {
         btn_cancelar.addActionListener(e -> {
             
             
-            VOpcionesCliente menu_cliente = new VOpcionesCliente(pedido, cliente, telefono);
+            VOpcionesCliente menu_cliente = new VOpcionesCliente(pedido, cliente, telefono, clienteBO);
             menu_cliente.setVisible(true);
             this.dispose();
             
@@ -212,7 +214,7 @@ public class VTomarPedido extends JFrame {
                 return;
             }
             
-            VResumenPedido ventana = new VResumenPedido(pedido, cliente, telefono, carrito);
+            VResumenPedido ventana = new VResumenPedido(pedido, cliente, telefono, carrito, clienteBO);
             ventana.setVisible(true);
             this.dispose();
             
@@ -338,11 +340,4 @@ public class VTomarPedido extends JFrame {
         panel_lista.revalidate();
         panel_lista.repaint();
     }
-
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            new VTomarPedido(pedido, cliente, telefono).setVisible(true);
-        });
-    }
-    
 }

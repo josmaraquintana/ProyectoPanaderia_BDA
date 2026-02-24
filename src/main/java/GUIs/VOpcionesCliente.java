@@ -6,6 +6,7 @@ package GUIs;
 
 import Componentes.LabelPersonalizado;
 import Componentes.RoundedButton;
+import Negocio.BOs.ClienteBO;
 import Negocio.BOs.PedidoBO;
 import Negocio.BOs.TelefonoBO;
 import Negocio.DTOs.ClienteDTO;
@@ -32,10 +33,12 @@ public class VOpcionesCliente extends JFrame {
     private RoundedButton btn_volver;
     private LabelPersonalizado lbl_usuario;
     private LabelPersonalizado lbl_nombre_usuario; 
-    public VOpcionesCliente(PedidoBO pedido,ClienteDTO cliente,TelefonoBO telefono) {
+    private ClienteBO clienteBO;
+    public VOpcionesCliente(PedidoBO pedido,ClienteDTO cliente,TelefonoBO telefono, ClienteBO clienteBO) {
         
         //Valor para el cliente
         this.cliente = cliente; 
+        this.clienteBO = clienteBO;
         this.pedido = pedido; 
         this.telefono = telefono; 
         
@@ -119,12 +122,12 @@ public class VOpcionesCliente extends JFrame {
             lbl_logo.setIcon(new ImageIcon(img));
         }
         btn_pedido.addActionListener(e->{
-            new VTomarPedido(pedido, cliente, telefono).setVisible(true);
+            new VTomarPedido(pedido, cliente, telefono, clienteBO).setVisible(true);
             this.dispose();
         });
         
         btn_historial.addActionListener(e->{
-            new VHistorial(pedido,cliente,telefono).setVisible(true);
+            new VHistorial(pedido,cliente,telefono, clienteBO).setVisible(true);
             this.dispose();
         });
         
@@ -134,11 +137,11 @@ public class VOpcionesCliente extends JFrame {
         });
         
         btn_agregar_telefono.addActionListener(e->{
-            new VAgregarTelefonos(pedido,cliente,telefono).setVisible(true);
+            new VAgregarTelefonos(pedido,cliente,telefono, clienteBO).setVisible(true);
         });
         
         btn_volver.addActionListener(e -> {
-            new VInicioSesion(null,null,null, null).setVisible(true);
+            new VInicioSesion(null,null,null, null, clienteBO).setVisible(true);
             this.dispose();
         });
         
