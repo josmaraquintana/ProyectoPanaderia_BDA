@@ -21,6 +21,7 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.net.URL;
+import org.mindrot.jbcrypt.BCrypt;
 
 /**
  *
@@ -136,11 +137,11 @@ public class VInicioSesion extends JFrame {
                
                if(usuario instanceof ClienteDTO){
                    //Hacemos casting o conversion
-                   VOpcionesCliente ventana_op_cliente = new VOpcionesCliente(pedido,(ClienteDTO) usuario, telefono, clienteBO);
+                   VOpcionesCliente ventana_op_cliente = new VOpcionesCliente(pedido,(ClienteDTO) usuario, telefono, clienteBO, usuarioBO, this);
                    ventana_op_cliente.setVisible(true);
                    this.dispose();
                }else if(usuario instanceof EmpleadoDTO){
-                   VOpcionesEmpleado ventana_op_empleado =  new VOpcionesEmpleado(cuponBO,(EmpleadoDTO) usuario, empleadoBO, usuarioBO, pedido, telefono);
+                   VOpcionesEmpleado ventana_op_empleado =  new VOpcionesEmpleado(cuponBO,(EmpleadoDTO) usuario, empleadoBO, usuarioBO, pedido, telefono, this);
                    ventana_op_empleado.setVisible(true);
                    this.dispose();
                }else{
@@ -169,4 +170,9 @@ public class VInicioSesion extends JFrame {
         
     }
 
+    public static void main(String[] args) {
+        String hash = BCrypt.hashpw("abc123", BCrypt.gensalt());
+        System.out.println(hash);
+    }
 }
+

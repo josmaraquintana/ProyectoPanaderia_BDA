@@ -39,14 +39,16 @@ public class VOpcionesEmpleado extends JFrame {
     private LabelPersonalizado lbl_usuario;
     private LabelPersonalizado lbl_nombre_usuario;
     private RoundedButton btn_registrar_empleado;
+    private JFrame ventanaAnterior;
 
-    public VOpcionesEmpleado(CuponBO cuponBO, EmpleadoDTO empleado, EmpleadoBO empleadoBO, UsuarioBO usuarioBO, PedidoBO pedido, TelefonoBO telefono) {
+    public VOpcionesEmpleado(CuponBO cuponBO, EmpleadoDTO empleado, EmpleadoBO empleadoBO, UsuarioBO usuarioBO, PedidoBO pedido, TelefonoBO telefono, JFrame ventanaAnterior) {
         this.cuponBO = cuponBO;
         this.empleado = empleado;
         this.empleadoBO = empleadoBO;
         this.usuarioBO = usuarioBO;
         this.pedido = pedido;
         this.telefono = telefono;
+        this.ventanaAnterior = ventanaAnterior;
 
         setTitle("Opciones de Empleado");
         setSize(700, 450);
@@ -98,7 +100,7 @@ public class VOpcionesEmpleado extends JFrame {
         add(btn_volver, gbc);
 
         btn_volver.addActionListener(e -> {
-            new VInicioSesion(pedido, usuarioBO, telefono, cuponBO,empleadoBO, null).setVisible(true);
+            ventanaAnterior.setVisible(true);
             this.dispose();
         });
 

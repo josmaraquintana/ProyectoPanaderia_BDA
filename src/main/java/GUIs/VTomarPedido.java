@@ -9,6 +9,7 @@ import Negocio.BOs.ClienteBO;
 import Negocio.BOs.IProductoBO;
 import Negocio.BOs.PedidoBO;
 import Negocio.BOs.TelefonoBO;
+import Negocio.BOs.UsuarioBO;
 import Negocio.DTOs.ClienteDTO;
 import Negocio.DTOs.ProductoDTO;
 import Negocio.fabrica.FabricaBOs;
@@ -38,6 +39,8 @@ public class VTomarPedido extends JFrame {
     private IProductoBO productoBO;
     private FabricaBOs fabricaBO;
     private ClienteBO clienteBO;
+    private UsuarioBO usuarioBO;
+    private JFrame ventanaAnterior;
     
     private LabelPersonalizado lbl_subtotal;
     private PlaceholderTextField txt_cantidad;
@@ -48,10 +51,12 @@ public class VTomarPedido extends JFrame {
     // Esta es tu lista de carrito
     private List<ItemCarrito> carrito = new ArrayList<>();
     
-    public VTomarPedido(PedidoBO pedido,ClienteDTO cliente,TelefonoBO telefono, ClienteBO clienteBO) {
+    public VTomarPedido(PedidoBO pedido,ClienteDTO cliente,TelefonoBO telefono, ClienteBO clienteBO, UsuarioBO usuarioBO, JFrame ventanaAnterior) {
         this.telefono = telefono;
         this.pedido = pedido;
         this.cliente = cliente; 
+        this.usuarioBO = usuarioBO;
+        this.ventanaAnterior = ventanaAnterior;
         fabricaBO = new FabricaBOs();
         productoBO = fabricaBO.obtenerProductoBO();
         listaTodosLosProductos = new ArrayList<>();
@@ -198,13 +203,10 @@ public class VTomarPedido extends JFrame {
         add(panel_derecho, BorderLayout.EAST);   
         
         btn_cancelar.addActionListener(e -> {
-            
-            
-            VOpcionesCliente menu_cliente = new VOpcionesCliente(pedido, cliente, telefono, clienteBO);
-            menu_cliente.setVisible(true);
+            ventanaAnterior.setVisible(true);
             this.dispose();
-            
         });
+    
         
         
         btn_realizar.addActionListener(e -> {
@@ -215,7 +217,7 @@ public class VTomarPedido extends JFrame {
             }
 
             
-            VResumenPedido ventana = new VResumenPedido(pedido, cliente, telefono, carrito, clienteBO);
+            VResumenPedido ventana = new VResumenPedido(pedido, cliente, telefono, carrito, clienteBO, usuarioBO, this);
 
             ventana.setVisible(true);
             this.dispose();

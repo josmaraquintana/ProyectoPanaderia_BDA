@@ -30,14 +30,18 @@ public class UsuarioBO implements IUsuarioBO {
     @Override
     public UsuarioDTO login(LoginDTO loginDTO) throws NegocioExcepcion {
         try {
-            Usuario usuario = usuarioDAO.buscarUsuarioLogin(loginDTO.getNombre_usuario(), loginDTO.getContrasena());
+            Usuario usuario = usuarioDAO.buscarUsuarioLogin(
+                    loginDTO.getNombre_usuario(),
+                    loginDTO.getContrasena()
+            );
+
             if (usuario == null) {
-                LOG.warning("El usuario o contraseña incorrectos, verifica");
+                throw new NegocioExcepcion("Usuario o contraseña incorrectos");
             }
 
             if (usuario instanceof Cliente cliente) {
                 ClienteDTO cliente_dto = new ClienteDTO();
-                cliente_dto.setId_cliente(cliente.getId_cliente()); //CAMBIO DE ID DE USUARIO A CLIENTEEEEEE
+                cliente_dto.setId_cliente(cliente.getId_cliente());
                 cliente_dto.setId_usuario(cliente.getId_usuario());
                 cliente_dto.setNombre_usuario(cliente.getNombre_usuario());
                 cliente_dto.setNombres(cliente.getNombres());
@@ -47,6 +51,7 @@ public class UsuarioBO implements IUsuarioBO {
                 cliente_dto.setFecha_nacimiento(cliente.getFecha_nacimiento());
                 return cliente_dto;
             }
+
             if (usuario instanceof Empleado empleado) {
                 EmpleadoDTO empleado_dto = new EmpleadoDTO();
                 empleado_dto.setId_usuario(empleado.getId_usuario());
@@ -55,13 +60,12 @@ public class UsuarioBO implements IUsuarioBO {
                 empleado_dto.setApellido_paterno(empleado.getApellidoPaterno());
                 empleado_dto.setApellido_materno(empleado.getApellidoMaterno());
                 return empleado_dto;
-
             }
+
             return null;
+
         } catch (PersistenciaExcepcion ex) {
             throw new NegocioExcepcion("No se encontro el usuario del login", ex);
         }
     }
-
-
-}
+    }
