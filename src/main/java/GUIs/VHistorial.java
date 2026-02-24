@@ -38,9 +38,11 @@ public class VHistorial extends JFrame {
     private ClienteDTO cliente;
     private PedidoBO pedidoBO;
     private TelefonoBO telefono;
+    private ClienteBO clienteBO;
 
-    public VHistorial(PedidoBO pedidoBO, ClienteDTO cliente, TelefonoBO telefono) {
+    public VHistorial(PedidoBO pedidoBO, ClienteDTO cliente, TelefonoBO telefono, ClienteBO clienteBO) {
         this.cliente = cliente;
+        this.clienteBO = clienteBO;
         this.pedidoBO = pedidoBO;
         setTitle("Historial");
         setSize(700, 560);
@@ -170,7 +172,7 @@ public class VHistorial extends JFrame {
         setVisible(true);
 
         btnSalir.addActionListener(e -> {
-            new VOpcionesCliente(pedidoBO, cliente, telefono).setVisible(true);
+            new VOpcionesCliente(pedidoBO, cliente, telefono, clienteBO).setVisible(true);
             this.dispose();
         });
 

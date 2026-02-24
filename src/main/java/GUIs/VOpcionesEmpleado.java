@@ -94,7 +94,7 @@ public class VOpcionesEmpleado extends JFrame {
         add(btn_volver,gbc);
         
         btn_volver.addActionListener(e ->{
-            new VInicioSesion(pedido, usuarioBO, telefono, empleadoBO).setVisible(true);
+            new VInicioSesion(pedido, usuarioBO, telefono, empleadoBO, null).setVisible(true);
             this.dispose();
         });
         
