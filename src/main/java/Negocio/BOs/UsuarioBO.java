@@ -4,6 +4,7 @@
  */
 package Negocio.BOs;
 
+import ClasesEnum.EstadoCuenta;
 import Negocio.DTOs.*;
 import NegocioException.NegocioExcepcion;
 import Persistencia.DAO.*;
@@ -26,7 +27,6 @@ public class UsuarioBO implements IUsuarioBO {
         this.usuarioDAO = usuarioDAO; //inyeccion de dependencias;
     }
 
-    
     @Override
     public UsuarioDTO login(LoginDTO loginDTO) throws NegocioExcepcion {
         try {
@@ -40,6 +40,10 @@ public class UsuarioBO implements IUsuarioBO {
             }
 
             if (usuario instanceof Cliente cliente) {
+                //Agregamos la cereza del pastel, si el estado de la cuenta esta inactiva, no deja entrar
+                if (cliente.getEstado_cuenta() == EstadoCuenta.INACTIVO) {
+                    throw new NegocioExcepcion("Su cuenta esta INACTIVA.");
+                }
                 ClienteDTO cliente_dto = new ClienteDTO();
                 cliente_dto.setId_cliente(cliente.getId_cliente());
                 cliente_dto.setId_usuario(cliente.getId_usuario());
@@ -68,4 +72,4 @@ public class UsuarioBO implements IUsuarioBO {
             throw new NegocioExcepcion("No se encontro el usuario del login", ex);
         }
     }
-    }
+}

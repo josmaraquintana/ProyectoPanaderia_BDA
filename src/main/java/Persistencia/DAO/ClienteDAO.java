@@ -4,6 +4,7 @@
  */
 package Persistencia.DAO;
 
+import ClasesEnum.EstadoCuenta;
 import Negocio.DTOs.*;
 import NegocioException.NegocioExcepcion;
 import Persistencia.conexion.IConexionBD;
@@ -63,7 +64,7 @@ public class ClienteDAO implements IClienteDAO {
 
     @Override
     public void registrarUsuario(ClienteDTO cliente) throws PersistenciaExcepcion {
-        String comandoSQL = "{CALL registrar_cliente(?,?,?,?,?,?,?,?,?,?,?)}";
+        String comandoSQL = "{CALL registrar_cliente(?,?,?,?,?,?,?,?,?,?,?,?)}";
 
         try (Connection conn = this.conexionBD.crearConexion(); CallableStatement cs = conn.prepareCall(comandoSQL)) {
             cs.setString(1, cliente.getNombre_usuario());
@@ -77,6 +78,7 @@ public class ClienteDAO implements IClienteDAO {
             cs.setInt(9, cliente.getNumero_casa());
             cs.setString(10, cliente.getColonia());
             cs.setInt(11, cliente.getCodigo_postal());
+            cs.setString(12, EstadoCuenta.ACTIVO.name());
 
             cs.execute();
 
@@ -89,11 +91,15 @@ public class ClienteDAO implements IClienteDAO {
 
     @Override
     public ClienteDTO obtenerClientePorUsuario(int id_cliente) throws PersistenciaExcepcion {
-        String ComandoSQL = "SELECT id_cliente, edad, fecha_nacimiento, calle, numero_casa, colonia, codigo_postal, id_usuario FROM Clientes WHERE id_cliente = ?";
+        String ComandoSQL = "SELECT id_cliente, edad, fecha_nacimiento, calle, numero_casa, colonia, codigo_postal, id_usuario, estado_cuenta FROM Clientes WHERE id_cliente = ?";
         try (Connection con = this.conexionBD.crearConexion(); PreparedStatement ps = con.prepareStatement(ComandoSQL)) {
             ps.setInt(1, id_cliente);
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
+                    
+                    //COMO AGREGUE EL ESTADO DE LA CUENTA HICE MODIFICACIONES - JOS
+                    EstadoCuenta estado = EstadoCuenta.valueOf(rs.getString("estado_cuenta"));
+                    
                     return new ClienteDTO(
                             rs.getInt("id_cliente"),
                             rs.getInt("edad"),
@@ -101,6 +107,7 @@ public class ClienteDAO implements IClienteDAO {
                             rs.getString("calle"),
                             rs.getString("colonia"),
                             rs.getInt("codigo_postal"),
+                            estado, //<-- New parametro EL ESTADO SIEMPRE SIEMPRE ESTA DEBAJO DE CODIGO POSTAL
                             rs.getInt("numero_casa")
                     );
 
@@ -168,6 +175,19 @@ public class ClienteDAO implements IClienteDAO {
             throw new PersistenciaExcepcion("Error al actualizar cliente", ex);
         }
     }
+    @Override
+    public boolean inactivarCliente(int idCliente) throws PersistenciaExcepcion{
+    String comandoSQL = "UPDATE Clientes SET estado_cuenta = 'INACTIVO' WHERE id_cliente = ?";
+    
+    try (Connection con = this.conexionBD.crearConexion(); PreparedStatement ps = con.prepareStatement(comandoSQL)) {      
+        ps.setInt(1, idCliente);        
+        int filasAfectadas = ps.executeUpdate();
+        return filasAfectadas > 0; // Regresa true si se se actualizo el estaod de cuenta
+        
+    } catch (SQLException ex) {
+         throw new PersistenciaExcepcion("Error al intentar desactivar la cuenta", ex);
+    }
+}
     
     
 }

@@ -28,6 +28,7 @@ import Persistencia.DAO.TelefonoDAO;
 import Persistencia.DAO.UsuarioDAO;
 import Persistencia.conexion.ConexionBD;
 import Persistencia.conexion.IConexionBD;
+import org.mindrot.jbcrypt.BCrypt;
 
 /**
  *
@@ -44,27 +45,35 @@ public class pruebasjos {
 
         IUsuarioDAO usuarioDAO = new UsuarioDAO(conexion);
         UsuarioBO usuarioBO = new UsuarioBO(usuarioDAO);
-        
+
         IPedidoDAO pedidoDAO = new PedidoDAO(conexion);
         PedidoBO pedidoBO = new PedidoBO(pedidoDAO);
-        
+
         ITelefonoDAO telefonoDAO = new TelefonoDAO(conexion);
         TelefonoBO telefonoBO = new TelefonoBO(telefonoDAO);
-        
+
         IEmpleadoDAO empleadoDAO = new EmpleadoDAO(conexion);
         EmpleadoBO empleadoBO = new EmpleadoBO(empleadoDAO);
-        
+
         IClienteDAO clienteDAO = new ClienteDAO(conexion);
         ClienteBO clienteBO = new ClienteBO(clienteDAO);
-        
+
         ICuponDAO cuponDAO = new CuponDAO(conexion);
         CuponBO cuponBO = new CuponBO(cuponDAO);
-        
+
         IProductoDAO productoDAO = new ProductoDAO(conexion);
-        ProductoBO productoBO  = new ProductoBO(productoDAO);
+        ProductoBO productoBO = new ProductoBO(productoDAO);
 
-        new VInicioSesion(productoBO,pedidoBO,usuarioBO,telefonoBO,cuponBO,empleadoBO, clienteBO).setVisible(true);
-
+        new VInicioSesion(productoBO, pedidoBO, usuarioBO, telefonoBO, cuponBO, empleadoBO, clienteBO).setVisible(true);
+        /**
+         * String passwordPlana = "sacapuntas1"; String miHashGenerado =
+         * BCrypt.hashpw(passwordPlana, BCrypt.gensalt());
+         * System.out.println("------------------------------------------");
+         * System.out.println("COPIA ESTE CÓDIGO:");
+         * System.out.println(miHashGenerado);
+         * System.out.println("------------------------------------------");
+        *
+         */
     }
 
 }

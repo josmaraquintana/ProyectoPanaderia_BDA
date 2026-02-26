@@ -3,6 +3,8 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package Negocio.BOs;
+
+import ClasesEnum.EstadoCuenta;
 import org.mindrot.jbcrypt.BCrypt;
 import Negocio.DTOs.ClienteDTO;
 import NegocioException.NegocioExcepcion;
@@ -18,22 +20,23 @@ import org.mindrot.jbcrypt.BCrypt;
  *
  * @author josma
  */
-public class ClienteBO implements IClienteBO{
+public class ClienteBO implements IClienteBO {
+
     private final IClienteDAO clienteDAO; //para conectarnos a la capa de datos
     private final Logger LOG = Logger.getLogger(ClienteBO.class.getName());
 
     public ClienteBO(IClienteDAO cliente) {
         this.clienteDAO = cliente; //inyeccion de dependencias
     }
-    
+
     @Override
-    public void registrarCliente(ClienteDTO cliente) throws NegocioExcepcion{
-        
-        if(cliente.getNombre_usuario() == null || cliente.getNombre_usuario().isBlank()){
+    public void registrarCliente(ClienteDTO cliente) throws NegocioExcepcion {
+
+        if (cliente.getNombre_usuario() == null || cliente.getNombre_usuario().isBlank()) {
             throw new NegocioExcepcion("Este campo es obligatorio");
         }
-        
-        if(cliente.getContrasena() == null || cliente.getContrasena().isBlank()){
+
+        if (cliente.getContrasena() == null || cliente.getContrasena().isBlank()) {
             throw new NegocioExcepcion("Ingrese una contrasena");
         }
         //AQUI ES DONDE VAMOS A ENCRIPTAR LA CONTRASENA
@@ -42,40 +45,44 @@ public class ClienteBO implements IClienteBO{
         String passwordEncriptada = BCrypt.hashpw(cliente.getContrasena(), BCrypt.gensalt());
         //Le cambiamos la contraseña al cliente por la encriptada
         cliente.setContrasena(passwordEncriptada);
-        if(cliente.getEdad() <= 0){
+        if (cliente.getEdad() <= 0) {
             throw new NegocioExcepcion("Ingrese una edad valida");
         }
-        
-        if(cliente.getFecha_nacimiento() == null){
+
+        if (cliente.getFecha_nacimiento() == null) {
             throw new NegocioExcepcion("Ingrese una fecha valida");
         }
-        try{
+        try {
             clienteDAO.registrarUsuario(cliente);
-        }catch(PersistenciaExcepcion ex){
+            //Asignacion manual del estado de cuenta del cliente para evitar valores nulos
+            //Ahora ya coincide con la BD y evitamos que truene 
+            //NO LE MUEVAN
+            cliente.setEstado_cuenta(EstadoCuenta.ACTIVO);
+        } catch (PersistenciaExcepcion ex) {
             throw new NegocioExcepcion("Error al registrar al cliente " + ex.getMessage());
         }
-        
+
     }
-    
+
     @Override
-    public ClienteDTO obtenerCliente(int id_cliente) throws NegocioExcepcion{
+    public ClienteDTO obtenerCliente(int id_cliente) throws NegocioExcepcion {
         if (id_cliente <= 0) {
             throw new NegocioExcepcion("Id de usuario invalido");
         }
-        
-        try{
+
+        try {
             ClienteDTO cliente = clienteDAO.obtenerClientePorUsuario(id_cliente);
-            
+
             if (cliente == null) {
                 throw new NegocioExcepcion("No eciste el cliente asociado");
-                
+
             }
             return cliente;
         } catch (PersistenciaExcepcion ex) {
             throw new NegocioExcepcion("Error al obtener cliente");
         }
     }
-    
+
     @Override
     public void actualizarCliente(ClienteDTO cliente) throws NegocioExcepcion {
 
@@ -104,6 +111,18 @@ public class ClienteBO implements IClienteBO{
         } catch (PersistenciaExcepcion ex) {
             LOG.log(Level.SEVERE, "Error al actualizar cliente", ex);
             throw new NegocioExcepcion("No se pudo actualizar el cliente");
+        }
+    }
+
+    @Override
+    public void inactivarCuenta(int idCliente) throws NegocioExcepcion {
+        try {
+            boolean exito = clienteDAO.inactivarCliente(idCliente);
+            if (!exito) {
+                throw new NegocioExcepcion("No se pudo inactivar la cuenta");
+            }
+        } catch (PersistenciaExcepcion ex) {
+            throw new NegocioExcepcion("Error de conexión al inactivar cuenta", ex);
         }
     }
 }

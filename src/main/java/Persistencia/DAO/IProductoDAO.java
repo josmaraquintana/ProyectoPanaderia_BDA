@@ -4,7 +4,9 @@
  */
 package Persistencia.DAO;
 
+import ClasesEnum.EstadoProducto;
 import Negocio.DTOs.ProductoDTO;
+import Negocio.DTOs.ProductoEstadoDTO;
 import Negocio.DTOs.ProductoIdDTO;
 import PersistenciaException.PersistenciaExcepcion;
 import java.sql.SQLException;
@@ -20,6 +22,8 @@ public interface IProductoDAO {
     
     public List<ProductoIdDTO> obtenerListaProductosId() throws PersistenciaExcepcion;
     public void registrarProducto(ProductoDTO producto) throws PersistenciaExcepcion;
+    public List<ProductoEstadoDTO> buscarProductosPorNombre(String filtro) throws PersistenciaExcepcion;
+    public void actualizarEstadoProducto(int id, EstadoProducto nuevoEstado) throws Exception;
     
     
 }

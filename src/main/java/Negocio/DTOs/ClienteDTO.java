@@ -4,6 +4,7 @@
  */
 package Negocio.DTOs;
 
+import ClasesEnum.EstadoCuenta;
 import java.sql.Date;
 
 /**
@@ -16,6 +17,7 @@ public class ClienteDTO extends UsuarioDTO{
     private Date fecha_nacimiento; 
     private String calle;
     private int codigo_postal;
+    private EstadoCuenta estado_cuenta;
     private int numero_casa;
     private String colonia;
 
@@ -25,6 +27,16 @@ public class ClienteDTO extends UsuarioDTO{
         this.fecha_nacimiento = fecha_nacimiento;
         this.calle = calle;
         this.codigo_postal = codigo_postal;
+        this.numero_casa = numero_casa;
+        this.colonia = colonia;
+    }
+    public ClienteDTO(int id_cliente,int edad, Date fecha_nacimiento, String calle, String colonia, int codigo_postal, EstadoCuenta estado_cuenta, int numero_casa) {
+        this.id_cliente = id_cliente;
+        this.edad = edad;
+        this.fecha_nacimiento = fecha_nacimiento;
+        this.calle = calle;
+        this.codigo_postal = codigo_postal;
+        this.estado_cuenta = estado_cuenta;
         this.numero_casa = numero_casa;
         this.colonia = colonia;
     }
@@ -49,6 +61,16 @@ public class ClienteDTO extends UsuarioDTO{
     public void setCodigo_postal(int codigo_postal) {
         this.codigo_postal = codigo_postal;
     }
+
+    public EstadoCuenta getEstado_cuenta() {
+        return estado_cuenta;
+    }
+
+    public void setEstado_cuenta(EstadoCuenta estado_cuenta) {
+        this.estado_cuenta = estado_cuenta;
+    }
+    
+    
 
     public void setNumero_casa(int numero_casa) {
         this.numero_casa = numero_casa;

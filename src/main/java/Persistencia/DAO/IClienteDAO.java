@@ -19,5 +19,6 @@ public interface IClienteDAO {
     public void registrarUsuario(ClienteDTO cliente) throws PersistenciaExcepcion;
     public ClienteDTO obtenerClientePorUsuario(int id_cliente) throws PersistenciaExcepcion;
     public void actualizarCliente(ClienteDTO cliente) throws PersistenciaExcepcion;
+    public boolean inactivarCliente(int idCliente) throws PersistenciaExcepcion;
 }
 

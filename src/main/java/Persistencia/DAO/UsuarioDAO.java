@@ -4,6 +4,7 @@
  */
 package Persistencia.DAO;
 
+import ClasesEnum.EstadoCuenta;
 import Negocio.DTOs.*;
 import Persistencia.conexion.IConexionBD;
 import Persistencia.dominio.Cliente;
@@ -50,8 +51,11 @@ public class UsuarioDAO implements IUsuarioDAO {
     //AQUI SOLO ESTOY CAMBIANDO EL NOMBRE A LA CONTRASENA
     public Usuario buscarUsuarioLogin(String usuario_nombre, String contrasena_plana) throws PersistenciaExcepcion {
         Usuario usuario = null;
-        String comandoSQL = "SELECT u.id_usuario, u.usuario, u.contrasena, u.nombres, u.apellido_paterno, u.apellido_materno, c.id_cliente, c.id_usuario AS cliente_checar, c.edad, c.fecha_nacimiento, e.id_usuario AS empleado_checar FROM Usuarios u LEFT JOIN Clientes c ON u.id_usuario = c.id_usuario LEFT JOIN Empleados e ON u.id_usuario = e.id_usuario WHERE u.usuario = ? ";
-
+        String comandoSQL = "SELECT u.id_usuario, u.usuario, u.contrasena, u.nombres, u.apellido_paterno, u.apellido_materno, "
+                + "c.id_cliente, c.id_usuario AS cliente_checar, c.edad, c.fecha_nacimiento, c.estado_cuenta, " // <-- AQUI AGREGAMOS EL ESTADO DE CUENTA
+                + "e.id_usuario AS empleado_checar FROM Usuarios u "
+                + "LEFT JOIN Clientes c ON u.id_usuario = c.id_usuario "
+                + "LEFT JOIN Empleados e ON u.id_usuario = e.id_usuario WHERE u.usuario = ?";
         try (Connection conn = this.conexionBD.crearConexion(); PreparedStatement ps = conn.prepareStatement(comandoSQL)) {
             ps.setString(1, usuario_nombre);
             //AQUI YA NO  SE HACE EL PS. CHICOS
@@ -60,7 +64,6 @@ public class UsuarioDAO implements IUsuarioDAO {
 
                     //¡¡¡OBTENEMOS LA CONTRASEÑA DE LA BASE DE DATOS PARA HACERLE SU SALTEADO!!!
                     String hashBD = rs.getString("contrasena");
-                    //VERIFICACION
                     if (BCrypt.checkpw(contrasena_plana, hashBD)) {
                         //En caso de que sea un cliente
                         if (rs.getObject("id_cliente") != null) {
@@ -74,6 +77,11 @@ public class UsuarioDAO implements IUsuarioDAO {
                             cliente.setApellidoMaterno(rs.getString("apellido_materno"));
                             cliente.setEdad(rs.getInt("edad"));
                             cliente.setFecha_nacimiento(rs.getDate("fecha_nacimiento"));
+                            //AQUI: obtenemos el estado de cuenta del cliente y despues se lo seteamos
+                            String estadoStr = rs.getString("estado_cuenta");
+                            if (estadoStr != null) {
+                                cliente.setEstado_cuenta(EstadoCuenta.valueOf(estadoStr));
+                            }
 
                             usuario = cliente;
 
@@ -88,7 +96,7 @@ public class UsuarioDAO implements IUsuarioDAO {
 
                             usuario = empleado;
                         }
-                    }else{
+                    } else {
                         //SI LA CONTRASEÑA NO FUE ENCONTRADA
                         return null;
                     }

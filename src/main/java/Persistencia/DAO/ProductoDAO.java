@@ -4,8 +4,10 @@
  */
 package Persistencia.DAO;
 
+import ClasesEnum.EstadoProducto;
 import ClasesEnum.TipoProducto;
 import Negocio.DTOs.ProductoDTO;
+import Negocio.DTOs.ProductoEstadoDTO;
 import Negocio.DTOs.ProductoIdDTO;
 import Persistencia.conexion.IConexionBD;
 import PersistenciaException.PersistenciaExcepcion;
@@ -135,10 +137,55 @@ public class ProductoDAO implements IProductoDAO {
         }
     }
 
-    /**
-     * Convierte el nombre del Enum (DULCE) a formato de mysql (Dulce) para
-     * que coincida con el script SQL (Dulce, Integral, Salado)
-     */
+    @Override
+    public List<ProductoEstadoDTO> buscarProductosPorNombre(String filtro) throws PersistenciaExcepcion {
+        List<ProductoEstadoDTO> lista = new ArrayList<>();
+        String comandoSQL = "SELECT id_producto, nombre_producto, descripcion, estado, precio FROM productos WHERE nombre_producto LIKE ?";
+
+        try (Connection conn = this.conexionBD.crearConexion(); PreparedStatement ps = conn.prepareStatement(comandoSQL)) {
+
+            // El % al inicio y final es lo que nos permite buscar
+            ps.setString(1, "%" + filtro + "%");
+
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    ProductoEstadoDTO p = new ProductoEstadoDTO();
+                    p.setId_producto(rs.getInt("id_producto"));
+                    p.setNombre_producto(rs.getString("nombre_producto"));
+                    p.setDescripcion_producto(rs.getString("descripcion"));
+                    // Convertimos el String de la BD al Enum de java
+                    String estadoBD = rs.getString("estado");
+                    p.setEstado_producto(EstadoProducto.valueOf(estadoBD.toUpperCase()));
+                    p.setPrecio_producto(rs.getDouble("precio"));
+                    lista.add(p);
+                }
+            }
+        } catch (SQLException ex) {
+            throw new PersistenciaExcepcion("Error al buscar productos por nombre", ex);
+        }
+        return lista;
+    }
+
+    @Override
+    public void actualizarEstadoProducto(int id, EstadoProducto nuevoEstado) throws Exception {
+        String sql = "UPDATE productos SET estado = ? WHERE id_producto = ?";
+
+        try (Connection conn = this.conexionBD.crearConexion(); PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setString(1, nuevoEstado.name());
+
+            ps.setInt(2, id);
+
+            int filasAfectadas = ps.executeUpdate();
+            if (filasAfectadas == 0) {
+                throw new Exception("No se encontró el producto con ID: " + id);
+            }
+
+        } catch (SQLException ex) {
+            throw new Exception("Error al conectar con la base de datos al actualizar estado.");
+        }
+    }
+
     private String formatearEnum(TipoProducto tipo) {
         if (tipo == null) {
             return null;
@@ -146,4 +193,5 @@ public class ProductoDAO implements IProductoDAO {
         String nombre = tipo.name().toLowerCase(); // aqui es dulce
         return nombre.substring(0, 1).toUpperCase() + nombre.substring(1); // aqui pasa a Dulce
     }
+
 }

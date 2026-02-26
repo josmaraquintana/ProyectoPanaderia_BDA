@@ -4,6 +4,7 @@
  */
 package Persistencia.dominio;
 
+import ClasesEnum.EstadoCuenta;
 import Negocio.DTOs.UsuarioDTO;
 import java.sql.Date;
 import java.time.LocalDate;
@@ -17,12 +18,10 @@ public class Cliente extends Usuario{
     private int edad;
     private Date fecha_nacimiento;
     private int codigo_postal;
+    private EstadoCuenta estado_cuenta; 
     private String colonia;
     private int numero_casa;
     private String calle;
-
-    public Cliente() {
-    }
 
     public Cliente(int id_cliente, int edad, Date fecha_nacimiento, int codigo_postal, String colonia, int numero_casa, 
             String calle, int id_usuario, String nombre_usuario, String contrasena, String nombres, 
@@ -48,6 +47,24 @@ public class Cliente extends Usuario{
         this.numero_casa = numero_casa;
         this.calle = calle;
     }
+    public Cliente(int id_cliente, int edad, Date fecha_nacimiento, int codigo_postal, EstadoCuenta estado_cuenta, String colonia, int numero_casa, 
+            String calle, int id_usuario, String nombre_usuario, String contrasena, String nombres, 
+            String apellidoPaterno, String apellidoMaterno) {
+        super(id_usuario, nombre_usuario, contrasena, nombres, apellidoPaterno, apellidoMaterno);
+        this.id_cliente = id_cliente; 
+        this.edad = edad;
+        this.fecha_nacimiento = fecha_nacimiento;
+        this.codigo_postal = codigo_postal;
+        this.estado_cuenta = estado_cuenta;
+        this.colonia = colonia;
+        this.numero_casa = numero_casa;
+        this.calle = calle;
+    }
+    
+    public Cliente() {
+    super();
+    this.estado_cuenta = EstadoCuenta.ACTIVO; // Valor inicial seguro
+}
 
     public int getId_cliente() {
         return id_cliente;
@@ -79,6 +96,14 @@ public class Cliente extends Usuario{
 
     public void setCodigo_postal(int codigo_postal) {
         this.codigo_postal = codigo_postal;
+    }
+
+    public EstadoCuenta getEstado_cuenta() {
+        return estado_cuenta;
+    }
+
+    public void setEstado_cuenta(EstadoCuenta estado_cuenta) {
+        this.estado_cuenta = estado_cuenta;
     }
 
     public String getColonia() {

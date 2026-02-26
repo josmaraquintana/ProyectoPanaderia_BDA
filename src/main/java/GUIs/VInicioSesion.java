@@ -144,7 +144,7 @@ public class VInicioSesion extends JFrame {
                    ventana_op_cliente.setVisible(true);
                    this.dispose();
                }else if(usuario instanceof EmpleadoDTO){
-                   VOpcionesEmpleado ventana_op_empleado =  new VOpcionesEmpleado(cuponBO,(EmpleadoDTO) usuario, empleadoBO, usuarioBO, pedido, telefono, this);
+                   VOpcionesEmpleado ventana_op_empleado =  new VOpcionesEmpleado(productoBO,cuponBO,(EmpleadoDTO) usuario, empleadoBO, usuarioBO, pedido, telefono, this);
                    ventana_op_empleado.setVisible(true);
                    this.dispose();
                }else{
@@ -154,8 +154,7 @@ public class VInicioSesion extends JFrame {
                    txtUsuario.requestFocus();
                }
                
-            } catch (Exception ex) {
-                ex.printStackTrace(); 
+            } catch (Exception ex) { 
                 JOptionPane.showMessageDialog(null, "Usuario inválido: " + ex.getMessage());
             }
             

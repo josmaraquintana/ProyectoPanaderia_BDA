@@ -41,9 +41,11 @@ public class VOpcionesEmpleado extends JFrame {
     private LabelPersonalizado lbl_usuario;
     private LabelPersonalizado lbl_nombre_usuario;
     private RoundedButton btn_registrar_empleado;
+    private RoundedButton btn_estado_producto;
     private JFrame ventanaAnterior;
 
-    public VOpcionesEmpleado(CuponBO cuponBO, EmpleadoDTO empleado, EmpleadoBO empleadoBO, UsuarioBO usuarioBO, PedidoBO pedido, TelefonoBO telefono, JFrame ventanaAnterior) {
+    public VOpcionesEmpleado(ProductoBO productoBO,CuponBO cuponBO, EmpleadoDTO empleado, EmpleadoBO empleadoBO, UsuarioBO usuarioBO, PedidoBO pedido, TelefonoBO telefono, JFrame ventanaAnterior) {
+        this.productoBO = productoBO;
         this.cuponBO = cuponBO;
         this.empleado = empleado;
         this.empleadoBO = empleadoBO;
@@ -100,9 +102,14 @@ public class VOpcionesEmpleado extends JFrame {
         gbc.gridy = 4;
         btn_agregar_producto.setPreferredSize(tamano);
         add(btn_agregar_producto, gbc);
-        btn_volver = new RoundedButton("Volver");
+        btn_estado_producto = new RoundedButton("Estado Producto");
         gbc.gridx = 1;
         gbc.gridy = 5;
+        btn_estado_producto.setPreferredSize(tamano);
+        add(btn_estado_producto, gbc);
+        btn_volver = new RoundedButton("Volver");
+        gbc.gridx = 1;
+        gbc.gridy = 6;
         btn_volver.setPreferredSize(tamano);
         add(btn_volver, gbc);
 
@@ -126,7 +133,11 @@ public class VOpcionesEmpleado extends JFrame {
             this.dispose();
         });
         btn_agregar_producto.addActionListener(e -> {
-            new VAgregarProducto(productoBO, empleado).setVisible(true);
+            new VAgregarProducto(productoBO, empleado, this).setVisible(true);
+            this.dispose();
+        });
+        btn_estado_producto.addActionListener(e -> {
+            new VCambiarEstadoProducto(productoBO, this).setVisible(true);
             this.dispose();
         });
 

@@ -4,8 +4,9 @@
  */
 package Negocio.BOs;
 
-import Negocio.DTOs.PanelProductoDTO;
+import ClasesEnum.EstadoProducto;
 import Negocio.DTOs.ProductoDTO;
+import Negocio.DTOs.ProductoEstadoDTO;
 import NegocioException.NegocioExcepcion;
 import Persistencia.DAO.*;
 import Persistencia.dominio.Producto;
@@ -80,5 +81,27 @@ public class ProductoBO implements IProductoBO {
             // Si falla
             throw new NegocioExcepcion("Error de persistencia: " + e.getMessage());
         }
+    }
+
+    @Override
+    public List<ProductoEstadoDTO> buscarProductosPorNombre(String filtro) throws Exception {
+
+        if (filtro == null || filtro.trim().isEmpty()) {
+            throw new Exception("Debe ingresar un nombre para realizar la búsqueda.");
+        }
+
+        return productoDAO.buscarProductosPorNombre(filtro.trim());
+    }
+
+    @Override
+    public void actualizarEstadoProducto(int id, EstadoProducto nuevoEstado) throws Exception {
+        if (id <= 0) {
+            throw new Exception("El ID del producto no es válido.");
+        }
+
+        if (nuevoEstado == null) {
+            throw new Exception("El nuevo estado no puede ser nulo.");
+        }
+        productoDAO.actualizarEstadoProducto(id, nuevoEstado);
     }
 }

@@ -41,15 +41,17 @@ public class VAgregarProducto extends JFrame {
     private ButtonGroup bgEstado;
     private JRadioButton rbDulce, rbSalado, rbIntegral;
     private JRadioButton rbDisponible, rbNoDisponible;
-
+    private JFrame ventanaAnterior;
+    
     private RoundedButton btnCancelar;
     private RoundedButton btnAgregar;
     
     private ProductoBO productoBO; 
 
-    public VAgregarProducto(ProductoBO productoBO, EmpleadoDTO empleadoDTO) {
+    public VAgregarProducto(ProductoBO productoBO, EmpleadoDTO empleadoDTO, JFrame ventanaAnterior) {
         this.productoBO = productoBO; 
         this.empleadoDTO = empleadoDTO;
+        this.ventanaAnterior = ventanaAnterior;
         setTitle("Agregar Producto");
         setSize(780, 540); // Reduje un poco la altura al quitar etiquetas
         setLocationRelativeTo(null);
@@ -215,11 +217,14 @@ public class VAgregarProducto extends JFrame {
         btnAgregar.addActionListener(e-> registrarProducto());
         //ESTO HACE QUE AUTOMATICO PONGA EL CURSOS EN EL PRIMER CAMPO A LLENAR
         SwingUtilities.invokeLater(()-> btnAgregar.requestFocusInWindow());
-        btnCancelar.addActionListener(e->{
-            new VOpcionesEmpleado(productoBO,cuponBO, empleadoDTO,empleadoBO,usuarioBO,pedidoBO, null).setVisible(true);
+        
+        btnCancelar.addActionListener(e -> {
+
+            ventanaAnterior.setVisible(true);
             this.dispose();
         });
     }
+    
     private void registrarProducto(){
         try{
             ProductoDTO producto = new ProductoDTO();

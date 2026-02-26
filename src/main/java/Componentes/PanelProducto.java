@@ -17,15 +17,26 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 
 /**
- *
- * @author RAMSES
+ * Componente visual personalizado que representa una tarjeta de producto en la interfaz.
+ * Utiliza un diseño de tres secciones (Nombre, Descripción/Estado y Precio/Selección) 
+ * con un fondo café redondeado mediante renderizado 2D.
+ * * @author RAMSES
+ * @version 1.0
  */
 public class PanelProducto extends JPanel {
     
-    // Variables para acceder a los datos si los necesitas después
+    /** Nombre del producto que identifica la tarjeta. */
     private String nombre;
+    /** Botón de selección radial para marcar este producto en una lista. */
     private JRadioButton rbSeleccion;
-
+    /**
+     * Constructor que inicializa la tarjeta con toda la información del producto.
+     * * @param nombre      Nombre del producto (soporta saltos de línea automáticos).
+     * @param estado      Disponibilidad actual (ej. "Disponible", "Agotado").
+     * @param descripcion Detalle breve de las características del producto.
+     * @param precio      Precio formateado como texto (ej. "$15.00").
+     * @param grupo       El {@link ButtonGroup} al que pertenecerá el botón de selección para exclusividad.
+     */
     public PanelProducto(String nombre, String estado, String descripcion, String precio, ButtonGroup grupo) {
         this.nombre = nombre;
         
@@ -102,7 +113,11 @@ public class PanelProducto extends JPanel {
         add(panelDerecha, BorderLayout.EAST);
     }
 
-    // Método mágico para dibujar el fondo café redondeado
+    /**
+     * Sobrescribe el dibujo del componente para aplicar el fondo redondeado.
+     * Utiliza {@link Graphics2D} con suavizado (Antialiasing) para mejorar el acabado visual.
+     * * @param g El contexto gráfico para pintar.
+     */
     @Override
     protected void paintComponent(Graphics g) {
         Graphics2D g2 = (Graphics2D) g.create();
@@ -118,11 +133,17 @@ public class PanelProducto extends JPanel {
         super.paintComponent(g);
     }
 
-    // Método para saber si este producto está seleccionado desde la ventana principal
+    /**
+     * Verifica si el producto representado en este panel ha sido seleccionado.
+     * * @return {@code true} si el radio button está marcado; {@code false} en caso contrario.
+     */
     public boolean isSeleccionado() {
         return rbSeleccion.isSelected();
     }
-
+    /**
+     * Obtiene el nombre del producto asociado a esta tarjeta.
+     * * @return Cadena de texto con el nombre del producto.
+     */
     public String getNombre() {
         return nombre;
     }
