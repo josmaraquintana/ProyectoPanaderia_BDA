@@ -18,8 +18,14 @@ import java.time.LocalDate;
 import java.util.logging.Logger;
 
 /**
+ * DAO para la gestión de Cupones de descuento.
+ * <p>
+ * Esta clase implementa la lógica de persistencia para el catálogo de cupones,
+ * incluyendo el control de inventario de usos (max_uso) y la recuperación de
+ * identificadores generados automáticamente.</p>
  *
- * @author josma
+ * * @author josma
+ * @version 1.1
  */
 public class CuponDAO implements ICuponDAO {
 
@@ -45,6 +51,18 @@ public class CuponDAO implements ICuponDAO {
         this.conexionBD = conexionBD;
     }
 
+    /**
+     * Obtiene los detalles de un cupón y descuenta un uso de forma atómica.
+     * <p>
+     * El método realiza un SELECT seguido de un UPDATE. Nota: En entornos de
+     * alta concurrencia, se recomienda envolver esta operación en una
+     * transacción para evitar inconsistencias en el contador.</p>
+     *
+     * * @param codigo Identificador único del cupón.
+     * @return {@link CuponDTO} con los datos del cupón o null si no existe/está
+     * agotado.
+     * @throws PersistenciaExcepcion Si ocurre un error en la base de datos.
+     */
     @Override
     public CuponDTO obtenerCupon(int codigo) throws PersistenciaExcepcion {
         String comando = """
@@ -116,6 +134,16 @@ public class CuponDAO implements ICuponDAO {
 
     }
 
+    /**
+     * Registra un nuevo cupón y recupera su ID autogenerado.
+     * <p>
+     * Utiliza la bandera {@code Statement.RETURN_GENERATED_KEYS} para obtener
+     * el ID asignado por el motor de BD sin realizar una segunda consulta.</p>
+     *
+     * * @param cupon DTO con los datos del nuevo cupón.
+     * @return El mismo DTO actualizado con el ID generado.
+     * @throws PersistenciaExcepcion Si falla la inserción.
+     */
     @Override
     public CuponDTO agregarCupon(CuponDTO cupon) throws PersistenciaExcepcion {
         String comandoSQL = "INSERT INTO Cupones (nombre, descuento, vigencia, max_uso) VALUES (?,?,?,?)";

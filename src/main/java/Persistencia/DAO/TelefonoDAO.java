@@ -16,8 +16,14 @@ import java.util.List;
 import java.util.logging.Logger;
 
 /**
+ * DAO encargado de la gestión de números telefónicos asociados a los clientes.
+ * <p>
+ * Maneja la persistencia de la entidad TelefonosClientes, permitiendo el
+ * almacenamiento de múltiples números por usuario y su recuperación
+ * categorizada.</p>
  *
- * @author josma
+ * * @author josma
+ * @version 1.0
  */
 public class TelefonoDAO implements ITelefonoDAO {
 
@@ -43,6 +49,16 @@ public class TelefonoDAO implements ITelefonoDAO {
         this.conexionBD = conexionBD;
     }
 
+    /**
+     * Registra un nuevo número telefónico vinculado a un cliente específico.
+     *
+     * * @param numero Cadena con los dígitos del teléfono.
+     * @param tipo Categoría del teléfono (ej. 'Móvil', 'Casa').
+     * @param id_cliente Identificador del cliente propietario.
+     * @return true si el registro fue exitoso, false en caso contrario.
+     * @throws SQLException Si ocurre un error de sintaxis o restricción en la
+     * BD.
+     */
     public boolean agregarTelefono(String numero, String tipo, int id_cliente) throws SQLException {
 
         String comandoInsert = "INSERT INTO TelefonosClientes (id_cliente, telefono, tipo) VALUES (?,?,?)";
@@ -57,6 +73,13 @@ public class TelefonoDAO implements ITelefonoDAO {
         }
     }
 
+    /**
+     * Recupera la colección completa de teléfonos registrados para un cliente.
+     *
+     * * @param id_cliente Identificador único del cliente.
+     * @return Lista de {@link TelefonoDTO} con los datos de contacto.
+     * @throws SQLException Error al ejecutar la consulta.
+     */
     //Metodo para poder listar todos los telefonos de un cliente
     public List<TelefonoDTO> obtenerTelefonos(int id_cliente) throws SQLException {
         List<TelefonoDTO> lista_telefonos = new ArrayList<>();
@@ -73,7 +96,7 @@ public class TelefonoDAO implements ITelefonoDAO {
                 telefonoDTO.setTipo(rs.getString("tipo"));
                 lista_telefonos.add(telefonoDTO);
             }
-        }catch(SQLException ex){
+        } catch (SQLException ex) {
             System.out.println("ERROR DE LA SQL: " + ex.getMessage());
             throw ex;
         }

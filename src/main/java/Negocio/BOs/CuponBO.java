@@ -13,8 +13,11 @@ import java.sql.Date;
 import java.util.logging.Logger;
 
 /**
- *
- * @author josma
+ * Business Object (BO) para la gestión de cupones y promociones.
+ * <p>Centraliza la lógica de validación de vigencia temporal y 
+ * restricciones de uso de beneficios económicos para los clientes.</p>
+ * * @author josma
+ * @version 1.0
  */
 public class CuponBO implements ICuponBO{
     private final ICuponDAO cuponDAO; //para conectarnos a la capa de datos
@@ -23,7 +26,15 @@ public class CuponBO implements ICuponBO{
     public CuponBO(ICuponDAO cupon) {
         this.cuponDAO = cupon; //inyeccion de dependencias
     }
-
+/**
+     * Recupera un cupón por su código y valida su vigencia.
+     * <p>Realiza una comparación lógica entre la fecha actual del sistema 
+     * y la fecha de vigencia registrada. Si el cupón es "del futuro", 
+     * bloquea su uso mediante una excepción.</p>
+     * * @param codigo Identificador numérico del cupón.
+     * @return CuponDTO si existe y es válido.
+     * @throws NegocioExcepcion Si el cupón no existe o no ha comenzado su periodo de vigencia.
+     */
     @Override
     public CuponDTO obtenerCupon(int codigo) throws NegocioExcepcion {
         
@@ -59,7 +70,19 @@ public class CuponBO implements ICuponBO{
             throw new NegocioExcepcion("Hubo un error al quere encontrar el cupon.");
         }
     }
-    
+    /**
+     * Crea un nuevo cupón en el sistema previa validación de parámetros.
+     * Asegura que:
+     * <ul>
+     * <li>El nombre no sea nulo o vacío.</li>
+     * <li>El descuento esté en el rango (0, 100].</li>
+     * <li>La vigencia sea una fecha futura.</li>
+     * <li>El límite de usos sea al menos uno.</li>
+     * </ul>
+     * * @param cupon DTO con la información del nuevo cupón.
+     * @return El CuponDTO persistido con su ID generado.
+     * @throws NegocioExcepcion Si alguna regla de validación falla.
+     */
     @Override
     public CuponDTO agregarCupon(CuponDTO cupon) throws NegocioExcepcion {
         try {

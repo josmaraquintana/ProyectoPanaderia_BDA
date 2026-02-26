@@ -21,8 +21,12 @@ import java.util.List;
 import java.util.logging.Logger;
 
 /**
- *
- * @author josmara, ramses, daniel
+ * Business Object (BO) encargado de la gestión de pedidos programados.
+ * <p>Esta clase orquestra la lógica de negocio compleja que involucra la 
+ * validación de carritos, la asociación de cupones de descuento y la 
+ * vinculación de clientes registrados.</p>
+ * * @author josmara, ramses, daniel
+ * @version 1.0
  */
 public class PedidoProgramadoBO implements IPedidoProgramadoBO{
     private final IPedidoProgramadoDAO pedidoProgramadoDAO; //para conectarnos a la capa de datos
@@ -31,7 +35,19 @@ public class PedidoProgramadoBO implements IPedidoProgramadoBO{
     public PedidoProgramadoBO(IPedidoProgramadoDAO pedido_programado) {
         this.pedidoProgramadoDAO = pedido_programado; //inyeccion de dependencias
     }
-
+    /**
+     * Registra un pedido integral vinculando productos, clientes y cupones.
+     * <p>El método realiza un proceso de "lookup" (búsqueda) para convertir los 
+     * nombres de productos y cupones del DTO en IDs técnicos de la base de datos 
+     * antes de proceder con el registro.</p>
+     * * @param carrito Lista de {@link ItemCarrito} con los productos seleccionados.
+     * @param cliente DTO del cliente que realiza la compra.
+     * @param lista_cupones Lista de cupones aplicados al pedido.
+     * @param subtotal Sumatoria de precios sin descuentos.
+     * @param total Monto final a pagar.
+     * @param notas Comentarios adicionales o especificaciones del pedido.
+     * @throws NegocioExcepcion Si el carrito está vacío, el subtotal es cero o el cliente no es válido.
+     */
     @Override
     public void realizarRegistrosPedidosClientesCupones(List<ItemCarrito> carrito, ClienteDTO cliente, List<CuponDTO> lista_cupones, double subtotal, double total, String notas) throws NegocioExcepcion {
         //Verificamos que el carrito no este vacio
@@ -88,7 +104,11 @@ public class PedidoProgramadoBO implements IPedidoProgramadoBO{
         
         
     }
-    
+    /**
+     * Obtiene un resumen administrativo de los pedidos programados pendientes.
+     * * @return Lista de {@link PedidoEstadoDTO} con la información resumida para vista de gestión.
+     * @throws NegocioExcepcion Si ocurre un error en la persistencia o la lista está vacía.
+     */
     @Override
     public List<PedidoEstadoDTO> obtenerListaPedidosConResumen() throws NegocioExcepcion{
         
@@ -109,7 +129,12 @@ public class PedidoProgramadoBO implements IPedidoProgramadoBO{
             throw new NegocioExcepcion("No se completo el regresar la lista de pedidos con notas.");
         }
     }
-    
+    /**
+     * Actualiza el estado del pedido programado (ej. de 'Pendiente' a 'En Preparación').
+     * * @param texto_id Identificador del pedido en formato String para validar desde la UI.
+     * @return true si la actualización fue exitosa.
+     * @throws NegocioExcepcion Si el ID no es numérico, es negativo o falla la conexión.
+     */
     @Override
     public boolean cambiarEstadoPedido(String texto_id) throws NegocioExcepcion{
         

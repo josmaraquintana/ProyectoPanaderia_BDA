@@ -199,7 +199,11 @@ public class VCambioEstadoPedido extends JFrame {
         
         // Quitar el foco inicial
         SwingUtilities.invokeLater(() -> btnSalir.requestFocusInWindow());
-        
+        /**
+         * Evento de cambio de estado.
+         * <p>Si es empleado, envía el ID y el estado seleccionado.
+         * Si es cliente, el cambio de estado suele ser una acción predefinida (como cancelación).</p>
+         */
         btnCambiarEstado.addActionListener(e -> {
             
             String id_string = txt_id_pedido.getText();
@@ -264,7 +268,12 @@ public class VCambioEstadoPedido extends JFrame {
         
         
     }
-    
+    /**
+     * Refresca el contenido de la tabla de pedidos.
+     * <p>Identifica el origen de la petición (Empleado o Cliente) y consulta el 
+     * Business Object correspondiente para obtener los datos con formato de resumen.</p>
+     * * @throws NegocioExcepcion Si ocurre un error en la capa de datos al recuperar la lista.
+     */
     private void actualizarTablaPedidos(){
         tabla_pedidos.limpiar();
         try{

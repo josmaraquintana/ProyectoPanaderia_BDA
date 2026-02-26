@@ -17,8 +17,14 @@ import java.awt.*;
 import java.net.URL;
 
 /**
+ * Ventana de actualización de perfil para el cliente.
+ * <p>
+ * Proporciona un formulario para modificar datos personales y de ubicación,
+ * tales como nombre, dirección y edad. Los cambios se validan y se persisten a
+ * través de la capa de negocio.</p>
  *
- * @author RAMSES
+ * * @author RAMSES
+ * @version 1.0
  */
 public class VEditarDatos extends JFrame {
 
@@ -26,6 +32,18 @@ public class VEditarDatos extends JFrame {
     private ClienteBO clienteBO;
     private JFrame ventanaAnterior;
 
+    /**
+     * Inicializa la interfaz de edición de datos.
+     * <p>
+     * Configura un diseño de cuadrícula flexible mediante {@link GridBagLayout}
+     * para organizar los campos de texto con placeholders.</p>
+     *
+     * * @param cliente DTO del cliente con la información cargada.
+     * @param clienteBO Instancia del objeto de negocio para ejecutar la
+     * actualización.
+     * @param ventanaAnterior Ventana padre a la cual regresar tras cerrar o
+     * editar.
+     */
     public VEditarDatos(ClienteDTO cliente, ClienteBO clienteBO, JFrame ventanaAnterior) {
         this.cliente = cliente;
         this.clienteBO = clienteBO;
@@ -132,7 +150,18 @@ public class VEditarDatos extends JFrame {
         });
 
         RoundedButton btnRegistrar = new RoundedButton("Editar");
-
+        /**
+         * Manejador del evento de edición.
+         * <p>
+         * Extrae los valores de los campos de texto, realiza el <i>parsing</i>
+         * de datos numéricos (Edad, CP, Número de casa) y actualiza el objeto
+         * {@link ClienteDTO}.</p>
+         *
+         * * @throws NegocioExcepcion Si los datos no cumplen con las reglas de
+         * negocio.
+         * @throws NumberFormatException Si se ingresan caracteres no numéricos
+         * en campos de entero.
+         */
         btnRegistrar.addActionListener(e -> {
 
             try {

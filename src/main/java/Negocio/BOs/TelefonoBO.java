@@ -17,8 +17,15 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
+ * Business Object (BO) encargado de la gestión de números telefónicos de
+ * contacto.
+ * <p>
+ * Esta clase permite asociar múltiples teléfonos a un mismo cliente (Casa,
+ * Celular, Trabajo) y asegura que los datos cumplan con los formatos numéricos
+ * requeridos antes de ser persistidos.</p>
  *
- * @author josma
+ * * @author josma
+ * @version 1.0
  */
 public class TelefonoBO implements ITelefonoBO {
 
@@ -26,10 +33,33 @@ public class TelefonoBO implements ITelefonoBO {
 
     private ITelefonoDAO telefonoDAO;
 
+    /**
+     * Constructor que inicializa el objeto de negocio mediante inyección de
+     * dependencias.
+     *
+     * @param telefonoDAO Instancia de la interfaz DAO para la comunicación con
+     * la base de datos.
+     */
     public TelefonoBO(ITelefonoDAO telefonoDAO) {
         this.telefonoDAO = telefonoDAO;
     }
 
+    /**
+     * Valida y registra un nuevo número de teléfono asociado a un cliente.
+     * <p>
+     * El método verifica:
+     * <ul>
+     * <li>Que el objeto DTO no sea nulo.</li>
+     * <li>Que el formato de la cadena contenga únicamente números.</li>
+     * <li>Que el tipo de teléfono (etiqueta) no esté vacío.</li>
+     * <li>Que exista un ID de cliente válido para establecer la relación.</li>
+     * </ul></p>
+     *
+     * @param telefono DTO con la información del teléfono a agregar.
+     * @return true si el registro fue exitoso en la base de datos.
+     * @throws NegocioExcepcion Si fallan las validaciones de formato o hay
+     * errores SQL.
+     */
     public boolean agregarTelefono(TelefonoDTO telefono) throws NegocioExcepcion {
         try {
             if (telefono == null) {
@@ -57,6 +87,14 @@ public class TelefonoBO implements ITelefonoBO {
         }
     }
 
+    /**
+     * Recupera la lista de teléfonos asociados a un cliente específico.
+     *
+     * @param cliente DTO del cliente del cual se desean obtener los contactos.
+     * @return Lista de {@link TelefonoDTO} asociados al ID del cliente.
+     * @throws NegocioExcepcion Si el cliente es nulo o ocurre un error en la
+     * consulta.
+     */
     public List<TelefonoDTO> listarTelefonos(ClienteDTO cliente) throws NegocioExcepcion {
         try {
             if (cliente == null) {

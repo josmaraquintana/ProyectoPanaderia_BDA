@@ -22,16 +22,32 @@ import java.net.URL;
  */
 public class VEntregarPedidoExpress extends JFrame {
 
-    // Cambiamos a tu clase PlaceholderTextField
+    /**
+     * Interfaz gráfica diseñada para el proceso de entrega de pedidos bajo la
+     * modalidad "Express".
+     * <p>
+     * Esta ventana actúa como un punto de validación donde el empleado debe
+     * ingresar el folio del pedido y un PIN de seguridad proporcionado por el
+     * cliente. La autenticación y el cambio de estado del pedido se gestionan
+     * de forma atómica en la capa de negocio.</p>
+     *
+     * * @author josma, RAMSES
+     * @version 1.0
+     */
     private IPedidoBO pedidoBO;
     private PlaceholderTextField txtFolio;
     private PlaceholderTextField txtPin;
-
+    /**
+     * Inicializa la ventana de entrega express.
+     * <p>Utiliza {@link FabricaBOs} para obtener una implementación de {@link IPedidoBO}, 
+     * desacoplando la GUI de la implementación concreta de la lógica.</p>
+     * <p>El diseño emplea {@link BoxLayout} y {@link GridLayout} para mantener una 
+     * estética limpia y centrada para los campos de captura.</p>
+     */
     public VEntregarPedidoExpress() {
 
         FabricaBOs fabrica = new FabricaBOs();
 
-        // 2. Asignar el BO a la variable de la clase
         this.pedidoBO = fabrica.obtenerPedidoBO();
 
         setTitle("Entregar Pedido Express");
@@ -83,7 +99,6 @@ public class VEntregarPedidoExpress extends JFrame {
                 = new LabelPersonalizado("Folio del pedido:", 18, blanco);
         lblFolio.setHorizontalAlignment(SwingConstants.LEFT);
 
-        // Instanciamos usando tu clase y le pasamos el texto de fondo (placeholder)
         txtFolio = new PlaceholderTextField("Ej. EXP-1234");
         txtFolio.setFont(new Font("Arial", Font.PLAIN, 16));
 
@@ -91,7 +106,7 @@ public class VEntregarPedidoExpress extends JFrame {
                 = new LabelPersonalizado("PIN de seguridad:", 18, blanco);
         lblPin.setHorizontalAlignment(SwingConstants.LEFT);
 
-        // Instanciamos usando tu clase y le pasamos el texto de fondo (placeholder)
+
         txtPin = new PlaceholderTextField("Ej. 9876");
         txtPin.setFont(new Font("Arial", Font.PLAIN, 16));
 
@@ -118,7 +133,7 @@ public class VEntregarPedidoExpress extends JFrame {
 
         info.setAlignmentX(Component.LEFT_ALIGNMENT);
         datosPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
-        // Limitamos el tamaño máximo del panel de datos para que los campos de texto no se estiren demasiado
+        
         datosPanel.setMaximumSize(new Dimension(500, 100));
 
         centerPanel.add(info);
@@ -133,12 +148,20 @@ public class VEntregarPedidoExpress extends JFrame {
 
         // --- EVENTOS ---
         btnSalir.addActionListener(e -> {
-            // Aquí puedes instanciar la ventana anterior para regresar al menú
+            
             this.dispose();
         });
+        /**
+         * Evento de entrega de pedido.
+         * <p>Recupera los datos de los campos de texto, elimina espacios en blanco 
+         * innecesarios y solicita la validación al {@link IPedidoBO}.</p>
+         * <p>Si el método {@code entregarPedidoExpress} devuelve true, se notifica 
+         * al usuario y se limpian los campos para una nueva operación.</p>
+         * * @throws NegocioExcepcion Si ocurre un error técnico o de validación en la capa de datos.
+         */
         btnEntregar.addActionListener(e -> {
             try {
-                // Llamamos al BO para validar y entregar
+                
                 boolean exito = pedidoBO.entregarPedidoExpress(txtFolio.getText().trim(), txtPin.getText().trim());
 
                 if (exito) {

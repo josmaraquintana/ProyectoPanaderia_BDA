@@ -23,8 +23,12 @@ import javax.swing.JOptionPane;
 import javax.swing.SwingConstants;
 
 /**
- *
- * @author josma
+ * Panel de control principal para el perfil de Cliente.
+ * <p>Esta ventana centraliza el acceso a las funciones de compra, consulta de historial,
+ * gestión de datos personales y seguridad de la cuenta. Utiliza una disposición 
+ * de coordenadas mediante {@link GridBagLayout} para organizar sus componentes.</p>
+ * * @author josma
+ * @version 1.1
  */
 public class VOpcionesCliente extends JFrame {
 
@@ -44,7 +48,17 @@ public class VOpcionesCliente extends JFrame {
     private ClienteBO clienteBO;
     private UsuarioBO usuarioBO;
     private JFrame ventanaAnterior;
-
+    /**
+     * Construye la interfaz de opciones para el cliente autenticado.
+     * <p>Propaga las instancias de la capa de negocio (BOs) y el DTO del cliente
+     * a las ventanas hijas para mantener la consistencia de la sesión.</p>
+     * * @param pedido          BO para la gestión de pedidos.
+     * @param cliente         DTO que contiene la información del cliente en sesión.
+     * @param telefono        BO para la administración de números telefónicos.
+     * @param clienteBO       BO para operaciones específicas del perfil de cliente.
+     * @param usuarioBO       BO para la gestión de credenciales de usuario.
+     * @param ventanaAnterior Referencia a la ventana de Login para el cierre de sesión.
+     */
     public VOpcionesCliente(PedidoBO pedido, ClienteDTO cliente, TelefonoBO telefono, ClienteBO clienteBO, UsuarioBO usuarioBO, JFrame ventanaAnterior) {
 
         //Valor para el cliente
@@ -170,7 +184,12 @@ public class VOpcionesCliente extends JFrame {
             new VCambioEstadoPedido(null, this, pedido, cliente, telefono, clienteBO, usuarioBO).setVisible(true);
             this.dispose();
         });
-
+        /**
+         * Lógica de Inactivación de Cuenta.
+         * <p>Solicita una confirmación explícita mediante un {@link JOptionPane}. 
+         * Si el cliente confirma, se invoca a {@code clienteBO.inactivarCuenta()} y 
+         * se redirige a la ventana de inicio de sesión.</p>
+         */
         btn_inactivar.addActionListener(e -> {
             int confirmacion = JOptionPane.showConfirmDialog(this,
                     "¿Estás seguro de que deseas inactivar tu cuenta?\n"

@@ -29,34 +29,55 @@ import javax.swing.border.EmptyBorder;
 import java.util.List;
 
 /**
+ * Interfaz de revisión final y checkout para pedidos de clientes registrados.
+ * <p>
+ * Esta ventana permite visualizar el desglose de productos, subtotal,
+ * aplicación de cupones de descuento y la edición de notas especiales para el
+ * pedido.</p>
+ * <p>
+ * Implementa un sistema de parseo de texto para extraer las notas del usuario
+ * insertadas después del separador visual en el área de resumen.</p>
  *
- * @author RAMSES
+ * * @author RAMSES
+ * @version 1.0
  */
 public class VResumenPedido extends JFrame {
-
 
     private ClienteBO clienteBO;
     private ClienteDTO cliente;
     private PedidoBO pedido;
-    private ProductoBO productoBO; 
+    private ProductoBO productoBO;
     private TelefonoBO telefono;
     private double cupon = 0.0;
     private ICuponBO cuponBO;
     private FabricaBOs fabricaBO;
     private double subtotal;
     private double total;
-    private List<CuponDTO>  lista_cupones;
+    private List<CuponDTO> lista_cupones;
     private String notas;
     private UsuarioBO usuarioBO;
     private JFrame ventanaAnterior;
-    
 
-    public VResumenPedido(PedidoBO pedido,ClienteDTO cliente,TelefonoBO telefono, List<ItemCarrito> carrito, ClienteBO clienteBO, UsuarioBO usuarioBO, JFrame ventanaAnterior) {
+    /**
+     * Construye la vista de resumen calculando subtotales iniciales.
+     * <p>
+     * itera sobre la lista de {@link ItemCarrito} para generar el desglose
+     * textual y establecer el estado inicial del total.</p>
+     *
+     * * @param pedido BO para la gestión general de pedidos.
+     * @param cliente DTO del cliente autenticado.
+     * @param telefono BO para datos de contacto.
+     * @param carrito Lista de productos y cantidades seleccionadas.
+     * @param clienteBO BO para operaciones de cliente.
+     * @param usuarioBO BO para gestión de sesión.
+     * @param ventanaAnterior Referencia para cancelar y volver a la selección.
+     */
+    public VResumenPedido(PedidoBO pedido, ClienteDTO cliente, TelefonoBO telefono, List<ItemCarrito> carrito, ClienteBO clienteBO, UsuarioBO usuarioBO, JFrame ventanaAnterior) {
         this.telefono = telefono;
         this.ventanaAnterior = ventanaAnterior;
         this.usuarioBO = usuarioBO;
         this.pedido = pedido;
-        this.cliente = cliente; 
+        this.cliente = cliente;
         lista_cupones = new ArrayList<>();
         fabricaBO = new FabricaBOs();
         subtotal = 0.0;
@@ -79,8 +100,8 @@ public class VResumenPedido extends JFrame {
         panel_superior.setOpaque(false);
         panel_superior.setBorder(new EmptyBorder(15, 25, 10, 25));
 
-        LabelPersonalizado lbl_titulo =
-                new LabelPersonalizado("Resumen del pedido", 26, Color.WHITE);
+        LabelPersonalizado lbl_titulo
+                = new LabelPersonalizado("Resumen del pedido", 26, Color.WHITE);
         lbl_titulo.setHorizontalAlignment(SwingConstants.LEFT);
 
         JLabel lbl_logo = new JLabel();
@@ -107,19 +128,18 @@ public class VResumenPedido extends JFrame {
         area_resumen.setForeground(Color.WHITE);
         area_resumen.setBackground(cafe);
         area_resumen.setBorder(new EmptyBorder(15, 15, 15, 15));
-        
+
         //Obtenemos el resumen de su pedido
         String resumen = "Panes que se escogieron-->\n";
-        
+
         for (ItemCarrito item : carrito) {
-            resumen += item.getProducto().getNombre() + " -- $"+item.getProducto().getPrecio() + " -- cant: "+item.getCantidad()+"\n";
+            resumen += item.getProducto().getNombre() + " -- $" + item.getProducto().getPrecio() + " -- cant: " + item.getCantidad() + "\n";
             subtotal += item.getSubtotal();
             total = subtotal;
         }
         resumen += "Notas para los productos:\n Escriba las notas que guste\n-----------------------------------------";
         //Hacemos que el mensaje aparezca en la pantalla
         area_resumen.setText(resumen);
-        
 
         JScrollPane scroll_resumen = new JScrollPane(area_resumen);
         scroll_resumen.setBorder(BorderFactory.createEmptyBorder());
@@ -136,11 +156,11 @@ public class VResumenPedido extends JFrame {
         panel_totales.setOpaque(false);
         panel_totales.setLayout(new BoxLayout(panel_totales, BoxLayout.Y_AXIS));
         panel_totales.setBorder(new EmptyBorder(40, 30, 30, 30));
-        
-        LabelPersonalizado label_subtotal = new LabelPersonalizado("Subtotal:      $"+subtotal, 18, Color.WHITE);
+
+        LabelPersonalizado label_subtotal = new LabelPersonalizado("Subtotal:      $" + subtotal, 18, Color.WHITE);
         LabelPersonalizado label_cupon = new LabelPersonalizado("Cupón:      $0.0", 18, Color.WHITE);
-        LabelPersonalizado label_total = new LabelPersonalizado("Total:      $"+total, 20, dorado);
-        
+        LabelPersonalizado label_total = new LabelPersonalizado("Total:      $" + total, 20, dorado);
+
         panel_totales.add(label_subtotal);
         panel_totales.add(Box.createVerticalStrut(15));
         panel_totales.add(label_cupon);
@@ -177,64 +197,75 @@ public class VResumenPedido extends JFrame {
         add(panel_inferior, BorderLayout.SOUTH);
 
         setVisible(true);
-        
-        //Realizamos el pedido
+
+        /**
+         * Confirmación y registro del pedido.
+         * <p>
+         * Extrae las notas del cliente buscando un separador específico en el
+         * {@link JTextArea}. Si la nota excede los 200 caracteres, se realiza
+         * un truncamiento automático para cumplir con las restricciones de la
+         * base de datos.</p>
+         */
         btn_aceptar.addActionListener(e -> {
             //Obtenemos el BO para trabajar
             IPedidoProgramadoBO pedidoBO = fabricaBO.obtenerPedidoProgramadoBO();
-            
-            try{
-                
+
+            try {
+
                 // 1. Obtenemos TODO el texto que hay en el área en el momento de dar clic
                 String texto_completo = area_resumen.getText();
                 String separador = "-----------------------------------------";
                 String nota_final = ""; // Empezamos con una nota vacía por si acaso
-                
+
                 // 2. Buscamos dónde empieza la línea de guiones
                 int indice = texto_completo.indexOf(separador);
-                
+
                 //Si si encontro la línea (el usuario no la borró por accidente)
                 if (indice != -1) {
                     //Cortamos el texto desde donde termina el separador hasta el final
                     nota_final = texto_completo.substring(indice + separador.length());
-                    
+
                     //Le quitamos los saltos de linea y espacios en blanco al inicio y al final
                     nota_final = nota_final.trim();
-                    
+
                     //Evitamos que pase de 200 caracteres para la BD
                     if (nota_final.length() > 200) {
                         nota_final = nota_final.substring(0, 200);
                         System.out.println("La nota era muy larga y se recortó.");
                     }
                 }
-                
+
                 //Realizamos los registros de pedido en la base de datos
                 pedidoBO.realizarRegistrosPedidosClientesCupones(carrito, cliente, lista_cupones, subtotal, total, nota_final);
                 JOptionPane.showMessageDialog(null, "Se realizo el pedido exitosamente");
                 VOpcionesCliente menu_cliente = new VOpcionesCliente(pedido, cliente, telefono, clienteBO, usuarioBO, this);
                 menu_cliente.setVisible(true);
                 this.dispose();
-                
-            }catch(NegocioExcepcion ex){
+
+            } catch (NegocioExcepcion ex) {
                 System.out.println("Hubo un error al querer hacer los registros del pedido.");
                 System.out.println(ex.getMessage());
             }
-            
+
         });
-        
-        
+
         //Cerrar ventana en caso de cambiar de cancelar
         btn_cancelar.addActionListener(e -> {
             ventanaAnterior.setVisible(true);
             this.dispose();
         });
 
-        
+        /**
+         * Lógica de aplicación de cupones.
+         * <p>
+         * Valida que el código sea numérico mediante Regex. Si es válido,
+         * descuenta el valor del cupón del total actual y actualiza la UI.</p>
+         */
         //Boton para agregar cupon 
         btn_cupon.addActionListener(e -> {
-            
+
             //obtenemos del campo de texto el codigo del cupon que quiere canjear 
-            try{
+            try {
                 String texto_cupon = txt_cupon.getText();
                 //Validamos que no este vacio
                 if (texto_cupon.isEmpty()) {
@@ -244,13 +275,12 @@ public class VResumenPedido extends JFrame {
                 //Hacemos una expresion regular para saber si es que cumple la sintaxis
                 Pattern pattern = Pattern.compile("^[0-9]+$");
                 Matcher matcher = pattern.matcher(texto_cupon);
-                
+
                 if (!matcher.find()) {
                     JOptionPane.showMessageDialog(null, "No debe de ingresar letras o numero invalidos\nen el campo de cupon.");
                     return;
                 }
-                
-                
+
                 cuponBO = fabricaBO.obtenerCuponBO();
                 //Convertimos a entero el codigo del texto
                 int codigo = Integer.parseInt(texto_cupon);
@@ -259,21 +289,18 @@ public class VResumenPedido extends JFrame {
                 //Lo agregamos a los cupones que usamos en este pedido
                 lista_cupones.add(cupon_obtenido);
                 //Establecemos los nuevos valores del cupon y actualizamos los valores en los campos de texto
-                label_cupon.setText("Cupón:      $"+cupon_obtenido.getDesc());
-                
+                label_cupon.setText("Cupón:      $" + cupon_obtenido.getDesc());
+
                 total -= cupon_obtenido.getDesc();
-                
-                label_total.setText("Total:      $"+total);
-                
-            }catch(NegocioExcepcion ex){
+
+                label_total.setText("Total:      $" + total);
+
+            } catch (NegocioExcepcion ex) {
                 System.out.println("Hubo un error al querer insertar un cupon.");
                 System.out.println(ex.getMessage());
             }
         });
-        
-        
-        
+
     }
-    
 
 }

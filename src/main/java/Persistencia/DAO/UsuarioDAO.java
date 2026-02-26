@@ -20,8 +20,13 @@ import java.util.logging.Logger;
 import org.mindrot.jbcrypt.BCrypt;
 
 /**
+ * DAO encargado de la autenticación y gestión de sesiones de usuario.
+ * <p>
+ * Utiliza una estrategia de consulta polimórfica para identificar si el usuario
+ * es un Cliente o un Empleado en el momento del inicio de sesión.</p>
  *
- * @author josma
+ * * @author josma
+ * @version 1.2
  */
 public class UsuarioDAO implements IUsuarioDAO {
 
@@ -47,6 +52,21 @@ public class UsuarioDAO implements IUsuarioDAO {
         this.conexionBD = conexionBD;
     }
 
+    /**
+     * Valida las credenciales de un usuario y retorna su perfil completo.
+     * <p>
+     * El método realiza las siguientes acciones: 1. Busca el usuario por su
+     * nombre único. 2. Verifica la contraseña utilizando el algoritmo BCrypt.
+     * 3. Determina el rol (Cliente/Empleado) mediante la existencia de
+     * registros en tablas relacionadas.</p>
+     *
+     * * @param usuario_nombre Nombre de usuario proporcionado.
+     * @param contrasena_plana Contraseña en texto claro para validar.
+     * @return {@link Usuario} (instancia de Cliente o Empleado) o null si las
+     * credenciales son incorrectas.
+     * @throws PersistenciaExcepcion Si ocurre un error de comunicación con la
+     * BD.
+     */
     @Override
     //AQUI SOLO ESTOY CAMBIANDO EL NOMBRE A LA CONTRASENA
     public Usuario buscarUsuarioLogin(String usuario_nombre, String contrasena_plana) throws PersistenciaExcepcion {

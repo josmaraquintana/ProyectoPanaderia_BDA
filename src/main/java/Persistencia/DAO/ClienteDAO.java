@@ -18,8 +18,15 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
+ * Implementación de la interfaz IClienteDAO para la gestión de persistencia de
+ * Clientes.
+ * <p>
+ * Esta clase utiliza JDBC para interactuar con la base de datos, empleando
+ * Stored Procedures para inserciones complejas y transacciones manuales para
+ * actualizaciones que afectan múltiples tablas.</p>
  *
- * @author josma
+ * * @author josma
+ * @version 1.2
  */
 public class ClienteDAO implements IClienteDAO {
 
@@ -62,6 +69,18 @@ public class ClienteDAO implements IClienteDAO {
         }
     }
 
+    /**
+     * Registra un nuevo cliente invocando el procedimiento almacenado
+     * 'registrar_cliente'.
+     * <p>
+     * El uso de CallableStatement asegura que la lógica de inserción dual
+     * (Usuarios y Clientes) se maneje de forma atómica en el servidor de
+     * BD.</p>
+     *
+     * * @param cliente DTO con la información completa del nuevo usuario.
+     * @throws PersistenciaExcepcion Si ocurre un error de conectividad o
+     * violación de restricciones.
+     */
     @Override
     public void registrarUsuario(ClienteDTO cliente) throws PersistenciaExcepcion {
         String comandoSQL = "{CALL registrar_cliente(?,?,?,?,?,?,?,?,?,?,?,?)}";
@@ -96,10 +115,10 @@ public class ClienteDAO implements IClienteDAO {
             ps.setInt(1, id_cliente);
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
-                    
+
                     //COMO AGREGUE EL ESTADO DE LA CUENTA HICE MODIFICACIONES - JOS
                     EstadoCuenta estado = EstadoCuenta.valueOf(rs.getString("estado_cuenta"));
-                    
+
                     return new ClienteDTO(
                             rs.getInt("id_cliente"),
                             rs.getInt("edad"),
@@ -119,6 +138,17 @@ public class ClienteDAO implements IClienteDAO {
         return null;
     }
 
+    /**
+     * Actualiza la información de un cliente en dos tablas (Usuarios y
+     * Clientes).
+     * <p>
+     * Implementa un bloque de transacción con {@code setAutoCommit(false)} para
+     * asegurar que ambos UPDATEs se completen exitosamente; de lo contrario,
+     * realiza un rollback.</p>
+     *
+     * * @param cliente DTO con los datos actualizados.
+     * @throws PersistenciaExcepcion Si falla alguna de las actualizaciones.
+     */
     @Override
     public void actualizarCliente(ClienteDTO cliente) throws PersistenciaExcepcion {
 
@@ -175,19 +205,19 @@ public class ClienteDAO implements IClienteDAO {
             throw new PersistenciaExcepcion("Error al actualizar cliente", ex);
         }
     }
+
     @Override
-    public boolean inactivarCliente(int idCliente) throws PersistenciaExcepcion{
-    String comandoSQL = "UPDATE Clientes SET estado_cuenta = 'INACTIVO' WHERE id_cliente = ?";
-    
-    try (Connection con = this.conexionBD.crearConexion(); PreparedStatement ps = con.prepareStatement(comandoSQL)) {      
-        ps.setInt(1, idCliente);        
-        int filasAfectadas = ps.executeUpdate();
-        return filasAfectadas > 0; // Regresa true si se se actualizo el estaod de cuenta
-        
-    } catch (SQLException ex) {
-         throw new PersistenciaExcepcion("Error al intentar desactivar la cuenta", ex);
+    public boolean inactivarCliente(int idCliente) throws PersistenciaExcepcion {
+        String comandoSQL = "UPDATE Clientes SET estado_cuenta = 'INACTIVO' WHERE id_cliente = ?";
+
+        try (Connection con = this.conexionBD.crearConexion(); PreparedStatement ps = con.prepareStatement(comandoSQL)) {
+            ps.setInt(1, idCliente);
+            int filasAfectadas = ps.executeUpdate();
+            return filasAfectadas > 0; // Regresa true si se se actualizo el estaod de cuenta
+
+        } catch (SQLException ex) {
+            throw new PersistenciaExcepcion("Error al intentar desactivar la cuenta", ex);
+        }
     }
-}
-    
-    
+
 }

@@ -15,8 +15,14 @@ import java.sql.SQLException;
 import java.util.logging.Logger;
 
 /**
+ * DAO especializado en la gestión de persistencia para el personal (Empleados).
+ * <p>
+ * Esta clase interactúa con la base de datos para validar la existencia de
+ * empleados y realizar registros mediante lógica procedimental en el
+ * servidor.</p>
  *
- * @author josma
+ * * @author josma
+ * @version 1.0
  */
 public class EmpleadoDAO implements IEmpleadoDAO {
 
@@ -42,6 +48,14 @@ public class EmpleadoDAO implements IEmpleadoDAO {
         this.conexionBD = conexionBD;
     }
 
+    /**
+     * Verifica si un ID de usuario ya tiene un registro asociado en la tabla de
+     * Empleados.
+     *
+     * @param id_usuario Identificador único del usuario a consultar.
+     * @return true si el empleado existe, false en caso contrario.
+     * @throws PersistenciaExcepcion Si ocurre un error durante la consulta SQL.
+     */
     @Override
     public boolean empleadoExiste(int id_usuario) throws PersistenciaExcepcion {
         String comandoSQL = "SELECT id_usuario FROM Empleados WHERE id_usuario  =?";
@@ -59,6 +73,16 @@ public class EmpleadoDAO implements IEmpleadoDAO {
         }
     }
 
+    /**
+     * Registra un nuevo empleado en el sistema utilizando un Store Procedure.
+     * <p>
+     * El procedimiento 'registrar_empleado' se encarga de la inserción
+     * multitabla y la asignación de roles correspondientes.</p>
+     *
+     * * @param empleado DTO con la información de acceso y personal del
+     * empleado.
+     * @throws PersistenciaExcepcion Si hay errores de duplicidad o de conexión.
+     */
     @Override
     public void registrarUsuario(EmpleadoDTO empleado) throws PersistenciaExcepcion {
         String comandoSQL = "{CALL registrar_empleado(?,?,?,?,?)}";
@@ -69,7 +93,7 @@ public class EmpleadoDAO implements IEmpleadoDAO {
             cs.setString(3, empleado.getNombres());
             cs.setString(4, empleado.getApellido_paterno());
             cs.setString(5, empleado.getApellido_materno());
-            
+
             cs.execute();
 
         } catch (SQLException ex) {

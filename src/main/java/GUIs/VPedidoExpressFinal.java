@@ -18,29 +18,48 @@ import java.security.SecureRandom;
 import java.util.List;
 
 /**
- * Ventana Final de Pedido Express
- * Muestra el Folio y PIN al cliente y los registra en la BD.
+ * Ventana de confirmación y cierre para la modalidad de Pedido Express.
+ * <p>
+ * Esta interfaz genera de forma segura un Folio y un PIN de recolección, los
+ * presenta al usuario y procede a su registro asíncrono en la base de
+ * datos.</p>
+ * <p>
+ * Implementa una restricción de tiempo lógica (20 minutos) comunicada al
+ * usuario para garantizar la frescura del producto en pedidos sin cuenta.</p>
+ *
+ * * @author josma
+ * @version 1.0
  */
 public class VPedidoExpressFinal extends JFrame {
 
     private LabelPersonalizado lbl_folio;
     private LabelPersonalizado lbl_total;
     private LabelPersonalizado lbl_pin;
-    
+
     private IPedidoBO pedidoBO;
     private String folio;
     private String pin;
     private double total;
     private List<ItemCarrito> carrito;
 
+    /**
+     * Construye la ventana final del pedido express.
+     * <p>
+     * Utiliza {@link SecureRandom} para garantizar la impredecibilidad de los
+     * códigos de acceso.</p>
+     *
+     * * @param carrito Colección de items a registrar.
+     * @param total Suma total del pedido.
+     * @param ventanaAnterior Referencia para retornar al menú de inicio.
+     */
     public VPedidoExpressFinal(List<ItemCarrito> carrito, double total, JFrame ventanaAnterior) {
         this.total = total;
         this.carrito = carrito;
-        
+
         // 1. INICIALIZACIÓN DE LÓGICA
         FabricaBOs fabrica = new FabricaBOs();
         this.pedidoBO = fabrica.obtenerPedidoBO();
-        
+
         // Generamos los códigos antes de que la GUI los pinte
         crearFolioYPin();
 
@@ -49,7 +68,7 @@ public class VPedidoExpressFinal extends JFrame {
         setSize(750, 500);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
-        
+
         Color fondo = new Color(205, 173, 144);
         Color blanco = Color.WHITE;
         Color naranja = new Color(201, 104, 0);
@@ -61,7 +80,7 @@ public class VPedidoExpressFinal extends JFrame {
         // --- ZONA NORTE: TÍTULO Y LOGO ---
         JPanel topPanel = new JPanel(new BorderLayout());
         topPanel.setOpaque(false);
-        
+
         LabelPersonalizado titulo = new LabelPersonalizado("Pedido Express", 32, blanco);
         topPanel.add(titulo, BorderLayout.WEST);
 
@@ -134,6 +153,12 @@ public class VPedidoExpressFinal extends JFrame {
         this.pin = generarAleatorio(4);   // PIN de 4 dígitos
     }
 
+    /**
+     * Genera cadenas numéricas aleatorias utilizando criptografía segura.
+     *
+     * * @param longitud Cantidad de caracteres a generar.
+     * @return Cadena de dígitos numéricos.
+     */
     private String generarAleatorio(int longitud) {
         SecureRandom sr = new SecureRandom();
         StringBuilder sb = new StringBuilder();
@@ -143,6 +168,14 @@ public class VPedidoExpressFinal extends JFrame {
         return sb.toString();
     }
 
+    /**
+     * Registra la transacción en la base de datos de forma asíncrona.
+     * <p>
+     * Utiliza un nuevo {@link Thread} para evitar el bloqueo del Event Dispatch
+     * Thread (EDT) de Swing mientras se realiza la operación de red/BD. En caso
+     * de error, vuelve al hilo de la GUI mediante
+     * {@link SwingUtilities#invokeLater(Runnable)}.</p>
+     */
     private void registrarPedidoEnBD() {
         // Ejecutamos en un hilo separado para no congelar la GUI
         new Thread(() -> {
@@ -150,9 +183,9 @@ public class VPedidoExpressFinal extends JFrame {
                 pedidoBO.realizarRegistroExpress(carrito, total, folio, pin);
             } catch (NegocioExcepcion ex) {
                 SwingUtilities.invokeLater(() -> {
-                    JOptionPane.showMessageDialog(this, 
-                        "Error al guardar pedido: " + ex.getMessage(), 
-                        "Error de Conexión", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(this,
+                            "Error al guardar pedido: " + ex.getMessage(),
+                            "Error de Conexión", JOptionPane.ERROR_MESSAGE);
                 });
             }
         }).start();

@@ -21,8 +21,14 @@ import javax.swing.JLabel;
 import javax.swing.SwingUtilities;
 
 /**
- *
- * @author RAMSES
+ * Panel de control administrativo para usuarios con rol de Empleado.
+ * <p>Esta interfaz centraliza las operaciones de gestión de inventario (productos), 
+ * marketing (cupones), control operativo (estado de pedidos) y administración 
+ * de personal (registro de empleados).</p>
+ * <p>Mantiene la persistencia de la sesión a través del objeto {@link EmpleadoDTO} 
+ * y distribuye los Business Objects necesarios a los módulos hijos.</p>
+ * * @author RAMSES
+ * @version 1.0
  */
 public class VOpcionesEmpleado extends JFrame {
 
@@ -43,7 +49,19 @@ public class VOpcionesEmpleado extends JFrame {
     private RoundedButton btn_registrar_empleado;
     private RoundedButton btn_estado_producto;
     private JFrame ventanaAnterior;
-
+    /**
+     * Inicializa el menú de opciones del empleado.
+     * <p>Configura un diseño basado en {@link GridBagLayout} para organizar verticalmente 
+     * el acceso a los sub-módulos administrativos.</p>
+     * * @param productoBO      Gestión de catálogo de productos.
+     * @param cuponBO         Gestión de promociones y cupones.
+     * @param empleado        Información del empleado autenticado.
+     * @param empleadoBO      Lógica para administración de personal.
+     * @param usuarioBO       Gestión de credenciales generales.
+     * @param pedido          Control y consulta de pedidos.
+     * @param telefono        Administración de datos de contacto.
+     * @param ventanaAnterior Referencia al frame de origen para permitir el cierre de sesión.
+     */
     public VOpcionesEmpleado(ProductoBO productoBO,CuponBO cuponBO, EmpleadoDTO empleado, EmpleadoBO empleadoBO, UsuarioBO usuarioBO, PedidoBO pedido, TelefonoBO telefono, JFrame ventanaAnterior) {
         this.productoBO = productoBO;
         this.cuponBO = cuponBO;
@@ -117,7 +135,11 @@ public class VOpcionesEmpleado extends JFrame {
             ventanaAnterior.setVisible(true);
             this.dispose();
         });
-
+        /**
+         * Navegación a módulos administrativos.
+         * <p>Cada evento de botón oculta o destruye la ventana actual y abre 
+         * el módulo correspondiente, pasando las dependencias de negocio necesarias.</p>
+         */
         btn_registrar_empleado.addActionListener(e -> {
             new VRegistrarEmpleado(empleadoBO, empleado, this).setVisible(true);
             this.setVisible(false);

@@ -17,18 +17,38 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
+ * Business Object (BO) encargado de la gestión del catálogo de productos.
+ * <p>
+ * Esta clase centraliza las reglas de negocio para el inventario, asegurando
+ * que la información de los productos sea consistente y válida antes de su
+ * exposición en el punto de venta o en pedidos programados.</p>
  *
- * @author josma
+ * * @author josma
+ * @version 1.0
  */
 public class ProductoBO implements IProductoBO {
 
     private final IProductoDAO productoDAO; //para conectarnos a la capa de datos
     private final Logger LOG = Logger.getLogger(CuponBO.class.getName());
 
+    /**
+     * Constructor que inicializa el objeto de negocio mediante inyección de
+     * dependencias.
+     *
+     * @param producto Instancia de la interfaz DAO para la comunicación con la
+     * base de datos.
+     */
     public ProductoBO(IProductoDAO producto) {
         this.productoDAO = producto; //inyeccion de dependencias
     }
 
+    /**
+     * Recupera el catálogo completo de productos disponibles.
+     *
+     * @return Lista de {@link ProductoDTO} con la información de los productos.
+     * @throws NegocioExcepcion Si la lista resulta nula o hay fallos en la
+     * conexión.
+     */
     @Override
     public List<ProductoDTO> obtenerListaProductos() throws NegocioExcepcion {
         try {
@@ -46,10 +66,20 @@ public class ProductoBO implements IProductoBO {
     }
 
     /**
-     * Método para registrar un producto con validaciones de negocio.
+     * Registra un nuevo producto aplicando validaciones de integridad y
+     * formato.
+     * <p>
+     * Reglas aplicadas:
+     * <ul>
+     * <li>Nombre obligatorio y sin espacios en blanco.</li>
+     * <li>Precio estrictamente mayor a cero.</li>
+     * <li>Tipo de producto (categoría) obligatorio.</li>
+     * <li>Descripción limitada a 200 caracteres para evitar desbordamiento en
+     * UI.</li>
+     * </ul></p>
      *
-     * @param producto El DTO con la información del producto.
-     * @throws Exception Si hay errores de validación o de base de datos.
+     * @param producto DTO con la información capturada.
+     * @throws NegocioExcepcion Si alguna regla de validación es violada.
      */
     @Override
     public void registrarProducto(ProductoDTO producto) throws NegocioExcepcion {
@@ -83,6 +113,14 @@ public class ProductoBO implements IProductoBO {
         }
     }
 
+    /**
+     * Realiza una búsqueda filtrada de productos por coincidencia de nombre.
+     *
+     * @param filtro Cadena de texto a buscar.
+     * @return Lista de {@link ProductoEstadoDTO} que coinciden con el criterio.
+     * @throws Exception Si el filtro es nulo o vacío.
+     */
+
     @Override
     public List<ProductoEstadoDTO> buscarProductosPorNombre(String filtro) throws Exception {
 
@@ -93,6 +131,14 @@ public class ProductoBO implements IProductoBO {
         return productoDAO.buscarProductosPorNombre(filtro.trim());
     }
 
+    /**
+     * Gestiona el ciclo de vida de un producto cambiando su estado (Disponible,
+     * Agotado, etc.).
+     *
+     * @param id Identificador único del producto.
+     * @param nuevoEstado Valor del Enum {@link EstadoProducto}.
+     * @throws Exception Si el ID es inválido o el estado es nulo.
+     */
     @Override
     public void actualizarEstadoProducto(int id, EstadoProducto nuevoEstado) throws Exception {
         if (id <= 0) {

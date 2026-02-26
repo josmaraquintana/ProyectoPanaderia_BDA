@@ -20,8 +20,14 @@ import java.util.List;
 import java.util.logging.Logger;
 
 /**
+ * DAO para la gestión del inventario y catálogo de Productos.
+ * <p>
+ * Esta clase permite la administración de los productos, incluyendo búsquedas
+ * con filtros parciales (LIKE), registro de nuevos artículos y gestión de
+ * disponibilidad mediante estados.</p>
  *
- * @author josma
+ * * @author josma
+ * @version 1.3
  */
 public class ProductoDAO implements IProductoDAO {
 
@@ -47,6 +53,13 @@ public class ProductoDAO implements IProductoDAO {
         this.conexionBD = conexionBD;
     }
 
+    /**
+     * Recupera todos los productos marcados como 'Disponible'.
+     *
+     * @return Lista de {@link ProductoDTO} para mostrar en el catálogo de
+     * clientes.
+     * @throws PersistenciaExcepcion Si ocurre un error en la consulta.
+     */
     @Override
     public List<ProductoDTO> obtenerListaProductos() throws PersistenciaExcepcion {
         //Lista para guardar los productos 
@@ -137,6 +150,16 @@ public class ProductoDAO implements IProductoDAO {
         }
     }
 
+    /**
+     * Busca productos cuyo nombre coincida parcialmente con el filtro.
+     * <p>
+     * Utiliza el operador SQL {@code LIKE} con comodines (%) para permitir
+     * búsquedas flexibles en la interfaz de usuario.</p>
+     *
+     * * @param filtro Texto a buscar en el nombre del producto.
+     * @return Lista de productos que coinciden con el criterio.
+     * @throws PersistenciaExcepcion Error de base de datos.
+     */
     @Override
     public List<ProductoEstadoDTO> buscarProductosPorNombre(String filtro) throws PersistenciaExcepcion {
         List<ProductoEstadoDTO> lista = new ArrayList<>();

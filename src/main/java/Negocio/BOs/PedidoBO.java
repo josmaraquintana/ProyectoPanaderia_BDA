@@ -21,14 +21,37 @@ import java.util.List;
 import java.util.logging.Logger;
 
 /**
+ * Business Object (BO) encargado de la gestión integral de pedidos.
+ * <p>
+ * Esta clase centraliza la lógica para consultar historiales, realizar
+ * registros de ventas express y gestionar el ciclo de vida de los estados de un
+ * pedido (RECIBIDO, EN_PREPARACION, ENTREGADO, etc.).</p>
  *
- * @author josma
+ * * @author josma
+ * @version 1.1
  */
 public class PedidoBO implements IPedidoBO {
 
     private final IPedidoDAO pedidoDAO; //para conectarnos a la capa de datos
     private final Logger LOG = Logger.getLogger(PedidoBO.class.getName());
 
+    /**
+     * Consulta el historial de pedidos filtrado por un rango de fechas y
+     * criterios específicos.
+     * <p>
+     * Realiza un pre-procesamiento de las cadenas de fecha para asegurar un
+     * formato compatible con SQL (AAAA-MM-DD) y valida la coherencia
+     * cronológica.</p>
+     *
+     * * @param fecha_inicio Fecha inicial en formato String.
+     * @param fecha_fin Fecha final en formato String.
+     * @param id_cliente Identificador único del cliente.
+     * @param tipo Categoría del pedido ("Programado" o "Express").
+     * @param estado Valor del Enum {@link EstadoPedido}.
+     * @return Lista de {@link PedidoDTO} que coinciden con los filtros.
+     * @throws NegocioExcepcion Si el formato de fecha es incorrecto o las
+     * fechas son incoherentes.
+     */
     public PedidoBO(IPedidoDAO pedido) {
         this.pedidoDAO = pedido; //inyeccion de dependencias
     }
@@ -134,6 +157,20 @@ public class PedidoBO implements IPedidoBO {
 
     }
 
+    /**
+     * Procesa y registra una venta bajo la modalidad Express.
+     * <p>
+     * El método realiza el mapeo entre los productos del carrito y sus IDs de
+     * base de datos, calculando la fecha de registro en tiempo real.</p>
+     *
+     * * @param carrito Lista de objetos {@link ItemCarrito} con productos y
+     * cantidades.
+     * @param subtotal Monto económico antes de impuestos o descuentos.
+     * @param folio Código identificador único para la recolección.
+     * @param pin Código de seguridad para validar la entrega.
+     * @throws NegocioExcepcion Si el carrito está vacío o ocurre un error en la
+     * persistencia.
+     */
     @Override
     public void realizarRegistroExpress(List<ItemCarrito> carrito, double subtotal, String folio, String pin) throws NegocioExcepcion {
         try {

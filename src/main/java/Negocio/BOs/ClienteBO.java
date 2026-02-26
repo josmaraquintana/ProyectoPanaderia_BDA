@@ -17,8 +17,22 @@ import java.util.logging.Logger;
 import org.mindrot.jbcrypt.BCrypt;
 
 /**
+ * Business Object (BO) encargado de la lógica de negocio para la entidad
+ * Cliente.
+ * <p>
+ * Esta clase actúa como intermediaria entre la capa de presentación (GUIs) y la
+ * capa de persistencia (DAOs), asegurando que los datos cumplan con las reglas
+ * de validación y seguridad.</p>
+ * * 
+ * Funcionalidades principales:
+ * <ul>
+ * <li>Validación de datos obligatorios.</li>
+ * <li>Encriptación de contraseñas mediante algoritmos de hashing.</li>
+ * <li>Gestión del estado de cuenta (Activo/Inactivo).</li>
+ * </ul>
  *
- * @author josma
+ * * @author josma
+ * @version 1.0
  */
 public class ClienteBO implements IClienteBO {
 
@@ -28,6 +42,17 @@ public class ClienteBO implements IClienteBO {
     public ClienteBO(IClienteDAO cliente) {
         this.clienteDAO = cliente; //inyeccion de dependencias
     }
+
+    /**
+     * Registra un nuevo cliente aplicando reglas de seguridad.
+     * <p>
+     * Valida campos obligatorios, encripta la contraseña del DTO antes de
+     * persistirla y establece el estado inicial de la cuenta.</p>
+     *
+     * * @param cliente El DTO con la información capturada en la interfaz.
+     * @throws NegocioExcepcion Si los datos son inválidos o hay un error en la
+     * persistencia.
+     */
 
     @Override
     public void registrarCliente(ClienteDTO cliente) throws NegocioExcepcion {

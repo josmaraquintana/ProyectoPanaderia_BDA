@@ -22,8 +22,14 @@ import java.util.List;
 import java.util.logging.Logger;
 
 /**
+ * DAO especializado en la gestión de Pedidos Programados.
+ * <p>
+ * Esta clase extiende la funcionalidad de los pedidos estándar permitiendo la
+ * programación de fechas, la aplicación de múltiples cupones y la gestión de
+ * notas específicas por detalle de producto.</p>
  *
- * @author josma
+ * * @author josma
+ * @version 1.2
  */
 public class PedidoProgramadoDAO implements IPedidoProgramadoDAO {
 
@@ -49,6 +55,27 @@ public class PedidoProgramadoDAO implements IPedidoProgramadoDAO {
         this.conexionBD = conexionBD;
     }
 
+    /**
+     * Realiza un registro integral de un pedido programado en la base de datos.
+     * <p>
+     * El método ejecuta una secuencia de inserciones:
+     * <ol>
+     * <li>Inserta la cabecera en la tabla {@code Pedidos}.</li>
+     * <li>Registra la especialización en {@code PedidosProgramados}.</li>
+     * <li>Relaciona los cupones aplicados en {@code Cupones_Pedidos}.</li>
+     * <li>Desglosa los productos en {@code DetallePedidos}.</li>
+     * </ol></p>
+     *
+     * * @param carrito Lista de items en el carrito actual.
+     * @param cliente DTO del cliente que realiza la compra.
+     * @param lista_cupones_id Lista de cupones aplicados al pedido.
+     * @param pedidoDTO Datos generales del pedido (totales, fechas).
+     * @param notas Comentarios adicionales para la preparación.
+     * @param lista_id_productos IDs de los productos para referenciación
+     * rápida.
+     * @throws PersistenciaExcepcion Si ocurre un fallo en cualquier etapa del
+     * proceso SQL.
+     */
     @Override
     public void realizarRegistroPedidoProgramado(List<ItemCarrito> carrito, ClienteDTO cliente,
             List<CuponDTO> lista_cupones_id, PedidoDatosDTO pedidoDTO, String notas, List<Integer> lista_id_productos) throws PersistenciaExcepcion {

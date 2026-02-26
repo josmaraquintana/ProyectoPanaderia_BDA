@@ -25,11 +25,15 @@ import java.util.List;
 import java.util.ArrayList;
 
 /**
- *
- * @author RAMSES
+ * Ventana de consulta de historial de pedidos para el cliente.
+ * <p>Permite filtrar la información por rangos de fecha, tipo de pedido (Express o Programado) 
+ * y estado actual del pedido. La clase realiza una validación estricta de formatos de fecha 
+ * y estados basados en el enumerado {@link EstadoPedido}.</p>
+ * * @author RAMSES
+ * @version 1.0
  */
 public class VHistorial extends JFrame {
-
+    
     private PlaceholderTextField txtFechaInicio;
     private PlaceholderTextField txtFechaFin;
     private PlaceholderTextField txtEstado;
@@ -42,7 +46,15 @@ public class VHistorial extends JFrame {
     private ClienteBO clienteBO;
     private UsuarioBO usuarioBO;
     private JFrame ventanaAnterior;
-    
+    /**
+     * Construye la interfaz de historial cargando las dependencias del negocio.
+     * * @param pedidoBO        Lógica de negocio para la consulta de pedidos.
+     * @param cliente         DTO del cliente autenticado.
+     * @param telefono        BO para gestión de teléfonos (reservado para futuras expansiones).
+     * @param clienteBO       BO para gestión de clientes.
+     * @param usuarioBO       BO para gestión de usuarios.
+     * @param ventanaAnterior Referencia para retornar al menú principal.
+     */
     public VHistorial(PedidoBO pedidoBO, ClienteDTO cliente, TelefonoBO telefono, ClienteBO clienteBO, UsuarioBO usuarioBO, JFrame ventanaAnterior) {
         this.cliente = cliente;
         this.usuarioBO = usuarioBO;
@@ -180,7 +192,14 @@ public class VHistorial extends JFrame {
             ventanaAnterior.setVisible(true);
             this.dispose();
         });
-    
+        /**
+         * Manejador de la acción de consulta.
+         * <p>Realiza las siguientes validaciones antes de invocar al BO:
+         * 1. Presencia de fechas de inicio y fin.
+         * 2. Selección obligatoria de tipo de pedido mediante RadioButtons.
+         * 3. Mapeo del texto de estado al enum {@link EstadoPedido}.
+         * 4. Verificación de integridad de la sesión del cliente.</p>
+         */
 
         btnConsultar.addActionListener(e -> {
             try {
@@ -254,7 +273,12 @@ public class VHistorial extends JFrame {
         });
 
     }
-
+    /**
+     * Actualiza el modelo visual de la tabla con los resultados obtenidos del negocio.
+     * <p>Transforma los objetos {@link PedidoDTO} en filas legibles para el componente 
+     * {@link TablaSimplePanel}.</p>
+     * * @param lista Colección de pedidos que coinciden con los criterios de búsqueda.
+     */
     private void actualizarTabla(List<PedidoDTO> lista) {
 
         tablaPedidos.limpiar();

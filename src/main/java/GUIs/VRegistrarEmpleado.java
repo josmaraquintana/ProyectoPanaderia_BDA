@@ -37,8 +37,13 @@ import static javax.swing.WindowConstants.EXIT_ON_CLOSE;
 import javax.swing.border.EmptyBorder;
 
 /**
- *
- * @author josma
+ * Ventana administrativa para el registro de nuevos empleados.
+ * <p>Esta interfaz permite a un usuario con rol administrativo dar de alta a otros 
+ * trabajadores en el sistema, capturando sus datos básicos y credenciales de acceso.</p>
+ * <p>Utiliza {@link GridBagLayout} para organizar los campos de texto y botones 
+ * de manera proporcional en el área de trabajo.</p>
+ * * @author Daniel
+ * @version 1.0
  */
 public class VRegistrarEmpleado extends JFrame {
 
@@ -54,7 +59,14 @@ public class VRegistrarEmpleado extends JFrame {
     private PlaceholderTextField txt_contrasena;
     private RoundedButton btn_agregar;
     private RoundedButton btn_cancelar;
-
+/**
+     * Inicializa el formulario de registro para empleados.
+     * <p>El constructor configura los componentes visuales y establece los 
+     * manejadores de eventos para la validación y persistencia de datos.</p>
+     * * @param empleadoBO       Lógica de negocio para el procesamiento de empleados.
+     * @param empleado         Instancia DTO que servirá para transportar los datos capturados.
+     * @param ventanaAnterior  Referencia a la ventana de opciones para retornar tras la operación.
+     */
     public VRegistrarEmpleado(EmpleadoBO empleadoBO, EmpleadoDTO empleado, JFrame ventanaAnterior) {
         this.empleado = new EmpleadoDTO();
         this.empleadoBO = empleadoBO;
@@ -137,7 +149,14 @@ public class VRegistrarEmpleado extends JFrame {
         gbc.gridy = 2;
         add(btn_cancelar, gbc);
         setVisible(true);
-
+        /**
+         * Acción del botón Agregar.
+         * <p>Realiza las siguientes tareas:
+         * 1. Valida el formato de nombres y apellidos mediante {@link Validaciones}.
+         * 2. Mapea el texto de los campos al objeto DTO.
+         * 3. Invoca la capa de negocio para el guardado físico en BD.
+         * 4. Notifica el éxito y limpia el formulario.</p>
+         */
         btn_agregar.addActionListener(e -> {
 
             try {
@@ -178,7 +197,10 @@ public class VRegistrarEmpleado extends JFrame {
             this.dispose();
         });
     }
-
+    /**
+     * Restablece el contenido de los campos de texto y devuelve el foco al 
+     * primer campo para facilitar registros múltiples.
+     */
     private void limpiarCamposEmpleado() {
         txt_nombre.setText("");
         txt_apellido_paterno.setText("");

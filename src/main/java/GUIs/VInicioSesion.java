@@ -25,8 +25,13 @@ import java.net.URL;
 import org.mindrot.jbcrypt.BCrypt;
 
 /**
- *
- * @author RAMSES
+ * Ventana principal de acceso al sistema.
+ * <p>Actúa como el controlador de acceso (Login) que valida credenciales y 
+ * redirige al usuario según su rol mediante polimorfismo de DTOs.</p>
+ * <p>Permite además el acceso a flujos sin sesión como el <b>Pedido Express</b> 
+ * y la entrega de pedidos mediante PIN.</p>
+ * * @author RAMSES
+ * @version 1.0
  */
 public class VInicioSesion extends JFrame {
     private ProductoBO productoBO;
@@ -36,7 +41,18 @@ public class VInicioSesion extends JFrame {
     private CuponBO cuponBO; 
     private EmpleadoBO empleadoBO;
     private ClienteBO clienteBO;
-    
+    /**
+     * Construye la ventana de inicio de sesión e inicializa todas las dependencias de negocio.
+     * <p>El diseño utiliza {@link BorderLayout} para separar el encabezado visual 
+     * del formulario y las acciones rápidas (botones inferiores).</p>
+     * * @param productoBO Lógica de productos.
+     * @param pedido Lógica de pedidos.
+     * @param usuarioBO Lógica de autenticación y usuarios.
+     * @param telefono Lógica de gestión telefónica.
+     * @param cuponBO Lógica de promociones.
+     * @param empleadoBO Lógica de gestión de empleados.
+     * @param clienteBO Lógica de gestión de clientes.
+     */
     public VInicioSesion(ProductoBO productoBO,PedidoBO pedido, UsuarioBO usuarioBO, TelefonoBO telefono,CuponBO cuponBO, EmpleadoBO empleadoBO, ClienteBO clienteBO) {
         this.productoBO = productoBO;
         this.cuponBO = cuponBO;
@@ -123,10 +139,14 @@ public class VInicioSesion extends JFrame {
         setVisible(true);
 
         /**
-         * Evento para el boton de inicio de sesión, solo se esta trabaja con LoginDTO que maneja usuario
-         * y contraseña.
-         * Con instanceof revisamos si existe el usuario en alguna de las entidades hijas para poder hacer el
-         * redireccionamiento
+         * Manejador del evento de entrada.
+         * <p>Utiliza un {@link LoginDTO} para encapsular las credenciales. 
+         * Realiza un <b>Casting dinámico</b> tras verificar el tipo de instancia 
+         * recibida desde el {@link UsuarioBO}:</p>
+         * <ul>
+         * <li>Si es {@link ClienteDTO}, abre {@link VOpcionesCliente}.</li>
+         * <li>Si es {@link EmpleadoDTO}, abre {@link VOpcionesEmpleado}.</li>
+         * </ul>
          */
         btn_entrar.addActionListener(e -> {
             
@@ -176,11 +196,6 @@ public class VInicioSesion extends JFrame {
             this.setVisible(false);
         });
         
-    }
-
-    public static void main(String[] args) {
-        String hash = BCrypt.hashpw("abc123", BCrypt.gensalt());
-        System.out.println(hash);
     }
 }
 

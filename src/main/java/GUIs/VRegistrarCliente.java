@@ -24,8 +24,18 @@ import static java.time.temporal.TemporalQueries.localDate;
 import static javax.swing.WindowConstants.EXIT_ON_CLOSE;
 
 /**
+ * Ventana de registro para nuevos clientes en el sistema.
+ * <p>
+ * Encapsula un formulario extenso que recopila datos personales, de contacto y
+ * de inicio de sesión. Implementa una capa de validación inmediata utilizando
+ * la clase {@link Validaciones}.</p>
+ * <p>
+ * Realiza la conversión de tipos de datos de la interfaz (Strings) a tipos
+ * compatibles con la persistencia (Integer, SQL Date) antes de invocar al
+ * BO.</p>
  *
- * @author RAMSES
+ * * @author Daniel
+ * @version 1.0
  */
 public class VRegistrarCliente extends JFrame {
 
@@ -42,7 +52,17 @@ public class VRegistrarCliente extends JFrame {
     private JTextField contrasenaField;
     private ClienteBO clienteBO;
     private JFrame ventanaAnterior;
-    
+
+    /**
+     * Construye el formulario de registro.
+     * <p>
+     * Utiliza un {@link GridLayout} dentro de un panel central para organizar
+     * los campos {@link PlaceholderTextField} de forma tabular.</p>
+     *
+     * * @param clienteBO Lógica de negocio para persistir el nuevo cliente.
+     * @param ventanaAnterior Referencia para regresar al inicio de sesión tras
+     * el registro.
+     */
     public VRegistrarCliente(ClienteBO clienteBO, JFrame ventanaAnterior) {
         this.clienteBO = clienteBO;
         this.ventanaAnterior = ventanaAnterior;
@@ -130,7 +150,14 @@ public class VRegistrarCliente extends JFrame {
         add(mainPanel, BorderLayout.CENTER);
 
         setVisible(true);
-
+        /**
+         * Manejador del evento de registro.
+         * <p>
+         * Sigue un flujo de "fail-fast": 1. Valida gramaticalmente nombres y
+         * apellidos. 2. Verifica el formato de fecha (dd-mm-yyyy). 3. Valida la
+         * fortaleza de la contraseña. 4. Transforma los datos al DTO y los
+         * envía a la capa de negocio.</p>
+         */
         btnRegistrar.addActionListener(e -> {
             try {
 
@@ -143,17 +170,17 @@ public class VRegistrarCliente extends JFrame {
                     JOptionPane.showMessageDialog(this, "Apellido paterno inválido");
                     return;
                 }
-                                
+
                 if (!Validaciones.validarNombres(apellidoMaternoField.getText())) {
                     JOptionPane.showMessageDialog(this, "Apellido materno inválido");
                     return;
                 }
-                
+
                 if (!Validaciones.validaFecha(fechaField.getText())) {
                     JOptionPane.showMessageDialog(this, "Fecha de nacimiento inválida");
                     return;
                 }
-                                
+
                 if (!Validaciones.validarEnteros(numeroCasaField.getText())) {
                     JOptionPane.showMessageDialog(this, "Numero de casa inválido");
                     return;
@@ -168,26 +195,26 @@ public class VRegistrarCliente extends JFrame {
                     JOptionPane.showMessageDialog(this, "La contraseña debe tener al menos 6 caracteres, una letra y un numero");
                     return;
                 }
-                
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
-            LocalDate localDate = LocalDate.parse(fechaField.getText(), formatter);
-            Date fechaSQL = Date.valueOf(localDate);
 
-            ClienteDTO cliente = new ClienteDTO();
-            cliente.setEdad(Integer.parseInt(edadField.getText()));
-            cliente.setFecha_nacimiento(fechaSQL);
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+                LocalDate localDate = LocalDate.parse(fechaField.getText(), formatter);
+                Date fechaSQL = Date.valueOf(localDate);
 
-            cliente.setNombres(nombreField.getText());
-            cliente.setApellido_paterno(apellidoPaternoField.getText());
-            cliente.setApellido_materno(apellidoMaternoField.getText());
-            cliente.setContrasena(contrasenaField.getText());
-            cliente.setCalle(calleField.getText());
-            cliente.setNumero_casa(Integer.parseInt(numeroCasaField.getText()));
-            cliente.setColonia(coloniaField.getText());
-            cliente.setCodigo_postal(Integer.parseInt(cpField.getText()));
-            cliente.setNombre_usuario(nombre_usuarioField.getText());
+                ClienteDTO cliente = new ClienteDTO();
+                cliente.setEdad(Integer.parseInt(edadField.getText()));
+                cliente.setFecha_nacimiento(fechaSQL);
 
-            clienteBO.registrarCliente(cliente);
+                cliente.setNombres(nombreField.getText());
+                cliente.setApellido_paterno(apellidoPaternoField.getText());
+                cliente.setApellido_materno(apellidoMaternoField.getText());
+                cliente.setContrasena(contrasenaField.getText());
+                cliente.setCalle(calleField.getText());
+                cliente.setNumero_casa(Integer.parseInt(numeroCasaField.getText()));
+                cliente.setColonia(coloniaField.getText());
+                cliente.setCodigo_postal(Integer.parseInt(cpField.getText()));
+                cliente.setNombre_usuario(nombre_usuarioField.getText());
+
+                clienteBO.registrarCliente(cliente);
 
                 JOptionPane.showMessageDialog(this, "Registro exitoso");
                 limpiarCampos();
@@ -196,28 +223,31 @@ public class VRegistrarCliente extends JFrame {
                 JOptionPane.showMessageDialog(this, ex.getMessage());
             }
         });
-        
+
         btnAtras.addActionListener(e -> {
             ventanaAnterior.setVisible(true);
             this.dispose();
         });
-        
+
     }
-    
+
+    /**
+     * Limpia todos los campos del formulario tras un registro exitoso para
+     * permitir nuevas entradas sin cerrar la ventana.
+     */
     private void limpiarCampos() {
-    nombreField.setText("");
-    apellidoPaternoField.setText("");
-    apellidoMaternoField.setText("");
-    fechaField.setText("");
-    edadField.setText("");
-    calleField.setText("");
-    numeroCasaField.setText("");
-    coloniaField.setText("");
-    cpField.setText("");
-    nombre_usuarioField.setText("");
-    contrasenaField.setText("");
-}
-    
+        nombreField.setText("");
+        apellidoPaternoField.setText("");
+        apellidoMaternoField.setText("");
+        fechaField.setText("");
+        edadField.setText("");
+        calleField.setText("");
+        numeroCasaField.setText("");
+        coloniaField.setText("");
+        cpField.setText("");
+        nombre_usuarioField.setText("");
+        contrasenaField.setText("");
+    }
 
     private PlaceholderTextField crearCampo(String placeholder) {
         PlaceholderTextField campo = new PlaceholderTextField(placeholder);

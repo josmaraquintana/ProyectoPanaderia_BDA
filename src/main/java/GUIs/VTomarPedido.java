@@ -25,8 +25,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * Ventana principal de ventas que funciona como catálogo interactivo.
+ * <p>
+ * Permite la búsqueda de productos en tiempo real, la gestión de un carrito de
+ * compras dinámico y la transición hacia la finalización del pedido.</p>
+ * <p>
+ * La interfaz está dividida en un panel de exploración (izquierdo) y un panel
+ * de control y totales (derecho).</p>
  *
- * @author RAMSES
+ * * @author RAMSES
+ * @version 1.1
  */
 public class VTomarPedido extends JFrame {
 
@@ -50,6 +58,20 @@ public class VTomarPedido extends JFrame {
     // Esta es tu lista de carrito
     private List<ItemCarrito> carrito = new ArrayList<>();
 
+    /**
+     * Inicializa el catálogo y carga la lista de productos desde la capa de
+     * negocio.
+     * <p>
+     * Configura los escuchadores de documentos para el filtrado automático y
+     * establece la lógica para la manipulación del carrito de compras.</p>
+     *
+     * * @param pedido Gestor de lógica de pedidos.
+     * @param cliente Datos del cliente (null si es venta express).
+     * @param telefono Datos de contacto del cliente.
+     * @param clienteBO Servicio de negocio para clientes.
+     * @param usuarioBO Servicio de negocio para usuarios.
+     * @param ventanaAnterior Referencia para retornar al menú principal.
+     */
     public VTomarPedido(PedidoBO pedido, ClienteDTO cliente, TelefonoBO telefono, ClienteBO clienteBO, UsuarioBO usuarioBO, JFrame ventanaAnterior) {
         this.telefono = telefono;
         this.pedido = pedido;
@@ -226,8 +248,13 @@ public class VTomarPedido extends JFrame {
             if (cliente == null) {
                 VPedidoExpressFinal ventanaExpress = new VPedidoExpressFinal(carrito, subtotal_total, this);
                 ventanaExpress.setVisible(true);
-            } 
-            this.dispose();
+                this.dispose();
+            }else{
+                VResumenPedido resumen = new VResumenPedido(pedido, cliente, telefono, carrito, clienteBO, usuarioBO, ventanaAnterior);
+                resumen.setVisible(true);
+                this.dispose();
+            }
+            
 
         });
 
@@ -247,7 +274,14 @@ public class VTomarPedido extends JFrame {
             JOptionPane.showMessageDialog(null, "Se elimino el producto " + item.getProducto().getNombre());
 
         });
-
+        /**
+         * Lógica de agregación al carrito.
+         * <p>
+         * 1. Identifica el producto seleccionado en la lista dinámica. 2.
+         * Valida la cantidad ingresada. 3. Si el producto ya está en el
+         * carrito, suma la cantidad; de lo contrario, crea un nuevo
+         * {@link ItemCarrito}. 4. Actualiza el subtotal global de la vista.</p>
+         */
         //Metodo para cuando el boton de agregar producto se presione
         btn_agregar.addActionListener(e -> {
             try {
@@ -334,6 +368,16 @@ public class VTomarPedido extends JFrame {
         });
     }
 
+    /**
+     * Filtra y regenera visualmente la lista de productos en el panel.
+     * <p>
+     * Limpia el contenedor actual y añade instancias de {@link PanelProducto}
+     * que coincidan con el criterio de búsqueda, gestionando su selección única
+     * mediante un {@link ButtonGroup}.</p>
+     *
+     * * @param textoBusqueda Cadena de texto para filtrar por nombre de
+     * producto.
+     */
     private void actualizarListaProductos(String textoBusqueda) {
         panel_lista.removeAll();
         String busqueda = textoBusqueda.toLowerCase();

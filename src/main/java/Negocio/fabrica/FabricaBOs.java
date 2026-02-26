@@ -8,8 +8,14 @@ import Negocio.BOs.*;
 import Persistencia.fabrica.FabricaDAO;
 
 /**
- *
- * @author josmara, ramses, daniel
+ * Fábrica de Objetos de Negocio (Business Objects).
+ * <p>Esta clase centraliza la creación e instanciación de todos los BOs del sistema,
+ * aplicando el patrón Factory y encargándose de la inyección de dependencias
+ * desde la capa de persistencia mediante {@link FabricaDAO}.</p>
+ * * <p>Al utilizar esta fábrica, la capa de presentación no necesita conocer cómo 
+ * se construyen los objetos ni sus dependencias internas.</p>
+ * * @author josmara, ramses, daniel
+ * @version 1.0
  */
 public class FabricaBOs {
 

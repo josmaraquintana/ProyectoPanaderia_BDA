@@ -15,8 +15,15 @@ import PersistenciaException.PersistenciaExcepcion;
 import java.util.logging.Logger;
 
 /**
+ * Business Object (BO) encargado de la autenticación y gestión de sesiones de
+ * usuario.
+ * <p>
+ * Esta clase centraliza el control de acceso al sistema, validando credenciales
+ * y transformando las entidades de dominio (Cliente/Empleado) en objetos de
+ * transferencia de datos (DTO) específicos para la capa de presentación.</p>
  *
- * @author josma
+ * * @author josma
+ * @version 1.0
  */
 public class UsuarioBO implements IUsuarioBO {
 
@@ -27,6 +34,23 @@ public class UsuarioBO implements IUsuarioBO {
         this.usuarioDAO = usuarioDAO; //inyeccion de dependencias;
     }
 
+    /**
+     * Realiza el proceso de autenticación (Login) en el sistema.
+     * <p>
+     * El método sigue el siguiente flujo de negocio:
+     * <ol>
+     * <li>Consulta las credenciales en la base de datos.</li>
+     * <li>Si el usuario es un Cliente, verifica que su cuenta no esté
+     * {@link EstadoCuenta#INACTIVO}.</li>
+     * <li>Dependiendo del tipo de objeto (Cliente o Empleado), mapea los datos
+     * al DTO correspondiente.</li>
+     * </ol></p>
+     *
+     * * @param loginDTO Objeto con las credenciales (usuario y contraseña).
+     * @return UsuarioDTO (ya sea instancia de ClienteDTO o EmpleadoDTO).
+     * @throws NegocioExcepcion Si las credenciales son incorrectas, la cuenta
+     * está inactiva o hay un error de conexión.
+     */
     @Override
     public UsuarioDTO login(LoginDTO loginDTO) throws NegocioExcepcion {
         try {
