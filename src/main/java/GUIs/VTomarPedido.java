@@ -224,18 +224,9 @@ public class VTomarPedido extends JFrame {
                 return;
             }
             if (cliente == null) {
-
-            } else {
-                VResumenPedido ventana = new VResumenPedido(pedido, cliente, telefono, carrito, clienteBO, usuarioBO, this);
-
-                ventana.setVisible(true);
-            }
-
-            this.dispose();
-
-            VResumenPedido ventana = new VResumenPedido(pedido, cliente, telefono, carrito, clienteBO, usuarioBO, this);
-
-            ventana.setVisible(true);
+                VPedidoExpressFinal ventanaExpress = new VPedidoExpressFinal(carrito, subtotal_total, this);
+                ventanaExpress.setVisible(true);
+            } 
             this.dispose();
 
         });

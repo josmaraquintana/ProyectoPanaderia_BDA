@@ -21,21 +21,39 @@ import java.util.List;
 import java.util.ArrayList;
 
 /**
- *
- * @author RAMSES
+ * Interfaz gráfica diseñada para la gestión de números telefónicos asociados a un cliente.
+ * <p>Esta ventana permite añadir múltiples teléfonos con etiquetas personalizadas 
+ * (ej. Casa, Trabajo) y visualizarlos inmediatamente en una tabla integrada.</p>
+ * * @author Josmara
+ * @version 1.0
  */
 public class VAgregarTelefonos extends JFrame {
-
+    /** Campo para ingresar el número telefónico. */
     private PlaceholderTextField txtTelefono;
+    /** Campo para ingresar la etiqueta descriptiva del teléfono (ej. Personal, Oficina). */
     private PlaceholderTextField txtEtiqueta;
+    /** Lógica de negocio para la persistencia de teléfonos. */
     private TelefonoBO telefonoBO;
+    /** Instancia de la tabla personalizada para listar los teléfonos actuales. */
     private PedidoBO pedidoBO;
+    /** DTO del cliente al que se le están asignando los teléfonos. */
     private TablaSimplePanel tablaTelefonos;
     private ClienteDTO cliente; 
     private ClienteBO clienteBO;
     private UsuarioBO usuarioBO;
+    /** Ventana de procedencia para gestionar el retorno de navegación. */
     private JFrame ventanaAnterior;
-
+    /**
+     * Inicializa la ventana de gestión de teléfonos.
+     * <p>Configura el diseño visual mediante {@link BorderLayout} y carga la lista 
+     * inicial de teléfonos registrados para el cliente proporcionado.</p>
+     * * @param pedidoBO        Lógica de pedidos (requerida para el contexto de la aplicación).
+     * @param cliente         Objeto {@link ClienteDTO} que debe contener un ID válido.
+     * @param telefonoBO      Servicio para operaciones CRUD de teléfonos.
+     * @param clienteBO       Servicio de gestión de clientes.
+     * @param usuarioBO       Servicio de gestión de usuarios.
+     * @param ventanaAnterior Referencia al JFrame que llamó a esta ventana.
+     */
     public VAgregarTelefonos(PedidoBO pedidoBO, ClienteDTO cliente, TelefonoBO telefonoBO, ClienteBO clienteBO, UsuarioBO usuarioBO, JFrame ventanaAnterior) {
         this.pedidoBO = pedidoBO; 
         this.telefonoBO = telefonoBO;
@@ -144,7 +162,11 @@ public class VAgregarTelefonos extends JFrame {
             this.dispose();
         });
     }
-
+    /**
+     * Consulta la base de datos a través de la capa de negocio y actualiza 
+     * el contenido de la tabla de teléfonos.
+     * <p>Muestra un mensaje informativo si el cliente no cuenta con teléfonos registrados.</p>
+     */
     private void cargarTelefonos() {
         try {
             tablaTelefonos.limpiar();
@@ -172,7 +194,11 @@ public class VAgregarTelefonos extends JFrame {
                     JOptionPane.ERROR_MESSAGE);
         }
     }
-
+    /**
+     * Captura los datos de los campos de texto, valida que no estén vacíos y 
+     * procede a registrar el nuevo teléfono vinculado al ID del cliente actual.
+     * <p>Tras un registro exitoso, limpia los campos y refresca la tabla automáticamente.</p>
+     */
     private void agregarTelefono() {
         System.out.println("ID cliente actual: " + cliente.getId_cliente());
         try {
@@ -215,3 +241,4 @@ public class VAgregarTelefonos extends JFrame {
         }
     }
 }
+

@@ -15,22 +15,68 @@ import java.net.URL;
 import javax.swing.*;
 
 /**
+ * Interfaz gráfica para el registro de nuevos cupones de descuento en el
+ * sistema.
+ * <p>
+ * Esta ventana permite capturar información crítica como el nombre, código,
+ * fecha de vigencia, porcentaje de descuento y límite de usos. Implementa
+ * validaciones de formato y se comunica con la capa de negocio a través de
+ * {@link CuponBO}.</p>
  *
- * @author RAMSES
+ * * @author RAMSES
+ * @version 1.1
  */
 public class VAgregarCupon extends JFrame {
 
+    /**
+     * Objeto de negocio para gestionar la persistencia y validación de cupones.
+     */
     private CuponBO cuponBO;
+
+    /**
+     * Campo para el nombre descriptivo del cupón.
+     */
     private PlaceholderTextField txtNombre;
+
+    /**
+     * Campo para el código alfanumérico único.
+     */
     private PlaceholderTextField txtCodigo;
+
+    /**
+     * Campo para la fecha de expiración (Formato esperado: DD-MM-YYYY).
+     */
     private PlaceholderTextField txtVigencia;
+
+    /**
+     * Campo para el valor numérico del descuento.
+     */
     private PlaceholderTextField txtDescuento;
-    private PlaceholderTextField txtUsos; // Nuevo campo
+
+    /**
+     * Campo para el límite máximo de veces que puede aplicarse el cupón.
+     */
+    private PlaceholderTextField txtUsos;
+
+    /**
+     * Referencia a la ventana que invocó este formulario para permitir el
+     * retorno.
+     */
     private JFrame ventanaAnterior;
 
     private RoundedButton btnCancelar;
     private RoundedButton btnAgregar;
 
+    /**
+     * Construye la interfaz de registro de cupones.
+     * <p>
+     * Configura el layout {@link GridBagLayout}, inicializa los componentes
+     * personalizados y define el comportamiento de los botones de acción.</p>
+     *
+     * * @param ventanaAnterior La ventana de origen a la que se regresará al
+     * cancelar o finalizar.
+     * @param cuponBO La instancia de la lógica de negocio para cupones.
+     */
     public VAgregarCupon(JFrame ventanaAnterior, CuponBO cuponBO) {
         this.cuponBO = cuponBO;
         this.ventanaAnterior = ventanaAnterior;
@@ -217,7 +263,11 @@ public class VAgregarCupon extends JFrame {
 
         // Quitar el foco inicial de los text fields para que se vea el placeholder si lo hay
         SwingUtilities.invokeLater(() -> btnAgregar.requestFocusInWindow());
-
+        /**
+         * Lógica de acción para el botón de agregar.
+         * Realiza el parseo de datos, validación de campos vacíos y manejo de 
+         * excepciones tanto de formato como de negocio.
+         */
         btnAgregar.addActionListener(e -> {
             try {
                 //Obtenemos todos los datos de los campos
@@ -273,7 +323,11 @@ public class VAgregarCupon extends JFrame {
             }
         });
     }
-
+    /**
+     * Restablece todos los campos de texto a su estado inicial vacío.
+     * <p>Se invoca tras un registro exitoso para facilitar la entrada de 
+     * múltiples registros consecutivos.</p>
+     */
     private void limpiarCampos() {
         txtNombre.setText("");
         txtCodigo.setText(""); // Si usas el campo código también

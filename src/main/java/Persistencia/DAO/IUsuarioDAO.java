@@ -15,3 +15,4 @@ import PersistenciaException.PersistenciaExcepcion;
 public interface IUsuarioDAO {
     public Usuario buscarUsuarioLogin(String usuario_nombre, String contrasena) throws PersistenciaExcepcion;
 }
+

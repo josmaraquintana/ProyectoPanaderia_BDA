@@ -48,7 +48,7 @@ public class VInicioSesion extends JFrame {
         
         
         setTitle("Inicio de sesión");
-        setSize(600, 450);
+        setSize(900, 450);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
@@ -106,10 +106,12 @@ public class VInicioSesion extends JFrame {
         RoundedButton btn_entrar = new RoundedButton("Entrar");
         RoundedButton btn_registrar = new RoundedButton("Registrarse");
         RoundedButton btn_express = new RoundedButton("Pedido Express");
+        RoundedButton btn_recoger = new RoundedButton("Recoger Express");
 
         botonesPanel.add(btn_entrar);
         botonesPanel.add(btn_registrar);
         botonesPanel.add(btn_express);
+        botonesPanel.add(btn_recoger);
 
         mainPanel.add(topPanel, BorderLayout.NORTH);
         mainPanel.add(formPanel, BorderLayout.CENTER);
@@ -166,7 +168,11 @@ public class VInicioSesion extends JFrame {
         });
         
         btn_express.addActionListener(e ->{
-            new VTomarPedidoExpress(this, null).setVisible(true);
+            new VTomarPedido(null, null, null, null, null, this).setVisible(true);
+            this.setVisible(false);
+        });
+        btn_recoger.addActionListener(e ->{
+            new VEntregarPedidoExpress().setVisible(true);
             this.setVisible(false);
         });
         

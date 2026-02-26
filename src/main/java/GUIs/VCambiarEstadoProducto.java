@@ -9,7 +9,17 @@ import java.net.URL;
 import java.util.List;
 import javax.swing.*;
 
-
+/**
+ * Interfaz administrativa para la actualización masiva de estados de productos.
+ * <p>
+ * Permite buscar productos por nombre y modificar su disponibilidad
+ * (Disponible/Agotado) directamente desde una tabla dinámica. Utiliza una
+ * arquitectura de celdas personalizadas para integrar {@link JRadioButton}
+ * dentro del {@link JTable}.</p>
+ *
+ * * @author Josmara
+ * @version 1.0
+ */
 public class VCambiarEstadoProducto extends JFrame {
 
     private PlaceholderTextField txtBusqueda;
@@ -17,14 +27,25 @@ public class VCambiarEstadoProducto extends JFrame {
     private ProductoBO productoBO;
     private RoundedButton btnSalir;
     private RoundedButton btnCambiarEstado;
-    private RoundedButton btnBuscar; 
+    private RoundedButton btnBuscar;
     private JFrame ventanaPadre;
 
+    /**
+     * Construye la interfaz de cambio de estado.
+     * <p>
+     * Configura la tabla con {@link RadioCellHelper} y su correspondiente
+     * editor para permitir que los botones de la tabla respondan a los clics
+     * del usuario.</p>
+     *
+     * * @param productoBO Instancia de la lógica de negocio.
+     * @param ventanaPadre Ventana de origen para gestionar la visibilidad al
+     * cerrar esta ventana.
+     */
     public VCambiarEstadoProducto(ProductoBO productoBO, JFrame ventanaPadre) {
         this.productoBO = productoBO;
-        this.ventanaPadre  = ventanaPadre;
+        this.ventanaPadre = ventanaPadre;
         setTitle("Cambiar Estado de Productos");
-        setSize(950, 550); 
+        setSize(950, 550);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
 
@@ -121,15 +142,21 @@ public class VCambiarEstadoProducto extends JFrame {
         btnCambiarEstado.addActionListener(e -> accionActualizar());
 
         btnSalir.addActionListener(e -> {
-        if (this.ventanaPadre != null) {
-            this.ventanaPadre.setVisible(true); // Mostramos la de opciones otra vez
-        }
-        this.dispose(); // Cerramos la actual de estados
-    });
+            if (this.ventanaPadre != null) {
+                this.ventanaPadre.setVisible(true); // Mostramos la de opciones otra vez
+            }
+            this.dispose(); // Cerramos la actual de estados
+        });
 
         SwingUtilities.invokeLater(() -> btnSalir.requestFocusInWindow());
     }
 
+    /**
+     * Realiza una consulta a la base de datos basada en el filtro de búsqueda.
+     * <p>
+     * Por cada resultado, se instancia un {@link PanelBotones} que sincroniza
+     * el estado visual inicial con el valor actual en la base de datos.</p>
+     */
     private void accionBuscar() {
         String filtro = txtBusqueda.getText().trim();
         if (filtro.isEmpty()) {
@@ -168,6 +195,13 @@ public class VCambiarEstadoProducto extends JFrame {
         }
     }
 
+    /**
+     * Recorre todas las filas de la tabla y extrae el estado seleccionado en el
+     * {@link PanelBotones}.
+     * <p>
+     * Ejecuta actualizaciones individuales en la capa de negocio para cada
+     * producto presente en la vista actual.</p>
+     */
     private void accionActualizar() {
         JTable t = tablaProductos.getTabla();
         if (t.getRowCount() == 0) {
@@ -192,12 +226,24 @@ public class VCambiarEstadoProducto extends JFrame {
         }
     }
 
+    /**
+     * Clase interna que actúa como componente contenedor dentro de las celdas
+     * de la tabla.
+     * <p>
+     * Proporciona un grupo de botones exclusivo por fila para alternar entre
+     * los estados de {@link EstadoProducto}.</p>
+     */
+
     class PanelBotones extends JPanel {
 
         public JRadioButton rbDisponible = new JRadioButton("Disponible");
         public JRadioButton rbAgotado = new JRadioButton("Agotado");
         public ButtonGroup grupo = new ButtonGroup();
 
+        /**
+         * Inicializa el panel con diseño horizontal y transparencia para
+         * coincidir con la estética de la tabla.
+         */
         public PanelBotones() {
             setLayout(new FlowLayout(FlowLayout.CENTER, 10, 5));
             setOpaque(true);

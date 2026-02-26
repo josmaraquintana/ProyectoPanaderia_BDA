@@ -5,13 +5,17 @@
 package Negocio.BOs;
 
 import ClasesEnum.EstadoPedido;
+import Componentes.ItemCarrito;
 import Negocio.DTOs.PedidoDTO;
 import Negocio.DTOs.PedidoEstadoDTO;
+import Negocio.DTOs.ProductoIdDTO;
 import NegocioException.NegocioExcepcion;
 import Persistencia.DAO.*;
+import Persistencia.fabrica.FabricaDAO;
 import PersistenciaException.PersistenciaExcepcion;
 import Validadores.Validaciones;
 import java.sql.Date;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
@@ -21,14 +25,14 @@ import java.util.logging.Logger;
  * @author josma
  */
 public class PedidoBO implements IPedidoBO {
+
     private final IPedidoDAO pedidoDAO; //para conectarnos a la capa de datos
     private final Logger LOG = Logger.getLogger(PedidoBO.class.getName());
 
-    
     public PedidoBO(IPedidoDAO pedido) {
         this.pedidoDAO = pedido; //inyeccion de dependencias
     }
-  
+
     @Override
     public List<PedidoDTO> consultarHistorial(String fecha_inicio, String fecha_fin, int id_cliente, String tipo, EstadoPedido estado) throws NegocioExcepcion {
         try {
@@ -80,15 +84,13 @@ public class PedidoBO implements IPedidoBO {
         }
     }
 
-    
-    
     @Override
-    public List<PedidoEstadoDTO> obtenerListaPedidosConResumen() throws NegocioExcepcion{
-        
-        try{
+    public List<PedidoEstadoDTO> obtenerListaPedidosConResumen() throws NegocioExcepcion {
+
+        try {
             //Hacemos la lista que obtendra todo 
             List<PedidoEstadoDTO> listaPedidos = pedidoDAO.obtenerListaPedidosConResumen();
-            
+
             //Validamos que la lista no este vacia 
             if (listaPedidos.isEmpty() || listaPedidos == null) {
                 LOG.warning("La lista que se obtuvo esta vacia.");
@@ -96,42 +98,99 @@ public class PedidoBO implements IPedidoBO {
             }
             //Retornamos la lista a el metodo de la ventana 
             return listaPedidos;
-            
-        }catch(PersistenciaExcepcion ex){
+
+        } catch (PersistenciaExcepcion ex) {
             LOG.warning("Hubo un error al obtener la lista de pedidos con sus resumenes o notas.");
             throw new NegocioExcepcion("No se completo el regresar la lista de pedidos con notas.");
         }
     }
-    
-    
+
     @Override
-    public boolean cambiarEstadoPedido(String texto_id, String estado) throws NegocioExcepcion{
-        
+    public boolean cambiarEstadoPedido(String texto_id, String estado) throws NegocioExcepcion {
+
         Validaciones validar = new Validaciones();
-        
+
         if (!validar.validarEnteros(texto_id)) {
             LOG.warning("El texto del id debe ser solamente numeros.");
             throw new NegocioExcepcion("El texto del id esta mal.");
         }
         System.out.println(texto_id);
         int id_pedido = Integer.parseInt(texto_id);
-        
+
         if (id_pedido <= 0) {
             LOG.warning("El id del pedido no debe ser negativo.");
             throw new NegocioExcepcion("El id es negativo.");
         }
-        
-        try{
-            
+
+        try {
+
             boolean valor = pedidoDAO.cambiarEstadoPedido(id_pedido, estado);
             return valor;
-                    
-        }catch(PersistenciaExcepcion ex){
+
+        } catch (PersistenciaExcepcion ex) {
             LOG.warning("No se pudo actualizar el estado.");
             throw new NegocioExcepcion("Hubo un error al querer mandar los datos para actualizar.");
         }
-        
-        
-        
+
+    }
+
+    @Override
+    public void realizarRegistroExpress(List<ItemCarrito> carrito, double subtotal, String folio, String pin) throws NegocioExcepcion {
+        try {
+            // 1. Validaciones iniciales
+            if (carrito == null || carrito.isEmpty()) {
+                throw new NegocioExcepcion("El carrito esta vacio.");
+            }
+            if (subtotal <= 0.0) {
+                throw new NegocioExcepcion("El subtotal es invalido.");
+            }
+
+            // 2. Preparación de datos
+            LocalDateTime fecha = LocalDateTime.now();
+
+            // 3. Obtención de IDs (Tu lógica original)
+            FabricaDAO fabricaDAO = new FabricaDAO();
+            IProductoDAO productoDAO = fabricaDAO.obtenerProductoDAO();
+
+            List<ProductoIdDTO> lista_productos_id = productoDAO.obtenerListaProductosId();
+            List<Integer> lista_id_productos = new ArrayList<>();
+
+            for (ItemCarrito item : carrito) {
+                for (ProductoIdDTO productoId : lista_productos_id) {
+                    if (productoId.getNombre().equalsIgnoreCase(item.getProducto().getNombre())) {
+                        lista_id_productos.add(productoId.getId());
+                    }
+                }
+            }
+
+            // 4. Llamada al DAO (Aquí es donde ocurre el AES_ENCRYPT)
+            pedidoDAO.realizarPedidoExpress(carrito, folio, pin, fecha, lista_id_productos, subtotal);
+
+        } catch (PersistenciaExcepcion ex) {
+            LOG.warning("Error en persistencia: " + ex.getMessage());
+            throw new NegocioExcepcion("No se pudo guardar el pedido en la base de datos.");
+        }
+    }
+
+    @Override
+    public boolean entregarPedidoExpress(String folio, String pin) throws NegocioExcepcion {
+        try {
+            // El DAO devolverá true si el folio/pin existen y se pudo actualizar el estado
+            return pedidoDAO.validarYEntregarPedidoExpress(folio, pin);
+        } catch (PersistenciaExcepcion ex) {
+            throw new NegocioExcepcion("No se pudo procesar la entrega: " + ex.getMessage());
+        }
+    }
+
+    /**
+     * Método auxiliar para generar los números aleatorios
+     */
+    private String generarCadenaAleatoria(int longitud) {
+        java.security.SecureRandom sr = new java.security.SecureRandom();
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < longitud; i++) {
+            sb.append(sr.nextInt(10));
+        }
+        return sb.toString();
     }
 }

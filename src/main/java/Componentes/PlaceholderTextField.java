@@ -11,8 +11,11 @@ import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 
 /**
- *
- * @author RAMSES
+ * Componente de texto personalizado que extiende {@link JTextField}.
+ * <p>Permite mostrar un texto de sugerencia (placeholder) cuando el campo está vacío 
+ * y no tiene el foco, además de ofrecer un diseño con bordes redondeados.</p>
+ * * @author RAMSES
+ * @version 1.0
  */
 public class PlaceholderTextField extends JTextField {
 
@@ -20,7 +23,11 @@ public class PlaceholderTextField extends JTextField {
     private Color placeholderColor = new Color(150, 150, 150);
     private Color fondo = Color.WHITE;
     private int radio = 30;
-
+/**
+     * Construye un nuevo campo de texto con un marcador de posición específico.
+     * Configura el diseño inicial, incluyendo bordes, fuente y listeners de foco.
+     * * @param placeholder El texto que se mostrará cuando el campo esté vacío.
+     */
     public PlaceholderTextField(String placeholder) {
         this.placeholder = placeholder;
 
@@ -41,7 +48,11 @@ public class PlaceholderTextField extends JTextField {
             }
         });
     }
-
+    /**
+     * Sobrescribe el método de pintura para dibujar el fondo redondeado 
+     * y el texto del placeholder.
+     * * @param g El objeto {@code Graphics} utilizado para pintar.
+     */
     @Override
     protected void paintComponent(Graphics g) {
         Graphics2D g2 = (Graphics2D) g.create();

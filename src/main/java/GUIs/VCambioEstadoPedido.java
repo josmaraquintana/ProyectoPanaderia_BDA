@@ -25,8 +25,14 @@ import java.net.URL;
 import javax.swing.*;
 
 /**
- *
- * @author RAMSES
+ * Ventana de gestión para la actualización del estado de los pedidos.
+ * <p>Esta interfaz es dual: 
+ * 1. Si accede un <b>Empleado</b>, permite cambiar el estado a cualquier valor (Listo, Entregado, etc.).
+ * 2. Si accede un <b>Cliente</b>, se enfoca en la gestión de sus pedidos programados.</p>
+ * <p>Utiliza el patrón <i>Factory</i> a través de {@link FabricaBOs} para obtener las 
+ * instancias de lógica de negocio necesarias.</p>
+ * * @author RAMSES
+ * @version 1.1
  */
 public class VCambioEstadoPedido extends JFrame {
     private EmpleadoDTO empleado;
@@ -42,7 +48,16 @@ public class VCambioEstadoPedido extends JFrame {
     private IPedidoProgramadoBO pedidoPrograBO;
     private FabricaBOs fabricaBO;
     
-    
+    /**
+     * Construye la ventana de cambio de estado de pedidos.
+     * * @param empleado        Datos del empleado (null si la vista es para un cliente).
+     * @param ventanaAnterior Ventana de referencia para el retorno.
+     * @param pedido          BO de Pedido.
+     * @param cliente         DTO del cliente en sesión.
+     * @param telefono        BO de telefonía.
+     * @param clienteBO       BO de clientes.
+     * @param usuarioBO       BO de usuarios.
+     */
 
     public VCambioEstadoPedido(EmpleadoDTO empleado, JFrame ventanaAnterior,   PedidoBO pedido,ClienteDTO cliente,TelefonoBO telefono, ClienteBO clienteBO, UsuarioBO usuarioBO) {
         fabricaBO = new FabricaBOs();
