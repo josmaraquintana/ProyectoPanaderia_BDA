@@ -38,6 +38,7 @@ public class VOpcionesCliente extends JFrame {
     private RoundedButton btn_agregar_telefono;
     private RoundedButton btn_inactivar;
     private RoundedButton btn_volver;
+    private RoundedButton btn_estado_pedido; 
     private LabelPersonalizado lbl_usuario;
     private LabelPersonalizado lbl_nombre_usuario;
     private ClienteBO clienteBO;
@@ -56,7 +57,7 @@ public class VOpcionesCliente extends JFrame {
         this.ventanaAnterior = ventanaAnterior;
 
         setTitle("Opciones de Cliente");
-        setSize(600, 500);
+        setSize(650, 500);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         getContentPane().setBackground(Color.decode("#c4a484"));
@@ -87,7 +88,7 @@ public class VOpcionesCliente extends JFrame {
         add(lbl_nombre_usuario, gbc);
 
         //--> para el tamaño de los botones 
-        Dimension tamano = new Dimension(200, 40);
+        Dimension tamano = new Dimension(250, 40);
         //CONFIGURAR BOTONES
         btn_pedido = new RoundedButton("Agregar pedido");
         gbc.gridx = 1;  // columna del centro
@@ -114,9 +115,14 @@ public class VOpcionesCliente extends JFrame {
         gbc.gridy = 5;
         btn_inactivar.setPreferredSize(tamano);
         add(btn_inactivar, gbc);
-        btn_volver = new RoundedButton("Volver");
+        btn_estado_pedido = new RoundedButton("Estado Pedido");
         gbc.gridx = 1;
         gbc.gridy = 6;
+        btn_estado_pedido.setPreferredSize(tamano);
+        add(btn_estado_pedido, gbc);
+        btn_volver = new RoundedButton("Volver");
+        gbc.gridx = 1;
+        gbc.gridy = 7;
         btn_volver.setPreferredSize(tamano);
         add(btn_volver, gbc);
 
@@ -157,6 +163,11 @@ public class VOpcionesCliente extends JFrame {
 
         btn_volver.addActionListener(e -> {
             ventanaAnterior.setVisible(true);
+            this.dispose();
+        });
+        
+        btn_estado_pedido.addActionListener(e->{
+            new VCambioEstadoPedido(null, this, pedido, cliente, telefono, clienteBO, usuarioBO).setVisible(true);
             this.dispose();
         });
 

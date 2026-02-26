@@ -7,6 +7,7 @@ package Negocio.BOs;
 import Componentes.ItemCarrito;
 import Negocio.DTOs.ClienteDTO;
 import Negocio.DTOs.CuponDTO;
+import Negocio.DTOs.PedidoEstadoDTO;
 import NegocioException.NegocioExcepcion;
 import java.util.List;
 
@@ -17,5 +18,6 @@ import java.util.List;
 public interface IPedidoProgramadoBO {
     
     public void realizarRegistrosPedidosClientesCupones(List<ItemCarrito> carrito, ClienteDTO cliente, List<CuponDTO> lista_cupones, double subtotal, double total, String notas) throws NegocioExcepcion;
-    
+    public List<PedidoEstadoDTO> obtenerListaPedidosConResumen() throws NegocioExcepcion;
+    public boolean cambiarEstadoPedido(String texto_id) throws NegocioExcepcion;
 }

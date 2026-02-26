@@ -8,7 +8,13 @@ import Componentes.LabelPersonalizado;
 import Componentes.PlaceholderTextField;
 import Componentes.RoundedButton;
 import Componentes.TablaSimplePanel;
+import Negocio.BOs.ClienteBO;
 import Negocio.BOs.IPedidoBO;
+import Negocio.BOs.IPedidoProgramadoBO;
+import Negocio.BOs.PedidoBO;
+import Negocio.BOs.TelefonoBO;
+import Negocio.BOs.UsuarioBO;
+import Negocio.DTOs.ClienteDTO;
 import Negocio.DTOs.EmpleadoDTO;
 import Negocio.DTOs.PedidoEstadoDTO;
 import Negocio.fabrica.FabricaBOs;
@@ -25,8 +31,7 @@ import javax.swing.*;
 public class VCambioEstadoPedido extends JFrame {
     private EmpleadoDTO empleado;
     private JFrame ventanaAnterior;
-    private PlaceholderTextField txtIdProducto;
-    // NUEVO: Declaramos el ComboBox a nivel de clase para poder usarlo después en los botones
+    private PlaceholderTextField txt_id_pedido;
     private JComboBox<String> cbx_estado_pedido; 
     private TablaSimplePanel tabla_pedidos;
 
@@ -34,15 +39,17 @@ public class VCambioEstadoPedido extends JFrame {
     private RoundedButton btnCambiarEstado;
     private List<PedidoEstadoDTO> lista_pedidos;
     private IPedidoBO pedidoBO;
+    private IPedidoProgramadoBO pedidoPrograBO;
     private FabricaBOs fabricaBO;
     
     
 
-    public VCambioEstadoPedido(EmpleadoDTO empleado, JFrame ventanaAnterior) {
+    public VCambioEstadoPedido(EmpleadoDTO empleado, JFrame ventanaAnterior,   PedidoBO pedido,ClienteDTO cliente,TelefonoBO telefono, ClienteBO clienteBO, UsuarioBO usuarioBO) {
         fabricaBO = new FabricaBOs();
         this.ventanaAnterior = ventanaAnterior;
         this.empleado = empleado;
         pedidoBO = fabricaBO.obtenerPedidoBO();
+        pedidoPrograBO = fabricaBO.obtenerPedidoProgramadoBO();
         
         setTitle("Cambiar Estado de Productos");
         // Aumenté un poco el alto (de 460 a 540) para acomodar el nuevo ComboBox sin aplastar la tabla
@@ -57,9 +64,7 @@ public class VCambioEstadoPedido extends JFrame {
         Color colorTextoOscuro = new Color(110, 74, 46);
 
         /**
-         * ==========================================
-         * 1. ZONA NORTE: ENCABEZADO Y LOGO
-         * ==========================================
+         * ZONA NORTE: ENCABEZADO Y LOGO
          */
         JPanel pnlNorte = new JPanel(new BorderLayout());
         pnlNorte.setOpaque(false);
@@ -83,9 +88,7 @@ public class VCambioEstadoPedido extends JFrame {
         add(pnlNorte, BorderLayout.NORTH);
 
         /**
-         * ==========================================
-         * 2. ZONA CENTRO: FORMULARIO Y TABLA
-         * ==========================================
+         * ZONA CENTRO: FORMULARIO Y TABLA
          */
         JPanel pnlCentro = new JPanel(new GridBagLayout());
         pnlCentro.setOpaque(false);
@@ -104,28 +107,30 @@ public class VCambioEstadoPedido extends JFrame {
         pnlCentro.add(lblIdProducto, gbc);
 
         // Input Id de producto
-        txtIdProducto = new PlaceholderTextField("");
-        txtIdProducto.setPreferredSize(new Dimension(250, 35));
-        txtIdProducto.setMinimumSize(new Dimension(250, 35)); 
+        txt_id_pedido = new PlaceholderTextField("");
+        txt_id_pedido.setPreferredSize(new Dimension(250, 35));
+        txt_id_pedido.setMinimumSize(new Dimension(250, 35)); 
         gbc.gridy = 1;
         gbc.insets = new Insets(0, 0, 15, 0);
-        pnlCentro.add(txtIdProducto, gbc);
-
-        // --- NUEVO: Etiqueta y ComboBox de Estado ---
-        LabelPersonalizado lblEstado = new LabelPersonalizado("Nuevo Estado", 14, colorTextoOscuro);
-        gbc.gridy = 2; // Bajamos a la posición 2
-        gbc.insets = new Insets(0, 0, 5, 0);
-        pnlCentro.add(lblEstado, gbc);
-
-        String[] opcionesEstado = {"Pendiente", "Listo", "Entregado", "Cancelado", "Desatendido"};
-        cbx_estado_pedido = new JComboBox<>(opcionesEstado);
-        cbx_estado_pedido.setPreferredSize(new Dimension(250, 35));
-        cbx_estado_pedido.setMinimumSize(new Dimension(250, 35));
-        cbx_estado_pedido.setBackground(Color.WHITE);
-        gbc.gridy = 3; // Bajamos a la posición 3
-        gbc.insets = new Insets(0, 0, 15, 0);
-        pnlCentro.add(cbx_estado_pedido, gbc);
-        // --------------------------------------------
+        pnlCentro.add(txt_id_pedido, gbc);
+        
+        if (empleado != null) {
+            // --- NUEVO: Etiqueta y ComboBox de Estado ---
+            LabelPersonalizado lblEstado = new LabelPersonalizado("Nuevo Estado", 14, colorTextoOscuro);
+            gbc.gridy = 2; // Bajamos a la posición 2
+            gbc.insets = new Insets(0, 0, 5, 0);
+            pnlCentro.add(lblEstado, gbc);
+            String[] opcionesEstado = {"Pendiente", "Listo", "Entregado", "Cancelado", "Desatendido"};
+        
+            cbx_estado_pedido = new JComboBox<>(opcionesEstado);
+            cbx_estado_pedido.setPreferredSize(new Dimension(250, 35));
+            cbx_estado_pedido.setMinimumSize(new Dimension(250, 35));
+            cbx_estado_pedido.setBackground(Color.WHITE);
+            gbc.gridy = 3; // Bajamos a la posición 3
+            gbc.insets = new Insets(0, 0, 15, 0);
+            pnlCentro.add(cbx_estado_pedido, gbc);
+        }
+        
 
         // Etiqueta Productos
         LabelPersonalizado lblProductos = new LabelPersonalizado("Pedidos", 14, colorTextoOscuro);
@@ -137,21 +142,8 @@ public class VCambioEstadoPedido extends JFrame {
         String[] columnas = {"Id pedido", "Descripcion", "Estado"};
         tabla_pedidos = new TablaSimplePanel(columnas);
         
-        try{
-
-            lista_pedidos = pedidoBO.obtenerListaPedidosConResumen();
-            if (lista_pedidos.isEmpty() || lista_pedidos == null) {
-                JOptionPane.showMessageDialog(null, "No hay pedidos registrados.");
-            }
-            for (PedidoEstadoDTO lista_pedido : lista_pedidos) {
-                tabla_pedidos.agregarFila(lista_pedido.getId(), lista_pedido.getResumen(), lista_pedido.getEstado());
-            }
-            
-        }catch(NegocioExcepcion ex){
-            System.out.println("Hubo un error al obtener la lista para mostrar.");
-            System.out.println(ex.getMessage());
-        }
-        
+        //Actualizamos la tabla de los pedidos
+        actualizarTablaPedidos();
         
         
         // Forzamos a que el JScrollPane muestre SIEMPRE la barra vertical
@@ -195,31 +187,56 @@ public class VCambioEstadoPedido extends JFrame {
         
         btnCambiarEstado.addActionListener(e -> {
             
-            String id_string = txtIdProducto.getText();
+            String id_string = txt_id_pedido.getText();
             
             if (id_string.isEmpty() || id_string == "") {
                 JOptionPane.showMessageDialog(null, "El campo de id debe tener un id para esta funcion.");
                 return;
             }
             
-            String estado = (String) cbx_estado_pedido.getSelectedItem();
-            try{
+            if (empleado != null) {
                 
-                boolean valor = pedidoBO.cambiarEstadoPedido(id_string, estado);
-                
-                if (!valor) {
-                    JOptionPane.showMessageDialog(null, "No se actualizo el pedido que buscaba.");
-                    return;
+                String estado = (String) cbx_estado_pedido.getSelectedItem();
+                try{
+
+                    boolean valor = pedidoBO.cambiarEstadoPedido(id_string, estado);
+
+                    if (!valor) {
+                        JOptionPane.showMessageDialog(null, "No se actualizo el pedido que buscaba.");
+                        return;
+                    }
+
+                    actualizarTablaPedidos();
+
+                }catch(NegocioExcepcion ex){
+
+                    System.out.println("Hubo un error al quere modificar el estado del pedido.");
+                    System.out.println(ex.getMessage());
+
                 }
                 
-                actualizarTablaPedidos();
+            }else{
                 
-            }catch(NegocioExcepcion ex){
-                
-                System.out.println("Hubo un error al quere modificar el estado del pedido.");
-                System.out.println(ex.getMessage());
+                try{
+
+                    boolean valor = pedidoPrograBO.cambiarEstadoPedido(id_string);
+
+                    if (!valor) {
+                        JOptionPane.showMessageDialog(null, "No se actualizo el pedido que buscaba.");
+                        return;
+                    }
+
+                    actualizarTablaPedidos();
+
+                }catch(NegocioExcepcion ex){
+
+                    System.out.println("Hubo un error al quere modificar el estado del pedido.");
+                    System.out.println(ex.getMessage());
+
+                }
                 
             }
+            
             
         });
         
@@ -234,16 +251,31 @@ public class VCambioEstadoPedido extends JFrame {
     }
     
     private void actualizarTablaPedidos(){
+        tabla_pedidos.limpiar();
         try{
+            //Validar de donde viene si del menu de empleados o el de clientes mediante el uso de sus parametros
+            if (empleado == null) {
+                
+                //Llenamos la tabla con los pedidos del cliente
+                lista_pedidos = pedidoPrograBO.obtenerListaPedidosConResumen();
+                if (lista_pedidos.isEmpty() || lista_pedidos == null) {
+                    JOptionPane.showMessageDialog(null, "No hay pedidos registrados.");
+                }
+                for (PedidoEstadoDTO lista_pedido : lista_pedidos) {
+                    tabla_pedidos.agregarFila(lista_pedido.getId(), lista_pedido.getResumen(), lista_pedido.getEstado());
+                }
+                
+            }else{
+                //Llenamos la tabla con los pedidos para el empleado
+                lista_pedidos = pedidoBO.obtenerListaPedidosConResumen();
+                if (lista_pedidos.isEmpty() || lista_pedidos == null) {
+                    JOptionPane.showMessageDialog(null, "No hay pedidos registrados.");
+                }
+                for (PedidoEstadoDTO lista_pedido : lista_pedidos) {
+                    tabla_pedidos.agregarFila(lista_pedido.getId(), lista_pedido.getResumen(), lista_pedido.getEstado());
+                }
+            }
             
-            lista_pedidos = pedidoBO.obtenerListaPedidosConResumen();
-            if (lista_pedidos.isEmpty() || lista_pedidos == null) {
-                JOptionPane.showMessageDialog(null, "No hay pedidos registrados.");
-            }
-            tabla_pedidos.limpiar();
-            for (PedidoEstadoDTO lista_pedido : lista_pedidos) {
-                tabla_pedidos.agregarFila(lista_pedido.getId(), lista_pedido.getResumen(), lista_pedido.getEstado());
-            }
             
         }catch(NegocioExcepcion ex){
             System.out.println("Hubo un error al obtener la lista para mostrar.");

@@ -124,7 +124,7 @@ public class VOpcionesEmpleado extends JFrame {
         });
 
         btn_cambiar_estado.addActionListener(e -> {
-            new VCambioEstadoPedido(empleado, this).setVisible(true);
+            new VCambioEstadoPedido(empleado, this, null, null, null, null, null).setVisible(true);
             this.setVisible(false);
         });
 

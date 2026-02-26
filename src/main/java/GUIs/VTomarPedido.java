@@ -24,8 +24,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-
-
 /**
  *
  * @author RAMSES
@@ -43,34 +41,31 @@ public class VTomarPedido extends JFrame {
     private ClienteBO clienteBO;
     private UsuarioBO usuarioBO;
     private JFrame ventanaAnterior;
-    
+
     private LabelPersonalizado lbl_subtotal;
     private PlaceholderTextField txt_cantidad;
     private double subtotal_total = 0.0;
-    
-    // Aquí guardaremos el producto que el usuario haya seleccionado en la lista
 
+    // Aquí guardaremos el producto que el usuario haya seleccionado en la lista
     // Esta es tu lista de carrito
     private List<ItemCarrito> carrito = new ArrayList<>();
-    
-    public VTomarPedido(PedidoBO pedido,ClienteDTO cliente,TelefonoBO telefono, ClienteBO clienteBO, UsuarioBO usuarioBO, JFrame ventanaAnterior) {
+
+    public VTomarPedido(PedidoBO pedido, ClienteDTO cliente, TelefonoBO telefono, ClienteBO clienteBO, UsuarioBO usuarioBO, JFrame ventanaAnterior) {
         this.telefono = telefono;
         this.pedido = pedido;
-        this.cliente = cliente; 
+        this.cliente = cliente;
         this.usuarioBO = usuarioBO;
         this.ventanaAnterior = ventanaAnterior;
         fabricaBO = new FabricaBOs();
         productoBO = fabricaBO.obtenerProductoBO();
         listaTodosLosProductos = new ArrayList<>();
-        
-        try{
+
+        try {
             listaTodosLosProductos = productoBO.obtenerListaProductos();
-        }catch(NegocioExcepcion ex){
+        } catch (NegocioExcepcion ex) {
             System.out.println("Error al cargar los productos en la lista.");
         }
-        
-        
-        
+
         setTitle("Catálogo de Productos");
         // 1. Reducimos el tamaño de la ventana (antes 875x650)
         setSize(805, 590);
@@ -79,7 +74,6 @@ public class VTomarPedido extends JFrame {
 
         getContentPane().setBackground(new Color(205, 173, 144));
         setLayout(new BorderLayout());
-
 
         // =================================================================
         // 1. PANEL IZQUIERDO: CONTENEDOR DE LA LISTA
@@ -95,7 +89,7 @@ public class VTomarPedido extends JFrame {
         scroll_pane.getViewport().setOpaque(false);
         scroll_pane.setBorder(BorderFactory.createEmptyBorder());
         scroll_pane.getVerticalScrollBar().setUnitIncrement(16);
-       
+
         //ESTE METODO SE USA PARA ACTUALIZAR LA LISTA QUE APARECE EN LA INTERFAZ
         actualizarListaProductos("");
 
@@ -112,14 +106,14 @@ public class VTomarPedido extends JFrame {
         // --- LOGO ---
         JLabel lbl_logo = new JLabel();
         lbl_logo.setAlignmentX(Component.CENTER_ALIGNMENT);
-        URL logo_URL = getClass().getResource("/img/icon.png"); 
+        URL logo_URL = getClass().getResource("/img/icon.png");
         if (logo_URL != null) {
             ImageIcon icon = new ImageIcon(logo_URL);
             // 4. Logo más pequeño (antes 180, ahora 130)
             Image img = icon.getImage().getScaledInstance(130, 130, Image.SCALE_SMOOTH);
             lbl_logo.setIcon(new ImageIcon(img));
         } else {
-            lbl_logo.setText("[ LOGO AQUI ]"); 
+            lbl_logo.setText("[ LOGO AQUI ]");
             lbl_logo.setForeground(Color.WHITE);
         }
 
@@ -128,22 +122,36 @@ public class VTomarPedido extends JFrame {
         // 5. Cajas de texto más compactas (antes 250x40, ahora 200x35)
         txt_nombre.setMaximumSize(new Dimension(200, 35));
         txt_nombre.setAlignmentX(Component.CENTER_ALIGNMENT);
-        
+
         txt_nombre.getDocument().addDocumentListener(new DocumentListener() {
-            @Override public void insertUpdate(DocumentEvent e) { filtrar(); }
-            @Override public void removeUpdate(DocumentEvent e) { filtrar(); }
-            @Override public void changedUpdate(DocumentEvent e) { filtrar(); }
-            private void filtrar() { actualizarListaProductos(txt_nombre.getText()); }
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                filtrar();
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                filtrar();
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                filtrar();
+            }
+
+            private void filtrar() {
+                actualizarListaProductos(txt_nombre.getText());
+            }
         });
-        
+
         // 6. Textos descriptivos un poco más pequeños (antes 16, ahora 14)
         LabelPersonalizado lbl_nombre_desc = new LabelPersonalizado("Nombre del producto", 14, new Color(120, 95, 80));
         lbl_nombre_desc.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-       txt_cantidad = new PlaceholderTextField("");
+        txt_cantidad = new PlaceholderTextField("");
         txt_cantidad.setMaximumSize(new Dimension(200, 35));
         txt_cantidad.setAlignmentX(Component.CENTER_ALIGNMENT);
-        txt_cantidad.setHorizontalAlignment(JTextField.CENTER); 
+        txt_cantidad.setHorizontalAlignment(JTextField.CENTER);
 
         LabelPersonalizado lbl_cantidad_desc = new LabelPersonalizado("Cantidad", 14, new Color(120, 95, 80));
         lbl_cantidad_desc.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -159,7 +167,7 @@ public class VTomarPedido extends JFrame {
         RoundedButton btn_agregar = new RoundedButton("Agregar producto");
         btn_agregar.setAlignmentX(Component.CENTER_ALIGNMENT);
         btn_agregar.setMaximumSize(sizeBotones);
-        
+
         RoundedButton btn_eliminar = new RoundedButton("Eliminar producto");
         btn_eliminar.setAlignmentX(Component.CENTER_ALIGNMENT);
         btn_eliminar.setMaximumSize(sizeBotones);
@@ -175,21 +183,21 @@ public class VTomarPedido extends JFrame {
         // --- ENSAMBLADO DEL PANEL DERECHO ---
         // 8. Espaciados (VerticalStrut) reducidos para que todo quede más junto
         panel_derecho.add(lbl_logo);
-        panel_derecho.add(Box.createVerticalStrut(15)); 
-        
+        panel_derecho.add(Box.createVerticalStrut(15));
+
         panel_derecho.add(txt_nombre);
         panel_derecho.add(Box.createVerticalStrut(2));
         panel_derecho.add(lbl_nombre_desc);
         panel_derecho.add(Box.createVerticalStrut(10));
-        
+
         panel_derecho.add(txt_cantidad);
         panel_derecho.add(Box.createVerticalStrut(2));
         panel_derecho.add(lbl_cantidad_desc);
         panel_derecho.add(Box.createVerticalStrut(15));
-        
+
         panel_derecho.add(lbl_subtotal);
         panel_derecho.add(Box.createVerticalStrut(15));
-        
+
         panel_derecho.add(btn_agregar);
         panel_derecho.add(Box.createVerticalStrut(10));
         panel_derecho.add(btn_eliminar);
@@ -201,31 +209,37 @@ public class VTomarPedido extends JFrame {
         // =================================================================
         // 3. ENSAMBLADO FINAL EN LA VENTANA
         // =================================================================
-        add(scroll_pane, BorderLayout.CENTER);   
-        add(panel_derecho, BorderLayout.EAST);   
-        
+        add(scroll_pane, BorderLayout.CENTER);
+        add(panel_derecho, BorderLayout.EAST);
+
         btn_cancelar.addActionListener(e -> {
             ventanaAnterior.setVisible(true);
             this.dispose();
         });
-    
-        
-        
+
         btn_realizar.addActionListener(e -> {
-            
+
             if (carrito.isEmpty()) {
                 JOptionPane.showMessageDialog(null, "El carrito esta vacio no es posible esta opcion.");
                 return;
             }
+            if (cliente == null) {
 
-            
+            } else {
+                VResumenPedido ventana = new VResumenPedido(pedido, cliente, telefono, carrito, clienteBO, usuarioBO, this);
+
+                ventana.setVisible(true);
+            }
+
+            this.dispose();
+
             VResumenPedido ventana = new VResumenPedido(pedido, cliente, telefono, carrito, clienteBO, usuarioBO, this);
 
             ventana.setVisible(true);
             this.dispose();
-            
+
         });
-        
+
         //Metodo para eliminar el ultimo producto
         btn_eliminar.addActionListener(e -> {
             //Verificamos que la lista no este vacia
@@ -236,14 +250,13 @@ public class VTomarPedido extends JFrame {
             //Obtenemos la cantidad de elementos que halla en la lista
             int posi = carrito.size();
             //Quitamos el ultimo producto agregado
-            ItemCarrito item = carrito.remove(posi-1);
+            ItemCarrito item = carrito.remove(posi - 1);
             subtotal_total -= item.getSubtotal();
             lbl_subtotal.setText(String.format("Subtotal: $%.2f", subtotal_total));
-            JOptionPane.showMessageDialog(null, "Se elimino el producto "+item.getProducto().getNombre());
-            
+            JOptionPane.showMessageDialog(null, "Se elimino el producto " + item.getProducto().getNombre());
+
         });
-        
-        
+
         //Metodo para cuando el boton de agregar producto se presione
         btn_agregar.addActionListener(e -> {
             try {
@@ -289,7 +302,7 @@ public class VTomarPedido extends JFrame {
                 // 4. Calcular el subtotal
                 double precio = producto_seleccionado.getPrecio();
                 double subtotal_articulo = precio * cantidad;
-                
+
                 // --- NUEVA LÓGICA DEL CARRITO ---
                 boolean producto_ya_existe = false;
 
@@ -299,12 +312,12 @@ public class VTomarPedido extends JFrame {
                         // Sí existe: Sumamos la cantidad y el subtotal directo al objeto
                         item.setCantidad(item.getCantidad() + cantidad);
                         item.setSubtotal(item.getSubtotal() + subtotal_articulo);
-                        
+
                         producto_ya_existe = true; // Marcamos que lo encontramos
                         break; // ¡Importante! Salimos del ciclo porque ya lo actualizamos
                     }
                 }
-                
+
                 // Si terminamos de buscar y no existía, entonces lo agregamos como nuevo
                 if (!producto_ya_existe) {
                     carrito.add(new ItemCarrito(producto_seleccionado, cantidad, subtotal_articulo));
@@ -317,10 +330,9 @@ public class VTomarPedido extends JFrame {
 
                 // 7. Limpiar para el siguiente
                 txt_cantidad.setText("");
-                
+
                 // Opcional: Deseleccionar el RadioButton actual limpiando el ButtonGroup
                 // Para hacer esto tendrías que declarar el ButtonGroup como global en VTomarPedido
-                
                 JOptionPane.showMessageDialog(this, "Producto agregado: " + cantidad + "x " + producto_seleccionado.getNombre());
 
             } catch (NumberFormatException ex) {
@@ -337,12 +349,12 @@ public class VTomarPedido extends JFrame {
         ButtonGroup grupoSeleccion = new ButtonGroup();
         for (ProductoDTO p : listaTodosLosProductos) {
             if (p.getNombre().toLowerCase().contains(busqueda)) {
-                
-                PanelProducto panel_producto = new PanelProducto(p.getNombre(), p.getEstado(), p.getDescripcion(), ""+p.getPrecio(), grupoSeleccion);
+
+                PanelProducto panel_producto = new PanelProducto(p.getNombre(), p.getEstado(), p.getDescripcion(), "" + p.getPrecio(), grupoSeleccion);
 
                 panel_lista.add(panel_producto);
                 // Reduje la separación entre los cuadros café a 10px
-                panel_lista.add(Box.createVerticalStrut(10)); 
+                panel_lista.add(Box.createVerticalStrut(10));
             }
         }
         panel_lista.revalidate();

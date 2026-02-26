@@ -90,7 +90,6 @@ public class PedidoDAO implements IPedidoDAO {
                     pedidoDTO.setEstado(EstadoPedido.valueOf(estadoStr.trim().toUpperCase()));
                 }
 
-
                 pedidoDTO.setTipo(rs.getString("tipo"));
                 lista_historial.add(pedidoDTO);
             }
@@ -105,9 +104,11 @@ public class PedidoDAO implements IPedidoDAO {
         //Hacemos el comando para la base de datos
         String comando = """
                          SELECT p.id_pedido, p.estado, MAX(dp.nota) AS nota_del_pedido
-                         FROM Pedidos p
-                         LEFT JOIN DetallePedidos dp ON p.id_pedido = dp.id_pedido
-                         GROUP BY p.id_pedido, p.estado;
+                            FROM Pedidos p
+                            LEFT JOIN DetallePedidos dp ON p.id_pedido = dp.id_pedido
+                            WHERE p.estado != 'Entregado'
+                            GROUP BY p.id_pedido, p.estado
+                            ORDER BY p.estado ASC;
                          """;
         //Creamos la conexion
         try (Connection conn = this.conexionBD.crearConexion(); PreparedStatement ps = conn.prepareStatement(comando)) {
